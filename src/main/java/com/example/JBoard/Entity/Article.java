@@ -3,17 +3,14 @@ package com.example.JBoard.Entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
-@Getter @Setter
-public class User {
+public class Article {
 
     @Id @GeneratedValue
-    private Long UserId;
+    private Long ArticleId;
 
-    private String username;
+    private String title;
 
-    private String password;
+    private String content;
 }
