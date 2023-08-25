@@ -27,7 +27,7 @@ class UserRepositoryTest {
         User findUser = userRepository.find(saveId);
         System.out.println("findUser = " + findUser);
 
-        assertThat(findUser.getUser_id()).isEqualTo(user.getUser_id());
+        assertThat(findUser.getUserId()).isEqualTo(user.getUserId());
         assertThat(findUser.getUsername()).isEqualTo(user.getUsername());
 
         assertThat(findUser).isEqualTo(user);

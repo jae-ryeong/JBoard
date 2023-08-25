@@ -13,7 +13,7 @@ public class UserRepository {
 
     public Long save(User user){
         em.persist((user));
-        return user.getUser_id();
+        return user.getUserId();
     }
 
     public User find(Long user_id){
