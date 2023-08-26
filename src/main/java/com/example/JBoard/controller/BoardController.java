@@ -8,7 +8,7 @@ public class BoardController {
 
     @GetMapping("/boardlist")
     public String boardlist() {
-        return "articles/board";
+        return "articles/boardList";
     }
 
     @GetMapping("/boardCreateForm")
