@@ -1,8 +1,6 @@
 package com.example.JBoard.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,4 +15,11 @@ public class Article {
     private String title;
 
     private String content;
+
+    private int view_count;  // 조회수
+
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
+
 }
