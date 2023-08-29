@@ -14,6 +14,12 @@ spring:
         format_sql: true
         show_sql: true
 
+    defer-datasource-initialization: true #  Hibernate 초기화 이전에 sql 스크립트를 실행할지를 설정 (data.sql을 실행시켜준다.)
+
+  sql:
+    init:
+      mode: always # (data.sql을 실행시켜준다.)
+
 logging:
   level:
     org.hibernate.sql: debug
