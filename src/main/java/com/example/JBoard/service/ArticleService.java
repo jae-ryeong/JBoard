@@ -15,7 +15,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
 
     @Transactional(readOnly = true)
-    public List<Article> searchArticles() {
-        return null;
+    public List<Article> getArticles() {
+        return articleRepository.findAll();
     }
 }

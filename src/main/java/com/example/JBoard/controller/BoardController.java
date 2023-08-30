@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Controller
 public class BoardController {
@@ -15,7 +17,9 @@ public class BoardController {
 
     @GetMapping("/boardlist")
     public String boardlist(Model model) {
-        model.addAttribute("Articles", Article.class);
+        List<Article> articles = articleService.getArticles();
+        model.addAttribute("Articles", articles);
+
         return "articles/boardList";
     }
 
