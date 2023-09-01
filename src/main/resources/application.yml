@@ -22,4 +22,11 @@ spring:
 
 logging:
   level:
-    org.hibernate.sql: debug
+    org:
+      hibernate:
+        sql: debug
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
