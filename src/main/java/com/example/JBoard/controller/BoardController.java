@@ -41,8 +41,9 @@ public class BoardController {
     }
 
     @GetMapping("/detail/{articleId}")
-    public String article_detail(@PathVariable Long articleId){
-
+    public String article_detail(@PathVariable("articleId") Long articleId, Model model){
+        model.addAttribute("article",articleService.getArticle(articleId));
         return "articles/detail";
     }
+
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +25,11 @@ public class ArticleService {
         Article save = articleRepository.save(articleDtoC.toEntity());
         System.out.println("createArticle에서 확인");
         System.out.println(save.toString());
+    }
+
+    public Optional<Article> getArticle(Long articleId) {
+        Optional<Article> article = articleRepository.findById(articleId);
+        return article;
     }
 
 

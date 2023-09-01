@@ -42,4 +42,16 @@ class ArticleRepositoryTest {
         assertThat(articles).isNotNull().hasSize(38);   // test 데이터 37 + 추가한 데이터 1
         assertThat(save.getArticleId()).isEqualTo(38);
     }
+
+    @Test
+    public void getTest() throws Exception{
+        //given
+
+
+        //when
+        Article article1 = articleRepository.getReferenceById(1L);
+
+        //then
+        assertThat(article1.getArticleId()).isEqualTo(1);
+    }
 }
