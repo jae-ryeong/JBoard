@@ -35,6 +35,18 @@ public class Article {
         this.view_count = view_count;
     }
 
+    @Override
+    public String toString() {
+        return "Article{" +
+                "ArticleId=" + ArticleId +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", view_count=" + view_count +
+                ", createdAt=" + createdAt +
+                ", user=" + user +
+                '}';
+    }
+
     public static Article of(String title, String content, Long view_count) {
         return new Article(title, content, view_count);
     }

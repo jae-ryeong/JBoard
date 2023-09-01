@@ -6,14 +6,20 @@ import lombok.Setter;
 
 @Getter @Setter
 public class ArticleDtoC {
-    private final Long ArticleId;
     private String title;
     private String content;
 
-    public ArticleDtoC(Long articleId, String title, String content){
-        this.ArticleId = articleId;
+    public ArticleDtoC(String title, String content){
         this.title = title;
         this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "ArticleDtoC{" +
+                "title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                '}';
     }
 
     // DTO -> Entity
