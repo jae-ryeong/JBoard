@@ -1,18 +1,18 @@
 package com.example.JBoard.Repository;
 
-import com.example.JBoard.Dto.ArticleDtoC;
 import com.example.JBoard.Entity.Article;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-class ArticleRepositoryTest {
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)    // In Memoery 안쓰고 기본 설정된 DB를 사용하겠다.
+class ArticleRepositoryTest {   // 레포지토리 테스트는 서비스와 연결X
 
     private final ArticleRepository articleRepository;
 
@@ -44,14 +44,15 @@ class ArticleRepositoryTest {
     }
 
     @Test
-    public void getTest() throws Exception{
+    public void deleteTest() throws Exception{
         //given
-
+        Article article = Article.of("title", "content", 0L);
 
         //when
-        Article article1 = articleRepository.getReferenceById(1L);
+        Article save = articleRepository.save(article);
+        articleRepository.deleteById(38L);
 
         //then
-        assertThat(article1.getArticleId()).isEqualTo(1);
+        assertThat(articleRepository.findById(38L)).isEmpty();
     }
 }
