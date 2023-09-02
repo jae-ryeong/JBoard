@@ -15,6 +15,8 @@ import java.util.Optional;
 @Transactional
 public class ArticleService {
     private final ArticleRepository articleRepository;
+    
+    // 반환값을 나중에 DTO로 바꿔주기
 
     @Transactional(readOnly = true)
     public List<Article> getArticles() {    // 모든 게시물들을 끌어온다.
@@ -30,6 +32,10 @@ public class ArticleService {
     public Optional<Article> getArticle(Long articleId) {
         Optional<Article> article = articleRepository.findById(articleId);
         return article;
+    }
+
+    public void deleteArticle(Long artieId) {
+        articleRepository.deleteById(artieId);
     }
 
 

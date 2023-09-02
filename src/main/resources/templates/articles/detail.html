@@ -10,80 +10,6 @@
     <title>Document</title>
 </head>
 <body>
-
-    <!--<div class="container">
-        <hr/>
-        <div class="row">
-            <div class="col-md-10">
-                <table class="table table-condensed">
-                    <thead>
-                    <tr align="center">
-                        <th width="10%">제목</th>
-                        <th width="60%">게시판 제목 입다.</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>작성일
-                        </td>
-                        <td>
-                            2014-12-15 04:45:23
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>글쓴이
-                        </td>
-                        <td>
-                            husk <span style='float:right'>조회 : 0</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <p>이름, 패스워드 내용을 적으시고 확인버튼을 누르세요.</p>
-
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <table id="commentTable" class="table table-condensed"></table>
-                <table class="table table-condensed">
-                    <tr>
-                        <td>
-                            <span class="form-inline" role="form">
-                                <p>
-                                    <div class="form-group">
-                                        <input type="text" id="commentParentName" name="commentParentName" class="form-control col-lg-2" data-rule-required="true" placeholder="이름" maxlength="10">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="password" id="commentParentPassword" name="commentParentPassword" class="form-control col-lg-2" data-rule-required="true" placeholder="패스워드" maxlength="10">
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="button" id="commentParentSubmit" name="commentParentSubmit" class="btn btn-default">확인</button>
-                                    </div>
-                                </p>
-                                <textarea id="commentParentText" class="form-control col-lg-12" style="width:100%" rows="4"></textarea>
-                            </span>
-                        </td>
-                    </tr>
-                </table>
-                <table class="table table-condensed">
-                    <thead>
-                    <tr>
-                        <td>
-                                        <span style='float:right'>
-                                            <button type="button" id="list" class="btn btn-default">목록</button>
-                                            <button type="button" id="modify" class="btn btn-default">수정</button>
-                                            <button type="button" id="delete" class="btn btn-default">삭제</button>
-                                            <button type="button" id="write" class="btn btn-default">글쓰기</button>
-                                        </span>
-                        </td>
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
-        <hr/>
-    </div>-->
     <div class="container">
 
         <table class="table">
@@ -120,7 +46,7 @@
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
             <button class="btn btn-primary" id="modify">수정하기</button>
             <a class="btn btn-secondary" th:onclick="|location.href='@{/boardlist}'|" role="button">목록으로</a>
-            <button type="button" class="btn btn-danger">삭제</button>
+            <a class="btn btn-danger" th:href="@{|/detail/${article.get().getArticleId()}/delete|}" role="button">삭제</a>
         </div>
 
     </div>

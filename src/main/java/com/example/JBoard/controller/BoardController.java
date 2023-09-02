@@ -6,6 +6,7 @@ import com.example.JBoard.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,6 +45,12 @@ public class BoardController {
     public String article_detail(@PathVariable("articleId") Long articleId, Model model){
         model.addAttribute("article",articleService.getArticle(articleId));
         return "articles/detail";
+    }
+
+    @GetMapping("/detail/{articleId}/delete")
+    public String deleteArticle(@PathVariable("articleId") Long articleId){
+        articleService.deleteArticle(articleId);
+        return "redirect:/boardlist";
     }
 
 }
