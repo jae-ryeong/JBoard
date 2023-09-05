@@ -6,12 +6,10 @@ import com.example.JBoard.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Controller
@@ -47,10 +45,19 @@ public class BoardController {
         return "articles/detail";
     }
 
-    @GetMapping("/detail/{articleId}/delete")
+    @PostMapping("/detail/{articleId}/delete")
     public String deleteArticle(@PathVariable("articleId") Long articleId){
         articleService.deleteArticle(articleId);
         return "redirect:/boardlist";
+    }
+
+    @GetMapping("/{articleId}/update")
+    public String updateArticle(@PathVariable("articleId") Long articleId, Model model) {
+        Optional<Article> article = articleService.getArticle(articleId);
+        model.addAttribute("article", article);
+        System.out.println("article = " + article);
+
+        return "articles/boardCreateForm";
     }
 
 }
