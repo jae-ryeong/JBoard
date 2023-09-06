@@ -19,7 +19,7 @@
 
                 <div class="mb-3">
                     <label th:for="title" class="form-label">제목</label> <!--이렇게 해도 for와 똑같다-->
-                    <input type="text" id="title" name="title" class="form-control" placeholder="제목을 입력해주세요." required>
+                    <input type="text" id="title" name="title" class="form-control" placeholder="제목을 입력해주세요." th:text="${article.getTitle()}" required>
                 </div>
 
                 <div class="mb-3">
