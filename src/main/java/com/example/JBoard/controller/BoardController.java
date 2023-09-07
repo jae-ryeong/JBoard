@@ -26,12 +26,12 @@ public class BoardController {
     }
 
     @GetMapping("/boardCreateForm")
-    public String boardCreateForm() {
+    public String boardCreateForm(Model model) {
         return "articles/boardCreateForm";
     }
 
     @PostMapping("/boardCreateForm")
-    public String CreateForm(ArticleDtoC articleDtoC){
+    public String CreateForm(ArticleDtoC articleDtoC) {
         System.out.println("컨트롤러에서 확인");
         System.out.println(articleDtoC.toString());
 
@@ -40,24 +40,29 @@ public class BoardController {
     }
 
     @GetMapping("/detail/{articleId}")
-    public String article_detail(@PathVariable("articleId") Long articleId, Model model){
-        model.addAttribute("article",articleService.getArticle(articleId));
+    public String article_detail(@PathVariable("articleId") Long articleId, Model model) {
+        model.addAttribute("article", articleService.getArticle(articleId));
         return "articles/detail";
     }
 
     @PostMapping("/detail/{articleId}/delete")
-    public String deleteArticle(@PathVariable("articleId") Long articleId){
+    public String deleteArticle(@PathVariable("articleId") Long articleId) {
         articleService.deleteArticle(articleId);
         return "redirect:/boardlist";
     }
 
-    @GetMapping("/{articleId}/update")
-    public String updateArticle(@PathVariable("articleId") Long articleId, Model model) {
+    @GetMapping("/update/{articleId}")
+    public String updateArticleForm(@PathVariable("articleId") Long articleId, Model model) {
         Optional<Article> article = articleService.getArticle(articleId);
         model.addAttribute("article", article);
-        System.out.println("article = " + article);
 
         return "articles/boardCreateForm";
     }
 
+    @PostMapping("/update/{articleId}")
+    public String updateArticle(@PathVariable("articleId") Long articleId, Model model) {
+        System.out.println("수정완료");
+
+        return "redirect:/boardlist";
+    }
 }

@@ -52,11 +52,9 @@
         <form th:action="@{/detail/{articleId}/delete(articleId=${article.get().getArticleId()})}" method="post">
 
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button class="btn btn-primary"
-                        th:onclick="|location.href='@{/board/{postId}/edit(postId=${post.id})}'|"
-                        type="button">수정</button>
+                <!--<button class="btn btn-primary" type="button">수정하기</button>-->
+                <a class="btn btn-primary" th:href="@{|/update/${article.get().articleId}|}">수정하기</a>
                 <a class="btn btn-secondary" th:onclick="|location.href='@{/boardlist}'|" role="button">목록으로</a>
-                <button class="btn btn-primary" id="modify" th:onclick="|location.href='@{/board/{articleId}/update(articleId=${article.get().getArticleId()})}'|">수정하기</button>
                 <button class="btn btn-danger" type="submit">삭제</button>
             </div>
         </form>

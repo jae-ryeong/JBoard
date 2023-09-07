@@ -34,9 +34,14 @@ public class ArticleService {
         return article;
     }
 
-    public void deleteArticle(Long artieId) {
-        articleRepository.deleteById(artieId);
+    public void deleteArticle(Long articleId) {
+        articleRepository.deleteById(articleId);
     }
+
+  /*  public void updateArticle(Long articleId) {
+        Optional<Article> article = articleRepository.findById(articleId);
+        articleRepository.
+    }*/
 
 
 }
