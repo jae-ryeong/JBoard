@@ -14,18 +14,18 @@
     <div class="container">
 
         <!--<form action="/boardCreateForm" method="post">-->
-        <form th:action="${article?.get().articleId == null} ? '/update/' + ${article.get().articleId} : '/boardCreateForm'" method="post">
+        <form th:action="${formStatus?.update} ? '/update/' + ${article?.get().articleId} : '/boardCreateForm'" method="post">
             <fieldset>
                 <legend>글 등록 페이지</legend>
 
                 <div class="mb-3">
                     <label th:for="title" class="form-label" >제목</label> <!--이렇게 해도 for와 똑같다-->
-                    <input type="text" id="title" name="title" class="form-control" placeholder="제목을 입력해주세요." th:value="${article.get().title} ?: _" required>
+                    <input type="text" id="title" name="title" class="form-control" placeholder="제목을 입력해주세요." th:value="${article?.get().title} ?: _" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="content" class="form-label">내용</label>
-                    <textarea class="form-control" id="content" name="content" rows="3" placeholder="내용을 입력해주세요." th:text="${article.get().content} ?: _" required></textarea>
+                    <textarea class="form-control" id="content" name="content" rows="3" placeholder="내용을 입력해주세요." th:text="${article?.get().content} ?: ''" required></textarea>
                 </div>
             </fieldset>
 

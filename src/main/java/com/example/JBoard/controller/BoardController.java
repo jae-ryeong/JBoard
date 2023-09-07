@@ -2,6 +2,7 @@ package com.example.JBoard.controller;
 
 import com.example.JBoard.Dto.ArticleDtoC;
 import com.example.JBoard.Entity.Article;
+import com.example.JBoard.Entity.constant.FormStatus;
 import com.example.JBoard.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,10 @@ public class BoardController {
 
     @GetMapping("/boardCreateForm")
     public String boardCreateForm(Model model) {
+        model.addAttribute("formStatus", FormStatus.CREATE);
+        ArticleDtoC of = ArticleDtoC.of("내용", "제목");
+        articleService.createArticle(of);
+        model.addAttribute("article", articleService.getArticle(38L));
         return "articles/boardCreateForm";
     }
 
@@ -55,6 +60,7 @@ public class BoardController {
     public String updateArticleForm(@PathVariable("articleId") Long articleId, Model model) {
         Optional<Article> article = articleService.getArticle(articleId);
         model.addAttribute("article", article);
+        model.addAttribute("formStatus", FormStatus.UPDATE);
 
         return "articles/boardCreateForm";
     }
