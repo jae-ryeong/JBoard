@@ -1,6 +1,7 @@
 package com.example.JBoard.service;
 
 import com.example.JBoard.Dto.ArticleDtoC;
+import com.example.JBoard.Dto.ArticleRequest;
 import com.example.JBoard.Entity.Article;
 import com.example.JBoard.Repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,10 +39,13 @@ public class ArticleService {
         articleRepository.deleteById(articleId);
     }
 
-  /*  public void updateArticle(Long articleId) {
+    public Article updateArticle(Long articleId, ArticleRequest dto) {
         Optional<Article> article = articleRepository.findById(articleId);
-        articleRepository.
-    }*/
+
+        dto.
+
+        return saved;
+    }
 
 
 }

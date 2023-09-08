@@ -62,13 +62,14 @@ public class BoardController {
         model.addAttribute("article", article);
         model.addAttribute("formStatus", FormStatus.UPDATE);
 
-        return "articles/boardCreateForm";
+        return "articles/boardUpdateForm";
     }
 
     @PostMapping("/update/{articleId}")
     public String updateArticle(@PathVariable("articleId") Long articleId, Model model) {
-        System.out.println("수정완료");
+        articleService.updateArticle(articleId, );
 
-        return "redirect:/boardlist";
+        System.out.println("수정완료");
+        return "redirect:/detail/" + articleId;
     }
 }

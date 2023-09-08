@@ -27,6 +27,13 @@ public class ArticleDtoC {
         return Article.of(title, content, 0L);
     }
 
+    public static ArticleDtoC from(Article entity) {
+        return new ArticleDtoC(
+                entity.getTitle(),
+                entity.getContent()
+        );
+    }
+
     public static ArticleDtoC of(String title, String content){
         return new ArticleDtoC(title, content);
     }
