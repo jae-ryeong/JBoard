@@ -32,6 +32,7 @@ public class ArticleService {
 
     public Optional<Article> getArticle(Long articleId) {
         Optional<Article> article = articleRepository.findById(articleId);
+        article.get().addView();
         return article;
     }
 
