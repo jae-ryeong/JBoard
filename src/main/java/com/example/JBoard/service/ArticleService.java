@@ -39,12 +39,10 @@ public class ArticleService {
         articleRepository.deleteById(articleId);
     }
 
-    public Article updateArticle(Long articleId, ArticleRequest dto) {
+    public void updateArticle(Long articleId, ArticleDtoC dto) {
         Optional<Article> article = articleRepository.findById(articleId);
 
-        dto.
-
-        return saved;
+        article.get().update(dto.getTitle(), dto.getContent());
     }
 
 

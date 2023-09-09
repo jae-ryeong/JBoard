@@ -66,8 +66,8 @@ public class BoardController {
     }
 
     @PostMapping("/update/{articleId}")
-    public String updateArticle(@PathVariable("articleId") Long articleId, Model model) {
-        articleService.updateArticle(articleId, );
+    public String updateArticle(@PathVariable("articleId") Long articleId, ArticleDtoC dto) {
+        articleService.updateArticle(articleId, dto);
 
         System.out.println("수정완료");
         return "redirect:/detail/" + articleId;

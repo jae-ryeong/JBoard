@@ -50,4 +50,9 @@ public class Article {
     public static Article of(String title, String content, Long view_count) {
         return new Article(title, content, view_count);
     }
+
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }
