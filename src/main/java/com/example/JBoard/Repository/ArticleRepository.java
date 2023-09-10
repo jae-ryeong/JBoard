@@ -1,4 +1,4 @@
-package com.example.JBoard.repository;
+package com.example.JBoard.Repository;
 
 import com.example.JBoard.Entity.Article;
 import org.springframework.data.jpa.repository.JpaRepository;

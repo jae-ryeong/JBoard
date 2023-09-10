@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import com.example.JBoard.dto.ArticleDtoC;
+import com.example.JBoard.Dto.ArticleDtoC;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,11 +17,8 @@ public class BoardController {
     private final ArticleService articleService;
 
     @GetMapping("/")
-    public String index(Model model) {
-        List<Article> articles = articleService.getArticles();
-        model.addAttribute("Articles", articles);
-
-        return "articles/boardList";
+    public String index() {
+        return "forward:/boardlist";
     }
 
     @GetMapping("/boardlist")

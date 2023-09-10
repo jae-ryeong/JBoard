@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class Article {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ArticleId;
+    private Long articleId;
 
     private String title;
 
@@ -37,7 +37,7 @@ public class Article {
     @Override
     public String toString() {
         return "Article{" +
-                "ArticleId=" + ArticleId +
+                "ArticleId=" + articleId +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", view_count=" + view_count +

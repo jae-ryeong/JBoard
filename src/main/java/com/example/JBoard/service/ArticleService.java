@@ -1,8 +1,8 @@
 package com.example.JBoard.service;
 
-import com.example.JBoard.dto.ArticleDtoC;
+import com.example.JBoard.Dto.ArticleDtoC;
 import com.example.JBoard.Entity.Article;
-import com.example.JBoard.repository.ArticleRepository;
+import com.example.JBoard.Repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

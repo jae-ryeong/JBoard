@@ -1,6 +1,6 @@
 package com.example.JBoard.controller;
 
-import com.example.JBoard.dto.ArticleDtoC;
+import com.example.JBoard.Dto.ArticleDtoC;
 import com.example.JBoard.service.ArticleService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

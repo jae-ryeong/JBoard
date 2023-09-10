@@ -1,4 +1,4 @@
-package com.example.JBoard.dto;
+package com.example.JBoard.Dto;
 
 public record ArticleRequest(
         String title,

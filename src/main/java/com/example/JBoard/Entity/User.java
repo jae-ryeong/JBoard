@@ -1,21 +1,23 @@
 package com.example.JBoard.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Getter @Setter
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long UserId;
+    @Id @Column(length = 50)
+    private Long userId;
 
-    private String username;
+    private String username;    // 실명
 
     private String password;
 
+    private String email;
+
+    private String nickname;    // 별명
 }
