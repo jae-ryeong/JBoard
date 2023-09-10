@@ -1,14 +1,12 @@
 package com.example.JBoard.controller;
 
-import com.example.JBoard.Dto.ArticleDtoC;
 import com.example.JBoard.Entity.Article;
-import com.example.JBoard.Entity.constant.FormStatus;
 import com.example.JBoard.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import com.example.JBoard.dto.ArticleDtoC;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +15,14 @@ import java.util.Optional;
 public class BoardController {
 
     private final ArticleService articleService;
+
+    @GetMapping("/")
+    public String index(Model model) {
+        List<Article> articles = articleService.getArticles();
+        model.addAttribute("Articles", articles);
+
+        return "articles/boardList";
+    }
 
     @GetMapping("/boardlist")
     public String boardlist(Model model) {
@@ -28,7 +34,6 @@ public class BoardController {
 
     @GetMapping("/boardCreateForm")
     public String boardCreateForm(Model model) {
-        model.addAttribute("formStatus", FormStatus.CREATE);
         ArticleDtoC of = ArticleDtoC.of("내용", "제목");
         articleService.createArticle(of);
         model.addAttribute("article", articleService.getArticle(38L));
@@ -60,7 +65,6 @@ public class BoardController {
     public String updateArticleForm(@PathVariable("articleId") Long articleId, Model model) {
         Optional<Article> article = articleService.getArticle(articleId);
         model.addAttribute("article", article);
-        model.addAttribute("formStatus", FormStatus.UPDATE);
 
         return "articles/boardUpdateForm";
     }

@@ -1,4 +1,4 @@
-package com.example.JBoard.Repository;
+package com.example.JBoard.repository;
 
 import com.example.JBoard.Entity.Article;
 import org.junit.jupiter.api.Test;
@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -53,6 +54,20 @@ class ArticleRepositoryTest {   // 레포지토리 테스트는 서비스와 연
 
         //then
         assertThat(articleRepository.findById(1L)).isEmpty();
+    }
+
+    @Test
+    public void updateTest() throws Exception{
+        //given
+        Article article = createArticle();
+
+        //when
+        Optional<Article> saved = articleRepository.findById(article.getArticleId());
+        saved.get().update("제목","내용");
+
+        //then
+        assertThat(saved.get().getTitle()).isEqualTo("제목");
+        assertThat(saved.get().getContent()).isEqualTo("내용");
     }
 
     Article createArticle() {

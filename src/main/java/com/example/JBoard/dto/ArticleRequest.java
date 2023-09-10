@@ -1,6 +1,4 @@
-package com.example.JBoard.Dto;
-
-import lombok.Data;
+package com.example.JBoard.dto;
 
 public record ArticleRequest(
         String title,

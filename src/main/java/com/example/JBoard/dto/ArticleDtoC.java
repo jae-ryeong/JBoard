@@ -1,4 +1,4 @@
-package com.example.JBoard.Dto;
+package com.example.JBoard.dto;
 
 import com.example.JBoard.Entity.Article;
 import lombok.Getter;

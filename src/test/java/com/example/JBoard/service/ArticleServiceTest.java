@@ -1,8 +1,8 @@
 package com.example.JBoard.service;
 
-import com.example.JBoard.Dto.ArticleDtoC;
+import com.example.JBoard.dto.ArticleDtoC;
 import com.example.JBoard.Entity.Article;
-import com.example.JBoard.Repository.ArticleRepository;
+import com.example.JBoard.repository.ArticleRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
