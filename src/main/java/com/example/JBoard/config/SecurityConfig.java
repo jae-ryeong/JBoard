@@ -2,7 +2,9 @@ package com.example.JBoard.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.AbstractConfiguredSecurityBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -52,7 +54,7 @@ public class SecurityConfig {
                                 //.requestMatchers("/admin/**").access("hasrole('ROLE_ADMIN)'")
                                 .anyRequest().permitAll())
                 .formLogin((formLogin) -> formLogin
-                        .loginPage("/login")
+                        .loginPage("/user/login")
                         .usernameParameter("userId")
                         .passwordParameter("password")
                         .successHandler((request, response, authentication) -> {
@@ -67,8 +69,13 @@ public class SecurityConfig {
 
     }
 
-/*    @Bean
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {  // 패스워드 암호화
         return new BCryptPasswordEncoder();
-    }*/
+    }
 }
