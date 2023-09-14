@@ -46,14 +46,14 @@
             <form class="form-signin" th:action="'/user/login'" th:method="post">
 
                 <label for="uid" class="sr-only">Your ID</label>
-                <input type="text" id="uid" class="form-control" th:name="uid" placeholder="Your ID" required autofocus><BR>
+                <input type="text" id="uid" class="form-control" name="uid" placeholder="Your ID" required autofocus><BR>
 
                 <label for="password" class="sr-only">Password</label>
                 <input type="password" id="password" class="form-control" th:name="password" placeholder="Password" required><br>
 
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" value="remember-me"> 기억하기
+                        <input type="checkbox" value="remember-me"> 아이디 저장
                     </label>
                 </div>
 

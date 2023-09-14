@@ -1,9 +1,11 @@
 package com.example.JBoard.controller;
 
+import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
