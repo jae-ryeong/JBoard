@@ -3,7 +3,6 @@ package com.example.JBoard.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.AbstractConfiguredSecurityBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -50,8 +49,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(new AntPathRequestMatcher("/detail/**")).authenticated()   // 상세 페이지를 볼 수 없다
-                                //.requestMatchers("/admin/**").access("hasrole('ROLE_ADMIN)'")
+                        auth.requestMatchers(new AntPathRequestMatcher("/detail/**"))
+                                .authenticated()
                                 .anyRequest().permitAll())
                 .formLogin((formLogin) -> formLogin
                         .loginPage("/user/login")
@@ -63,7 +62,7 @@ public class SecurityConfig {
                         })
                         .failureHandler((request, response, exception) -> {
                             System.out.println("exception : " + exception.getMessage());
-                            response.sendRedirect("/login");
+                            response.sendRedirect("/user/login");
                         })
                         .permitAll()).build();   // 로그인 페이지는 무조건 접근 가능하게.
 
