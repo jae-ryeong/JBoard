@@ -1,5 +1,6 @@
 package com.example.JBoard.config;
 
+import com.example.JBoard.Repository.UserAccountRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -7,7 +8,10 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -51,10 +55,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(new AntPathRequestMatcher("/detail/**"))
                                 .authenticated()
-                                .anyRequest().permitAll())
+                                .anyRequest().permitAll())  // 목록은 볼 수 있지만, 상세글은 로그인해야 볼 수 있다.
                 .formLogin((formLogin) -> formLogin
                         .loginPage("/user/login")
-                        .usernameParameter("userId")
+                        .loginProcessingUrl("/user/login")  // 이 페이지에서 로그인기능 처리 권한을 넘기겠다??와 비슷한 의미, form의 action태그와 경로가 일치해야한다.
+                        .usernameParameter("uid")
                         .passwordParameter("password")
                         .successHandler((request, response, authentication) -> {
                             System.out.println("authentication : " + authentication.getName());
@@ -64,14 +69,21 @@ public class SecurityConfig {
                             System.out.println("exception : " + exception.getMessage());
                             response.sendRedirect("/user/login");
                         })
-                        .permitAll()).build();   // 로그인 페이지는 무조건 접근 가능하게.
+                        .permitAll())
+                .logout((logout) ->
+                        logout.deleteCookies("remove")
+                                .invalidateHttpSession(false)
+                                .logoutUrl("/user/logout")
+                                .logoutSuccessUrl("/boardlist")
+                )
+                .build();   // 로그인 페이지는 무조건 접근 가능하게.
 
     }
 
-    @Bean
+/*    @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
-    }
+    }*/
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {  // 패스워드 암호화
