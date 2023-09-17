@@ -18,9 +18,8 @@
         <div class="container-fluid">
 
             <div class="text-end">
-                <span id="username" class="navbar-brand" sec:authorize="isAuthenticated()" sec:authentication="name">username</span>
                 <a role="button" id="login" class="btn btn-primary" sec:authorize="!isAuthenticated()" th:href="@{/user/login}">로그인</a>
-                <a role="button" id="createUser" class="btn btn-secondary" sec:authorize="!isAuthenticated()" th:href="@{/user/login}">회원가입</a>
+                <a role="button" id="createUser" class="btn btn-secondary" sec:authorize="!isAuthenticated()" th:href="@{/user/Registration}">회원가입</a>
                 <a role="button" id="logout" class="btn btn-danger" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">로그아웃</a>
             </div>
 
