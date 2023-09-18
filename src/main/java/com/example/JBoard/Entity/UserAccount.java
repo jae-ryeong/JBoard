@@ -21,14 +21,15 @@ public class UserAccount implements UserDetails {
     @Column(length = 50, unique = true)
     private String uid;
 
-    @Column(unique = true)
     private String password;
 
+    @Column(unique = true)
     private String username;    // 실명
 
     @Column(unique = true)
     private String email;
 
+    @Column(unique = true)
     private String nickname;    // 별명
 
     private MemberRole role;
