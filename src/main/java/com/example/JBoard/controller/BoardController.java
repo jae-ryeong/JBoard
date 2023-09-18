@@ -2,7 +2,10 @@ package com.example.JBoard.controller;
 
 import com.example.JBoard.Entity.Article;
 import com.example.JBoard.service.ArticleService;
+import com.example.JBoard.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +18,10 @@ import java.util.Optional;
 public class BoardController {
 
     private final ArticleService articleService;
+    private final UserService userService;
 
     @GetMapping("/")
-    public String index() {
+    public String index(Model model) {
         return "forward:/boardlist";
     }
 
@@ -73,4 +77,9 @@ public class BoardController {
         System.out.println("수정완료");
         return "redirect:/detail/" + articleId;
     }
+
+/*    @GetMapping("/")
+    public void Postlogin(String uid,Model model) {
+        model.addAttribute("user", userService.getUser(uid));
+    }*/
 }

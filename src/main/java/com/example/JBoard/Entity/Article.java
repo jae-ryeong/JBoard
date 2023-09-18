@@ -26,7 +26,7 @@ public class Article {
 
     @ManyToOne
     @JoinColumn(name = "userId")
-    private User user;
+    private UserAccount userAccount;
 
     private Article(String title, String content, Long view_count){
         this.title = title;
@@ -42,7 +42,7 @@ public class Article {
                 ", content='" + content + '\'' +
                 ", view_count=" + view_count +
                 ", createdAt=" + createdAt +
-                ", user=" + user +
+                ", user=" + userAccount +
                 '}';
     }
 

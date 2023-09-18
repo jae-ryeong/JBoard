@@ -53,8 +53,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(new AntPathRequestMatcher("/detail/**"))
-                                .authenticated()
+                        auth.requestMatchers(
+                                new AntPathRequestMatcher("/detail/**")).authenticated()
                                 .anyRequest().permitAll())  // 목록은 볼 수 있지만, 상세글은 로그인해야 볼 수 있다.
                 .formLogin((formLogin) -> formLogin
                         .loginPage("/user/login")
