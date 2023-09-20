@@ -6,11 +6,16 @@ import com.example.JBoard.Repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class UserService {
     private final UserAccountRepository userAccountRepository;
     public void createUser(UserAccountDto dto) {
+        /*if (userAccountRepository.existsByUid(dto.uid())){
+            throw new
+        }*/
         UserAccount userAccount = userAccountRepository.save(dto.toEntity());
     }
 
@@ -19,4 +24,12 @@ public class UserService {
         return user;
     }
 
+    public boolean duplication(String uid) {
+        Optional<UserAccount> user = userAccountRepository.findByUid(uid);
+        if (userAccountRepository.findByUid(uid).isEmpty()) {
+            return false;
+        }else{
+            return true;
+        }
+    }
 }

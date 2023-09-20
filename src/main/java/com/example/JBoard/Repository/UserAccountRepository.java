@@ -7,4 +7,7 @@ import java.util.Optional;
 
 public interface UserAccountRepository extends JpaRepository<UserAccount, Long> {
     Optional<UserAccount> findByUid(String uid);
+
+    boolean existsByUid(String uid);    // id 중복 검사
+    boolean existsByNickname(String nickname);  // 닉네임 중복 검사
 }

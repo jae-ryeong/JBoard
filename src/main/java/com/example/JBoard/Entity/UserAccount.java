@@ -2,6 +2,7 @@ package com.example.JBoard.Entity;
 
 import com.example.JBoard.Entity.constant.MemberRole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,9 +19,11 @@ public class UserAccount implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //@NotNull
     @Column(length = 50, unique = true)
     private String uid;
 
+    //@NotNull
     private String password;
 
     @Column(unique = true)
