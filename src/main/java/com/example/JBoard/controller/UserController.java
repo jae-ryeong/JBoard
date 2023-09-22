@@ -1,12 +1,16 @@
 package com.example.JBoard.controller;
 
 import com.example.JBoard.Dto.UserAccountDto;
+import com.example.JBoard.Dto.UserCreateDto;
 import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.rmi.server.UID;
@@ -19,7 +23,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/login")
-    public String login() {
+    public String login(UserCreateDto userCreateDto) {
         return "/user/login";
     }
 
@@ -29,16 +33,29 @@ public class UserController {
     }
 
     @PostMapping("/Registration")
-    public String createUser(UserAccountDto dto) {
-        userService.createUser(dto);
-        System.out.println("회원가입이 완료되었습니다.");
+    public String join(UserAccountDto dto) {
+
+        try {
+            userService.createUser(dto);
+            System.out.println("회원가입이 완료되었습니다.");
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+            return "/user/userCreateForm";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "/user/userCreateForm";
+        }   // 중복 값 존재시 가입 X
+
+
         return "redirect:/boardlist";
     }
 
     @GetMapping("/validation")
-    public void validationUid(@RequestParam("uid") String uid, Model model) {
-        boolean result = userService.duplication(uid);
+    @ResponseBody
+    public boolean validationUid(@RequestParam("uid") String uid, Model model) {
+        boolean result = userService.duplicationId(uid);
         model.addAttribute("result", result);
-        System.out.println("전달 완료");
+        return result;
     }
+
 }
