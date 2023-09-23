@@ -20,14 +20,16 @@
         <div class="input-form col-md-12 mx-auto">
             <h4 class="mb-3">회원가입</h4>
 
-            <form th:id="createForm" class="validation-form" th:action="@{/user/Registration}" th:method="post">
+            <form th:id="createForm" th:object="${userCreateDto}" class="validation-form" th:action="@{/user/Registration}" th:method="post" onsubmit="return submitCheck();">
+                <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+
                     <div class="mb-3">
                         <label for="uid">아이디</label>
                         <input type="text" th:name="uid" class="form-control" id="uid" placeholder="아이디를 입력해주세요" required>
-                        <div class="invalid-feedback">
-                            아이디를 입력해주세요.
+                        <div id="uid_check_message" class="feedback" style="visibility:hidden">
+                            동일한 아이디가 존재합니다.
                         </div>
-                        <button th:id="uid_check" class="btn btn-secondary btn-sm btn-block" type="submit">중복확인</button>
+                        <button th:id="uid_check" class="btn btn-secondary btn-sm btn-block" type="button">중복확인</button>
                     </div>
 
 
@@ -40,10 +42,10 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="password_check">비밀번호 확인</label>
-                    <input type="password" class="form-control" id="password_check" placeholder="입력하신 비밀번호를 입력해주세요" required>
-                    <div class="invalid-feedback">
-                        입력하신 비밀번호를 입력해주세요.
+                    <label for="passwordCheck">비밀번호 확인</label>
+                    <input type="password" th:name="passwordCheck" class="form-control" id="passwordCheck" placeholder="입력하신 비밀번호를 입력해주세요" required>
+                    <div id="password_check_message" class="feedback" style="color:red; visibility:hidden">
+                        입력하신 비밀번호와 일치하지 않습니다.
                     </div>
                 </div>
 
@@ -56,8 +58,8 @@
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="nickname">별명</label>
-                        <input type="text" th:name="nickname" class="form-control" id="nickname" required>
+                        <label for="nickname">닉네임</label>
+                        <input type="text" th:name="nickname"class="form-control" id="nickname" required>
                         <div class="invalid-feedback">
                             별명을 입력해주세요.
                         </div>
@@ -80,7 +82,7 @@
                     <label class="custom-control-label" for="aggrement">개인정보 수집 및 이용에 동의합니다.</label>
                 </div>
                 <div class="mb-4"></div>
-                <button class="btn btn-primary btn-lg btn-block" type="submit" th:form="createForm">가입 완료</button>
+                <button th:id="join" class="btn btn-primary btn-lg btn-block" type="submit" th:form="createForm">가입 완료</button>
 
             </form>
         </div>
@@ -93,27 +95,44 @@
         crossorigin="anonymous"></script>
 <script>
     $("#uid_check").click(function checkId(){
-        var id = $('#uid').val(); //id값이 "id"인 입력란의 값을 저장
+        var uid = $('#uid').val(); //id값이 "id"인 입력란의 값을 저장
+        if(uid.length===0){
+            alert('아이디를 입력해주세요.');
+            return;
+        }else{
         $.ajax({
             url:'/user/validation', //Controller에서 요청 받을 주소
             type:'get', //POST 방식으로 전달
-            data:{id:id},
-            success:function(result){ //컨트롤러에서 넘어온 cnt값을 받는다
-                if(result == false){ // 사용 가능한 아이디
-                    $('.id_ok').css("display","inline-block");
-                    $('.id_already').css("display", "none");
+            data:{"uid":uid},
+            success:function(result){
+                if(result){ // 사용 가능한 아이디
+                    $('#uid_check_message').css({
+                        "color": "red",
+                        "visibility": "visible"
+                    }).text("이미 존재하는 아이디입니다.");
                 } else { // 이미 존재하는 아이디
-                    $('.id_already').css("display","inline-block");
-                    $('.id_ok').css("display", "none");
-                    alert("아이디를 다시 입력해주세요");
-                    $('#uid').val('');
+                    $('#uid_check_message').css({
+                        "color": "blue",
+                        "visibility": "visible"
+                    }).text("사용 가능한 아이디입니다.");
                 }
             },
             error:function(){
                 alert("에러입니다");
             }
-        });
+        })}
     });
+
+    function submitCheck(){
+        var password = $("#password").val();
+        var passwordCheck = $("#passwordCheck").val();
+
+        if (password != passwordCheck){
+            alert("비밀번호를 확인해주세요.")
+            return false;
+        }
+        return true
+    }
 </script>
 </body>
 </html>
