@@ -2,7 +2,9 @@ package com.example.JBoard.Entity;
 
 import com.example.JBoard.Entity.constant.MemberRole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,19 +21,15 @@ public class UserAccount implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //@NotNull
+    @Size(min = 5, max = 50)
     @Column(length = 50, unique = true)
     private String uid;
 
     //@NotNull
     private String password;
-
-    @Column(unique = true)
     private String username;    // 실명
-
-    @Column(unique = true)
+    // @Column(unique = true)
     private String email;
-
     @Column(unique = true)
     private String nickname;    // 별명
 
