@@ -25,11 +25,11 @@
 
                     <div class="mb-3">
                         <label for="uid">아이디</label>
-                        <input type="text" th:name="uid" class="form-control" id="uid" placeholder="아이디를 입력해주세요" required>
+                        <input type="text" th:name="uid" class="form-control" id="uid" placeholder="아이디를 입력해주세요" check_result="fail" required>
                         <div id="uid_check_message" class="feedback" style="visibility:hidden">
                             동일한 아이디가 존재합니다.
                         </div>
-                        <button th:id="uid_check" class="btn btn-secondary btn-sm btn-block" type="button">중복확인</button>
+                        <button th:id="uid_check" th:onclick="id_overlap_check()" class="btn btn-secondary btn-sm btn-block" type="button">중복확인</button>
                     </div>
 
 
@@ -97,25 +97,26 @@
     $("#uid_check").click(function checkId(){
         var uid = $('#uid').val(); //id값이 "id"인 입력란의 값을 저장
         var check = 0
+
         if(uid.length < 5 || uid.length > 50){
             check = 1
             alert("아이디는 5자 이상 50자 미만으로 입력해주세요")
         }else{
             check = 0
         }
+
         $.ajax({
             url:'/user/validation', //Controller에서 요청 받을 주소
             type:'get', //POST 방식으로 전달
             data:{"uid":uid},
             success:function(result){
                 if(result || check===1){
-                    console.log(uid.length);
                     $('#uid_check_message').css({
                         "color": "red",
                         "visibility": "visible"
                     }).text("사용 불가능한 아이디입니다.");
                 } else {
-                    console.log(uid.length);
+                    $('#uid').attr("check_result", "success")
                     $('#uid_check_message').css({
                         "color": "blue",
                         "visibility": "visible"
@@ -128,6 +129,12 @@
         })
     });
 
+    $('#uid').change(function (){   // 아이디 입력값이 바뀌면 메세지가 사라진다.
+        $('#uid_check_message').css({
+            "visibility": "hidden"
+        })
+    })
+
     function submitCheck(){
         var password = $("#password").val();
         var passwordCheck = $("#passwordCheck").val();
@@ -136,10 +143,14 @@
             alert("비밀번호를 확인해주세요.")
             return false;
         }
+
+        if ($('#uid').attr("check_result") === "fail"){
+            alert("아이디 중복체크를 해주시기 바랍니다.");
+            $('#uid').focus();
+            return false;
+        }
         return true
     }
-
-
 </script>
 </body>
 </html>
