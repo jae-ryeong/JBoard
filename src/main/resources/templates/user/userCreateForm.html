@@ -20,8 +20,8 @@
         <div class="input-form col-md-12 mx-auto">
             <h4 class="mb-3">회원가입</h4>
 
-            <form th:id="createForm" th:object="${userCreateDto}" class="validation-form" th:action="@{/user/Registration}" th:method="post" onsubmit="return submitCheck();">
-                <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+            <form th:id="createForm" class="validation-form" th:action="@{/user/Registration}" th:method="post" onsubmit="return submitCheck();">
+
 
                     <div class="mb-3">
                         <label for="uid">아이디</label>
@@ -96,21 +96,26 @@
 <script>
     $("#uid_check").click(function checkId(){
         var uid = $('#uid').val(); //id값이 "id"인 입력란의 값을 저장
-        if(uid.length===0){
-            alert('아이디를 입력해주세요.');
-            return;
+        var check = 0
+        if(uid.length < 5 || uid.length > 50){
+            check = 1
+            alert("아이디는 5자 이상 50자 미만으로 입력해주세요")
         }else{
+            check = 0
+        }
         $.ajax({
             url:'/user/validation', //Controller에서 요청 받을 주소
             type:'get', //POST 방식으로 전달
             data:{"uid":uid},
             success:function(result){
-                if(result){ // 사용 가능한 아이디
+                if(result || check===1){
+                    console.log(uid.length);
                     $('#uid_check_message').css({
                         "color": "red",
                         "visibility": "visible"
-                    }).text("이미 존재하는 아이디입니다.");
-                } else { // 이미 존재하는 아이디
+                    }).text("사용 불가능한 아이디입니다.");
+                } else {
+                    console.log(uid.length);
                     $('#uid_check_message').css({
                         "color": "blue",
                         "visibility": "visible"
@@ -120,19 +125,21 @@
             error:function(){
                 alert("에러입니다");
             }
-        })}
+        })
     });
 
     function submitCheck(){
         var password = $("#password").val();
         var passwordCheck = $("#passwordCheck").val();
 
-        if (password != passwordCheck){
+        if (password !== passwordCheck){
             alert("비밀번호를 확인해주세요.")
             return false;
         }
         return true
     }
+
+
 </script>
 </body>
 </html>
