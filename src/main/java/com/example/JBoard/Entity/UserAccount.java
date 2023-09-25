@@ -33,6 +33,7 @@ public class UserAccount implements UserDetails {
     @Column(unique = true)
     private String nickname;    // 별명
 
+    @Enumerated(EnumType.STRING)
     private MemberRole role;
 
     private UserAccount(String uid, String password, String username, String email, String nickname) {
