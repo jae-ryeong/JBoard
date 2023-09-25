@@ -4,13 +4,15 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Article {
+public class Article extends AuditingFields {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long articleId;
@@ -21,8 +23,6 @@ public class Article {
     private String content;
 
     private Long view_count;  // 조회수
-
-    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "userId")
@@ -41,7 +41,6 @@ public class Article {
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", view_count=" + view_count +
-                ", createdAt=" + createdAt +
                 ", user=" + userAccount +
                 '}';
     }
