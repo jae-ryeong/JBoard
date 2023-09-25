@@ -55,7 +55,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(
                                 new AntPathRequestMatcher("/detail/**")).authenticated()
-                                .anyRequest().permitAll())  // 목록은 볼 수 있지만, 상세글은 로그인해야 볼 수 있다.
+                                )  // 목록은 볼 수 있지만, 상세글은 로그인해야 볼 수 있다.
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers(
+                                new AntPathRequestMatcher("/boardCreateForm")).authenticated() // 로그인을 해야 게시글 작성 가능
+                                .anyRequest().permitAll())
                 .formLogin((formLogin) -> formLogin
                         .loginPage("/user/login")
                         .loginProcessingUrl("/user/login")  // 이 페이지에서 로그인기능 처리 권한을 넘기겠다??와 비슷한 의미, form의 action태그와 경로가 일치해야한다.
