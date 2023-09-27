@@ -34,7 +34,7 @@
             </tr>
             <tr>
                 <th>작성자</th>
-                <td th:text="${article.get().getUserAccount()}">유저</td>
+                <td th:text="${article.get().getUserAccount().getNickname()}">유저</td>
                 <th>작성시간</th>
                 <td th:text="${#temporals.format(article.get().getCreatedAt(), 'yyyy-MM-dd hh:mm')}">작성시간</td>
                 <!--
