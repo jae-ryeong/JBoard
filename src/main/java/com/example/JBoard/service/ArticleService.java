@@ -2,7 +2,9 @@ package com.example.JBoard.service;
 
 import com.example.JBoard.Dto.ArticleDtoC;
 import com.example.JBoard.Entity.Article;
+import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.Repository.ArticleRepository;
+import com.example.JBoard.Repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import java.util.Optional;
 @Transactional
 public class ArticleService {
     private final ArticleRepository articleRepository;
+    private final UserAccountRepository userAccountRepository;
     
     // 반환값을 나중에 DTO로 바꿔주기
 
@@ -23,10 +26,10 @@ public class ArticleService {
         return articleRepository.findAll();
     }
 
-    public void createArticle(ArticleDtoC articleDtoC) {
-        Article save = articleRepository.save(articleDtoC.toEntity());
-        System.out.println("createArticle에서 확인");
-        System.out.println(save.toString());
+    public void createArticle(ArticleDtoC articleDtoC, UserAccount userAccount) {
+        //UserAccount userAccount = userAccountRepository.getReferenceById(articleDtoC.getUserAccountDto().toEntity().getId());
+        System.out.println("createArticle 확인: userAccount = " + userAccount);
+        Article save = articleRepository.save(articleDtoC.toEntity(userAccount));
     }
 
     public Optional<Article> getArticle(Long articleId) {
