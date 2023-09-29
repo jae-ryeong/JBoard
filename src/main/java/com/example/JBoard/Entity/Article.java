@@ -24,11 +24,12 @@ public class Article extends AuditingFields {
 
     private Long view_count;  // 조회수
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private UserAccount userAccount;
 
-    private Article(String title, String content, Long view_count){
+    private Article(UserAccount userAccount, String title, String content, Long view_count){
+        this.userAccount = userAccount;
         this.title = title;
         this.content = content;
         this.view_count = view_count;
@@ -45,8 +46,8 @@ public class Article extends AuditingFields {
                 '}';
     }
 
-    public static Article of(String title, String content, Long view_count) {
-        return new Article(title, content, view_count);
+    public static Article of(UserAccount userAccount, String title, String content, Long view_count) {
+        return new Article(userAccount, title, content, view_count);
     }
 
     public void update(String title, String content) {
