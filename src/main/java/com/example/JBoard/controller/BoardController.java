@@ -3,6 +3,7 @@ package com.example.JBoard.controller;
 import com.example.JBoard.Dto.ArticleDtoC;
 import com.example.JBoard.Dto.ArticleRequest;
 import com.example.JBoard.Dto.BoardPrincipal;
+import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.Article;
 import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.service.ArticleService;
@@ -49,18 +50,19 @@ public class BoardController {
     }
 
     @PostMapping("/boardCreateForm")
-    public String CreateForm(ArticleDtoC articleDtoC) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserAccount user = userService.getUser(authentication.getName());
-        System.out.println("user = " + user.getUid());
+    public String CreateForm(ArticleDtoC articleDtoC, @AuthenticationPrincipal BoardPrincipal userAccount) {
+        /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("authentication = " + authentication);
+        UserAccount user = userService.getUser(authentication.getName());*/
 
+        UserAccount user = userService.getUser(userAccount.getUsername());
+        System.out.println("user = " + user.getUid());
+        System.out.println("userAccount = " + userAccount);
         System.out.println("컨트롤러에서 확인");
         System.out.println(articleDtoC.toString());
 
-        //System.out.println("boardPrincipal = " + boardPrincipal.getUid());
-
         articleService.createArticle(articleDtoC, user);
-        //articleService.createArticle(articleRequest.toDto(boardPrincipal.toDto()));
+
         return "redirect:/boardlist";   // @GetMapping("/boardlist") 여기로 이동
     }
 
@@ -91,11 +93,6 @@ public class BoardController {
         System.out.println("수정완료");
         return "redirect:/detail/" + articleId;
     }
-
-/*    @GetMapping("/")
-    public void Postlogin(String uid,Model model) {
-        model.addAttribute("user", userService.getUser(uid));
-    }*/
 
     @GetMapping("/check")
     public String check() {
