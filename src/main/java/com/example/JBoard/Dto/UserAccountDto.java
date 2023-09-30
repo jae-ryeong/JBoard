@@ -13,7 +13,18 @@ public record UserAccountDto(
     public static UserAccountDto of(String uid, String password, String username, String email, String nickname) {
         return new UserAccountDto(uid, password, username, email, nickname);
     }
+
     public UserAccount toEntity() {
         return UserAccount.of(uid, password, username, email, nickname);
+    }
+
+    public static UserAccountDto from(UserAccount entity) {
+        return new UserAccountDto(
+                entity.getUid(),
+                entity.getPassword(),
+                entity.getUsername(),
+                entity.getEmail(),
+                entity.getNickname()
+        );
     }
 }

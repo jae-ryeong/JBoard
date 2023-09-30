@@ -34,7 +34,7 @@
                     <tr th:each="Article : ${Articles}">
                         <td th:text="${Article.getArticleId()}">게시글 번호</td>
                         <td><a th:href="@{/detail/{articleId}(articleId=${Article.getArticleId()})}" th:text="${Article.getTitle()}">제목</a></td>
-                        <td th:text="${Article.getUserAccount()}">작성자</td>
+                        <td th:text="${Article.getUserAccount().getNickname()}">작성자</td>
                         <td th:text="${Article.getView_count()}">조회수</td>
                     </tr>
                 </tbody>

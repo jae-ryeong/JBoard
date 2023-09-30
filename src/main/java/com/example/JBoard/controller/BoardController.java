@@ -37,6 +37,7 @@ public class BoardController {
     @GetMapping("/boardlist")
     public String boardlist(Model model) {
         List<Article> articles = articleService.getArticles();
+
         model.addAttribute("Articles", articles);
 
         return "articles/boardList";
