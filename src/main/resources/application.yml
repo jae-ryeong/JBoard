@@ -5,6 +5,9 @@ spring:
     password: 1234
     url: jdbc:mysql://localhost:3306/jboard
 
+  main:
+    allow-bean-definition-overriding: true
+
   jpa:
     hibernate:
       ddl-auto: create

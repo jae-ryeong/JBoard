@@ -1,19 +1,13 @@
 package com.example.JBoard.controller;
 
 import com.example.JBoard.Dto.UserAccountDto;
-import com.example.JBoard.Dto.UserCreateDto;
-import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.rmi.server.UID;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,7 +17,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/login")
-    public String login(UserCreateDto userCreateDto) {
+    public String login() {
         return "/user/login";
     }
 
@@ -33,7 +27,11 @@ public class UserController {
     }
 
     @PostMapping("/Registration")
-    public String join(UserAccountDto dto) {
+    public String join(UserAccountDto dto, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return "/user/userCreateForm";
+        }
 
         try {
             userService.createUser(dto);
@@ -44,7 +42,7 @@ public class UserController {
         } catch (Exception e) {
             e.printStackTrace();
             return "/user/userCreateForm";
-        }   // 중복 값 존재시 가입 X
+        } // 중복 값 존재시 가입 X
 
 
         return "redirect:/boardlist";
@@ -57,5 +55,4 @@ public class UserController {
         model.addAttribute("result", result);
         return result;
     }
-
 }
