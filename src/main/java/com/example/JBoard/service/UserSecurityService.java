@@ -1,5 +1,7 @@
 package com.example.JBoard.service;
 
+import com.example.JBoard.Dto.BoardPrincipal;
+import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.Repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +35,13 @@ public class UserSecurityService implements UserDetailsService {
             throw new UsernameNotFoundException("사용자를 찾을수 없습니다.");
         }
 
-        return User.builder()
+        BoardPrincipal principal = BoardPrincipal.from(UserAccountDto.from(user.get()));
+
+        /*return User.builder()
                 .username(user.get().getUid())
                 .password(passwordEncoder.encode(user.get().getPassword()))
-                .build();
+                .build();*/
+
+        return principal;   // UserAccount -> UserAccountDTO -> BoardPrincipal(UserDetails)
     }
 }
