@@ -50,14 +50,12 @@ public class BoardController {
     }
 
     @PostMapping("/boardCreateForm")
-    public String CreateForm(ArticleDtoC articleDtoC, @AuthenticationPrincipal BoardPrincipal userAccount) {
+    public String CreateForm(ArticleDtoC articleDtoC, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
         /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("authentication = " + authentication);
         UserAccount user = userService.getUser(authentication.getName());*/
 
-        UserAccount user = userService.getUser(userAccount.getUsername());
-        System.out.println("user = " + user.getUid());
-        System.out.println("userAccount = " + userAccount);
+        UserAccount user = userService.getUser(boardPrincipal.getUsername());
         System.out.println("컨트롤러에서 확인");
         System.out.println(articleDtoC.toString());
 

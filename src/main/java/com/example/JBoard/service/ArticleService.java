@@ -27,7 +27,6 @@ public class ArticleService {
     }
 
     public void createArticle(ArticleDtoC articleDtoC, UserAccount userAccount) {
-        //UserAccount userAccount = userAccountRepository.getReferenceById(articleDtoC.getUserAccountDto().toEntity().getId());
         System.out.println("createArticle 확인: userAccount = " + userAccount);
         Article save = articleRepository.save(articleDtoC.toEntity(userAccount));
     }
@@ -47,6 +46,4 @@ public class ArticleService {
 
         article.get().update(dto.getTitle(), dto.getContent());
     }
-
-
 }
