@@ -42,8 +42,8 @@ public class ArticleService {
     }
 
     public void updateArticle(Long articleId, ArticleDtoC dto) {
-        Optional<Article> article = articleRepository.findById(articleId);
+        Article article = articleRepository.getReferenceById(articleId);
 
-        article.get().update(dto.getTitle(), dto.getContent());
+        article.update(dto.getTitle(), dto.getContent());
     }
 }
