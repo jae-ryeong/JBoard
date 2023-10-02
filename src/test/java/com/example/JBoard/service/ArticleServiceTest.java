@@ -1,6 +1,7 @@
 package com.example.JBoard.service;
 
 import com.example.JBoard.Dto.ArticleDtoC;
+import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.Article;
 import com.example.JBoard.Repository.ArticleRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,8 +33,9 @@ class ArticleServiceTest {
     void getArticlesTest() {
         //given
         List<Article> articles = new ArrayList<>(); // 엔티티에 직접 접근해 보았다
-        Article article = Article.of("제목", "내용", 0L);
-        Article article2 = Article.of("제목", "내용", 1L);
+        UserAccountDto userAccountDto = createUserAccountDto();
+        Article article = Article.of(userAccountDto.toEntity(), "제목", "내용", 0L);
+        Article article2 = Article.of(userAccountDto.toEntity(), "제목", "내용", 1L);
         articles.add(article);
         articles.add(article2);
 
@@ -54,15 +57,16 @@ class ArticleServiceTest {
     void createArticleTest() {
         //given
         ArticleDtoC article = createArticleDto();
+        UserAccountDto userAccountDto = createUserAccountDto();
 
-        given(articleRepository.save(any(Article.class))).willReturn(article.toEntity());
+        given(articleRepository.save(any(Article.class))).willReturn(article.toEntity(userAccountDto.toEntity()));
 
         //when
-        articleService.createArticle(article);
+        articleService.createArticle(article, userAccountDto.toEntity());
 
         //then
         then(articleRepository).should().save(any(Article.class));  // when 구문 없으면 테스트 실패
-        assertThat(article.toEntity().getTitle()).isEqualTo("제목");
+        assertThat(article.toEntity(userAccountDto.toEntity()).getTitle()).isEqualTo("제목");
     }
 
     @DisplayName("게시글 단건 조회 테스트")
@@ -97,11 +101,31 @@ class ArticleServiceTest {
 
     }
 
+    @DisplayName("게시글 수정 테스트")
+    @Test
+    public void updateArticleTest() throws Exception{
+        //given
+        Article article = createArticle();
+        given(articleRepository.getReferenceById(1L)).willReturn(article);
+
+        //when
+        articleService.updateArticle(1L, createArticleDto());
+
+        //then
+        assertThat(article.getContent()).isEqualTo("내용");
+    }
+
     private ArticleDtoC createArticleDto() {
-        return ArticleDtoC.of("제목", "내용");
+        return ArticleDtoC.of(createUserAccountDto(),"제목", "내용", LocalDateTime.now());
+    }
+
+    private UserAccountDto createUserAccountDto() {
+        return UserAccountDto.of(
+                "wofud", "password", "김재령", "wofud0321@naver.com", "wofud"
+        );
     }
 
     private Article createArticle() {
-        return Article.of("제목", "content", 0L);
+        return Article.of(createUserAccountDto().toEntity(), "제목", "content", 0L);
     }
 }
