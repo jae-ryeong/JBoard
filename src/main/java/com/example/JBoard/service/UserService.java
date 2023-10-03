@@ -6,30 +6,25 @@ import com.example.JBoard.Repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @RequiredArgsConstructor
 @Service
 public class UserService {
     private final UserAccountRepository userAccountRepository;
     public void createUser(UserAccountDto dto) {
-        /*if (userAccountRepository.existsByUid(dto.uid())){
-            throw new
-        }*/
         UserAccount userAccount = userAccountRepository.save(dto.toEntity());
     }
 
     public UserAccount getUser(String uid) {
         UserAccount user = userAccountRepository.findByUid(uid).get();
         return user;
+        /*UserAccountDto userAccountDto = userAccountRepository.findByUid(uid).
+                map(UserAccountDto::from)
+                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - uid: " + uid));
+        return userAccountDto;*/
     }
 
-    public boolean duplication(String uid) {
-        Optional<UserAccount> user = userAccountRepository.findByUid(uid);
-        if (userAccountRepository.findByUid(uid).isEmpty()) {
-            return false;
-        }else{
-            return true;
-        }
+    public boolean duplicationId(String uid) {
+        boolean user = userAccountRepository.existsByUid(uid);
+        return user;
     }
 }
