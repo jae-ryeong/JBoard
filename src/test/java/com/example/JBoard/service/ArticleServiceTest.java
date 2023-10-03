@@ -3,7 +3,9 @@ package com.example.JBoard.service;
 import com.example.JBoard.Dto.ArticleDtoC;
 import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.Article;
+import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.Repository.ArticleRepository;
+import com.example.JBoard.Repository.UserAccountRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +26,8 @@ class ArticleServiceTest {
 
     @Mock
     private ArticleRepository articleRepository;    // Repository를 @Mock으로 선언하면 Repository Bean에 의존하지 않고 테스트가 가능
+    @Mock
+    private UserAccountRepository userAccountRepository;
 
     @InjectMocks
     private ArticleService articleService;
@@ -92,12 +96,17 @@ class ArticleServiceTest {
     public void deleteArticleTest() throws Exception{
         //given
         Article article = createArticle();
+        UserAccountDto userAccountDto = createUserAccountDto();
+        UserAccount userAccount = createUserAccount();
+
+        given(articleRepository.getReferenceById(1L)).willReturn(article);
+        given(userAccountRepository.findByUid(userAccountDto.uid())).willReturn(Optional.of(userAccount));
 
         //when
-        articleService.deleteArticle(article.getArticleId());
+        articleService.deleteArticle(1L, userAccountDto);
 
         //then
-        then(articleRepository).should().deleteById(article.getArticleId());
+        then(articleRepository).should().deleteById(1L);
 
     }
 
@@ -106,10 +115,14 @@ class ArticleServiceTest {
     public void updateArticleTest() throws Exception{
         //given
         Article article = createArticle();
+        UserAccountDto userAccountDto = createUserAccountDto();
+        UserAccount userAccount = createUserAccount();
+
         given(articleRepository.getReferenceById(1L)).willReturn(article);
+        given(userAccountRepository.findByUid(userAccountDto.uid())).willReturn(Optional.of(userAccount));
 
         //when
-        articleService.updateArticle(1L, createArticleDto());
+        articleService.updateArticle(1L, createArticleDto(), userAccountDto);
 
         //then
         assertThat(article.getContent()).isEqualTo("내용");
@@ -123,6 +136,10 @@ class ArticleServiceTest {
         return UserAccountDto.of(
                 "wofud", "password", "김재령", "wofud0321@naver.com", "wofud"
         );
+    }
+
+    private UserAccount createUserAccount() {
+        return UserAccount.of("wofud", "1234", "김재령", "wofud0321@naver.com", "재령");
     }
 
     private Article createArticle() {
