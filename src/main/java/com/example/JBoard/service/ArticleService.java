@@ -41,8 +41,21 @@ public class ArticleService {
         return article;
     }
 
-    public void deleteArticle(Long articleId) {
-        articleRepository.deleteById(articleId);
+    public void deleteArticle(Long articleId, UserAccountDto userAccountDto) {
+        try {
+            Article article = articleRepository.getReferenceById(articleId);
+            Optional<UserAccount> userAccount = userAccountRepository.findByUid(userAccountDto.uid());
+
+            if (article.getUserAccount().getUid().equals(userAccount.get().getUid())) {
+                articleRepository.deleteById(articleId);
+            }else{
+                log.warn("다른 사용자가 게시글 삭제를 시도했습니다.");
+            }
+
+        }catch (EntityNotFoundException e){
+            log.warn("게시글 삭제 실패. 게시글을 삭제하는데 필요한 정보를 찾을 수 없습니다 - {}", e.getLocalizedMessage());
+        }
+
     }
 
     public void updateArticle(Long articleId, ArticleDtoC dto, UserAccountDto userAccountDto) {
@@ -50,7 +63,7 @@ public class ArticleService {
             Article article = articleRepository.getReferenceById(articleId);
             Optional<UserAccount> userAccount = userAccountRepository.findByUid(userAccountDto.uid());
 
-            if (article.getUserAccount().equals(userAccount.get())) {
+            if (article.getUserAccount().getUid().equals(userAccount.get().getUid())) {
                 article.update(dto.getTitle(), dto.getContent());
             }else{
                 log.warn("다른 사용자가 게시글 수정을 시도했습니다.");
