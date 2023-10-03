@@ -65,28 +65,30 @@ public class BoardController {
     }
 
     @GetMapping("/detail/{articleId}")
-    public String article_detail(@PathVariable("articleId") Long articleId, Model model) {
-        model.addAttribute("article", articleService.getArticle(articleId));
+    public String article_detail(@PathVariable("articleId") Long articleId, Model model, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
+        model.addAttribute("article", articleService.getArticle(articleId));    // TODO: Article을 직접 반환해주는데 이를 responseDTO 생성하기
+        model.addAttribute("boardPrincipal",boardPrincipal);
         return "articles/detail";
     }
 
     @PostMapping("/detail/{articleId}/delete")
-    public String deleteArticle(@PathVariable("articleId") Long articleId) {
-        articleService.deleteArticle(articleId);
+    public String deleteArticle(@PathVariable("articleId") Long articleId,  @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
+        articleService.deleteArticle(articleId); // TODO: 서비스단에 인증기능 붙이기
         return "redirect:/boardlist";
     }
 
     @GetMapping("/update/{articleId}")
     public String updateArticleForm(@PathVariable("articleId") Long articleId, Model model) {
         Optional<Article> article = articleService.getArticle(articleId);
-        model.addAttribute("article", article);
 
+        model.addAttribute("article", article);
         return "articles/boardUpdateForm";
     }
 
     @PostMapping("/update/{articleId}")
-    public String updateArticle(@PathVariable("articleId") Long articleId, ArticleDtoC dto) {
-        articleService.updateArticle(articleId, dto);
+    public String updateArticle(@PathVariable("articleId") Long articleId, ArticleDtoC dto, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
+        UserAccountDto userAccountDto = boardPrincipal.toDto();
+        articleService.updateArticle(articleId, dto, userAccountDto);
 
         System.out.println("수정완료");
         return "redirect:/detail/" + articleId;
