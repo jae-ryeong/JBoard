@@ -73,7 +73,9 @@ public class BoardController {
 
     @PostMapping("/detail/{articleId}/delete")
     public String deleteArticle(@PathVariable("articleId") Long articleId,  @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
-        articleService.deleteArticle(articleId); // TODO: 서비스단에 인증기능 붙이기
+        UserAccountDto userAccountDto = boardPrincipal.toDto();
+
+        articleService.deleteArticle(articleId, userAccountDto);
         return "redirect:/boardlist";
     }
 
