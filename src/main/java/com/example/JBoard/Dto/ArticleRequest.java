@@ -9,4 +9,8 @@ public record ArticleRequest(
         this.content = content;
     }
 
+    public ArticleDtoC toDto(UserAccountDto userAccountDto){
+        return ArticleDtoC.of(userAccountDto, title, content);
+    }
+
 }
