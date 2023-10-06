@@ -5,7 +5,9 @@ import com.example.JBoard.Dto.ArticleRequest;
 import com.example.JBoard.Dto.BoardPrincipal;
 import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.Article;
+import com.example.JBoard.Entity.ArticleComment;
 import com.example.JBoard.Entity.UserAccount;
+import com.example.JBoard.service.ArticleCommentService;
 import com.example.JBoard.service.ArticleService;
 import com.example.JBoard.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ public class BoardController {
 
     private final ArticleService articleService;
     private final UserService userService;
+    private final ArticleCommentService commentService;
 
     @GetMapping("/")
     public String index(Model model) {
@@ -38,7 +41,6 @@ public class BoardController {
     @GetMapping("/boardlist")
     public String boardlist(Model model) {
         List<Article> articles = articleService.getArticles();
-
         model.addAttribute("Articles", articles);
 
         return "articles/boardList";
@@ -51,10 +53,6 @@ public class BoardController {
 
     @PostMapping("/boardCreateForm")
     public String CreateForm(ArticleDtoC articleDtoC, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
-        /*Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("authentication = " + authentication);
-        UserAccount user = userService.getUser(authentication.getName());*/
-
         UserAccount user = userService.getUser(boardPrincipal.getUsername());
         System.out.println("컨트롤러에서 확인");
         System.out.println(articleDtoC.toString());
@@ -67,6 +65,10 @@ public class BoardController {
     @GetMapping("/detail/{articleId}")
     public String article_detail(@PathVariable("articleId") Long articleId, Model model, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
         model.addAttribute("article", articleService.getArticle(articleId));    // TODO: Article을 직접 반환해주는데 이를 responseDTO 생성하기
+        System.out.println("article = " + articleService.getArticle(articleId));
+        List<ArticleComment> articleComments = commentService.getArticleComments(articleId);
+        System.out.println("articleComments = " + articleComments);
+        model.addAttribute("comments", articleComments);
         model.addAttribute("boardPrincipal",boardPrincipal);
         return "articles/detail";
     }

@@ -64,11 +64,11 @@
         <!-- 댓글 -->
 
         <div class="m-4">
-                <form class="d-flex justify-content-center" id="comment-form" th:action="@{/articleComment/new}" method="post">
-                    <input type="hidden" class="article-id">
+                <form class="d-flex justify-content-center" id="comment-form" th:action="@{/comments/new}" method="post">
+                    <input type="hidden" class="article-id" th:name="articleId" th:value="${article.get().getArticleId()}">
                     <div class="col-md-9 col-lg-8">
                         <label for="comment-textbox" hidden>댓글</label>
-                        <textarea class="form-control" id="comment-textbox" placeholder="댓글 쓰기.." rows="3" required></textarea>
+                        <textarea class="form-control" id="comment-textbox" th:name="content" placeholder="댓글 쓰기.." rows="3" required></textarea>
                     </div>
                     <div class="ms-4 pt-3 pb-3">
                         <label for="comment-submit" hidden>댓글 쓰기</label>
@@ -77,14 +77,14 @@
                 </form>
 
                 <ul id="article-comments" class="" style="margin-top:10px;">
-                    <li>
+                    <li th:each="comment : ${comments}">
                         <form class="comment-form">
                             <input type="hidden" class="article-id">
-                            <div class="row">
+                            <div class="row" >
                                 <div class="col-md-10 col-lg-9">
                                     <strong>Uno</strong>
                                     <small><time>2022-01-01</time></small>
-                                    <p>
+                                    <p th:text="${comment.getContent()}">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>
                                         Lorem ipsum dolor sit amet
                                     </p>
@@ -94,21 +94,6 @@
                                 </div>
                             </div>
                         </form>
-                    </li>
-                    <li>
-                        <div class="row">
-                            <div class="col-md-10 col-lg-9">
-                                <strong>Uno2</strong>
-                                <small><time>2022-01-01</time></small>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>
-                                    Lorem ipsum dolor sit amet
-                                </p>
-                            </div>
-                            <div class="col-2 mb-3">
-                                <button type="submit" class="btn btn-outline-danger" hidden>삭제</button>
-                            </div>
-                        </div>
                     </li>
                 </ul>
         </div>
