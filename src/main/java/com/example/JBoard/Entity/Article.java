@@ -2,12 +2,14 @@ package com.example.JBoard.Entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -27,6 +29,9 @@ public class Article extends AuditingFields {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private UserAccount userAccount;
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL) //  CascadeType.PERSIST + CascadeType.REMOVE
+    private Set<ArticleComment> articleComment;
 
     private Article(UserAccount userAccount, String title, String content, Long view_count){
         this.userAccount = userAccount;
