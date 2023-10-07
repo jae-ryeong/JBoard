@@ -67,7 +67,6 @@ public class BoardController {
         model.addAttribute("article", articleService.getArticle(articleId));    // TODO: Article을 직접 반환해주는데 이를 responseDTO 생성하기
         System.out.println("article = " + articleService.getArticle(articleId));
         List<ArticleComment> articleComments = commentService.getArticleComments(articleId);
-        System.out.println("articleComments = " + articleComments);
         model.addAttribute("comments", articleComments);
         model.addAttribute("boardPrincipal",boardPrincipal);
         return "articles/detail";
@@ -96,16 +95,5 @@ public class BoardController {
 
         System.out.println("수정완료");
         return "redirect:/detail/" + articleId;
-    }
-
-    @GetMapping("/check")
-    public String check() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("확인1. authentication = " + authentication);
-
-        User user = (User)authentication.getPrincipal();
-        System.out.println("확인2. user = " + user);
-
-        return "articles/boardList";
     }
 }
