@@ -82,15 +82,15 @@
                             <input type="hidden" class="article-id">
                             <div class="row" >
                                 <div class="col-md-10 col-lg-9">
-                                    <strong>Uno</strong>
-                                    <small><time>2022-01-01</time></small>
-                                    <p th:text="${comment.getContent()}">
+                                    <strong th:text="${comment.nickname()}">Uno</strong>
+                                    <small><time th:text="${#temporals.format(comment.createdAt(), 'yyyy-MM-dd hh:mm')}">2022-01-01</time></small>
+                                    <p th:text="${comment.content()}">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>
                                         Lorem ipsum dolor sit amet
                                     </p>
                                 </div>
                                 <div class="col-2 mb-3 align-self-center">
-                                    <button type="submit" class="btn btn-outline-danger" id="delete-comment-button">삭제</button>
+                                    <button type="submit" class="btn btn-outline-danger" id="delete-comment-button" th:if="${boardPrincipal.nickname() == comment.nickname()}">삭제</button>
                                 </div>
                             </div>
                         </form>

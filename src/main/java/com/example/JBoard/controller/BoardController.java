@@ -1,9 +1,6 @@
 package com.example.JBoard.controller;
 
-import com.example.JBoard.Dto.ArticleDtoC;
-import com.example.JBoard.Dto.ArticleRequest;
-import com.example.JBoard.Dto.BoardPrincipal;
-import com.example.JBoard.Dto.UserAccountDto;
+import com.example.JBoard.Dto.*;
 import com.example.JBoard.Entity.Article;
 import com.example.JBoard.Entity.ArticleComment;
 import com.example.JBoard.Entity.UserAccount;
@@ -66,7 +63,7 @@ public class BoardController {
     public String article_detail(@PathVariable("articleId") Long articleId, Model model, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
         model.addAttribute("article", articleService.getArticle(articleId));    // TODO: Article을 직접 반환해주는데 이를 responseDTO 생성하기
         System.out.println("article = " + articleService.getArticle(articleId));
-        List<ArticleComment> articleComments = commentService.getArticleComments(articleId);
+        List<ArticleCommentDto> articleComments = commentService.getArticleComments(articleId);
         model.addAttribute("comments", articleComments);
         model.addAttribute("boardPrincipal",boardPrincipal);
         return "articles/detail";

@@ -1,7 +1,7 @@
 package com.example.JBoard.controller;
 
 import com.example.JBoard.Dto.BoardPrincipal;
-import com.example.JBoard.Dto.Response.ArticleCommentRequest;
+import com.example.JBoard.Dto.Request.ArticleCommentRequest;
 import com.example.JBoard.service.ArticleCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
