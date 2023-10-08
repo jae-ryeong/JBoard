@@ -1,4 +1,4 @@
-package com.example.JBoard.Dto.Response;
+package com.example.JBoard.Dto.Request;
 
 import com.example.JBoard.Dto.ArticleCommentDtoC;
 import com.example.JBoard.Dto.UserAccountDto;
@@ -12,7 +12,7 @@ public record ArticleCommentRequest(
     }
 
     public ArticleCommentDtoC toDto(UserAccountDto userAccountDto) {
-        return ArticleCommentDtoC.of(articleId, userAccountDto, content);
+        return ArticleCommentDtoC.of(articleId, content.replace("\r\n","<br>"), userAccountDto);
     }
 
 }
