@@ -1,5 +1,6 @@
 package com.example.JBoard.service;
 
+import com.example.JBoard.Dto.ArticleCommentDto;
 import com.example.JBoard.Dto.ArticleCommentDtoC;
 import com.example.JBoard.Entity.Article;
 import com.example.JBoard.Entity.ArticleComment;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -29,7 +31,21 @@ public class ArticleCommentService {
         articleCommentRepository.save(dto.toEntity(article, userAccount.get()));
     }
 
-    public List<ArticleComment> getArticleComments(Long articleId) {
-        return articleCommentRepository.findAllByArticleArticleId(articleId);
+    public List<ArticleCommentDtoC> getArticleComments(Long articleId) {
+        return articleCommentRepository.findAllByArticleArticleId(articleId)
+                .stream().map(ArticleCommentDtoC::from)
+                .toList();
+    }
+
+    public void deleteArticleComment(Long commentId) {
+        articleCommentRepository.deleteById(commentId);
+    }
+
+    public Long getArticleId(Long commentId) {
+        ArticleComment comment = articleCommentRepository.getReferenceById(commentId);
+        System.out.println("comment = " + comment);
+        Long articleId = comment.getArticle().getArticleId();
+        System.out.println("articleId = " + articleId);
+        return articleId;
     }
 }

@@ -78,19 +78,21 @@
 
                 <ul id="article-comments" class="" style="margin-top:10px;">
                     <li th:each="comment : ${comments}">
-                        <form class="comment-form">
+                        <form class="comment-form" th:action="@{/comments/delete/{commentId}(commentId=${comment.getId()})}" method="post">
                             <input type="hidden" class="article-id">
                             <div class="row" >
                                 <div class="col-md-10 col-lg-9">
                                     <strong th:text="${comment.getUserAccountDto().nickname()}">Uno</strong>
-                                    <small><time th:text="${#temporals.format(comment.getCreatedAt(), 'yyyy-MM-dd hh:mm')}">2022-01-01</time></small> <!--  th:text="${#temporals.format(comment.getcreatedAt(), 'yyyy-MM-dd hh:mm')}" -->
+                                    <small><time th:text="${#temporals.format(comment.getCreatedAt(), 'yyyy-MM-dd hh:mm')}">2022-01-01</time></small>
                                     <p th:utext="${comment.getContent()}">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>
                                         Lorem ipsum dolor sit amet
                                     </p>
                                 </div>
                                 <div class="col-2 mb-3 align-self-center">
-                                    <button type="submit" class="btn btn-outline-danger" id="delete-comment-button" th:if="${boardPrincipal.nickname() == comment.getUserAccountDto().nickname()}">삭제</button>
+                                    <button type="submit" class="btn btn-primary btn-sm" th:if="${boardPrincipal.nickname() == comment.getUserAccountDto().nickname()}">수정</button>
+                                    <button type="submit" class="btn btn-danger btn-sm" th:if="${boardPrincipal.nickname() == comment.getUserAccountDto().nickname()}">삭제</button>
+                                    <button type="submit" class="btn btn-secondary btn-sm">댓글</button>
                                 </div>
                             </div>
                         </form>
