@@ -63,7 +63,7 @@ public class BoardController {
     public String article_detail(@PathVariable("articleId") Long articleId, Model model, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
         model.addAttribute("article", articleService.getArticle(articleId));    // TODO: Article을 직접 반환해주는데 이를 responseDTO 생성하기
         System.out.println("article = " + articleService.getArticle(articleId));
-        List<ArticleCommentDto> articleComments = commentService.getArticleComments(articleId);
+        List<ArticleCommentDtoC> articleComments = commentService.getArticleComments(articleId);
         model.addAttribute("comments", articleComments);
         model.addAttribute("boardPrincipal",boardPrincipal);
         return "articles/detail";

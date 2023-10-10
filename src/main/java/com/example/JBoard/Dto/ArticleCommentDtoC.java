@@ -8,36 +8,37 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Getter @Setter
+@Getter
+@Setter
 public class ArticleCommentDtoC {
 
     private Long id;
     private Long articleId;
-    private UserAccountDto userAccountDto;
+    //private String nickname;
     private String content;
     private LocalDateTime createdAt;
-    private String createdBy;
-    private LocalDateTime modifiedAt;
-    private String modifiedBy;
+    private UserAccountDto userAccountDto;
 
-    public ArticleCommentDtoC(Long id, Long articleId, UserAccountDto userAccountDto, String content, LocalDateTime createdAt, String createdBy, LocalDateTime modifiedAt, String modifiedBy) {
+    public ArticleCommentDtoC(Long id, Long articleId, String content, LocalDateTime createdAt, UserAccountDto userAccountDto) {
         this.id = id;
         this.articleId = articleId;
-        this.userAccountDto = userAccountDto;
         this.content = content;
         this.createdAt = createdAt;
-        this.createdBy = createdBy;
-        this.modifiedAt = modifiedAt;
-        this.modifiedBy = modifiedBy;
+        this.userAccountDto = userAccountDto;
     }
 
-    public static ArticleCommentDtoC of(Long articleId, UserAccountDto userAccountDto, String content) {
-        return new ArticleCommentDtoC(null, articleId, userAccountDto, content, null, null, null, null);
+    public static ArticleCommentDtoC of(Long articleId, String content, UserAccountDto userAccountDto) {
+        return new ArticleCommentDtoC(null, articleId, content, null, userAccountDto);
     }
 
     public ArticleComment toEntity(Article article, UserAccount userAccount) {
         return ArticleComment.of(
                 userAccount, article, content
         );
+    }
+
+    public static ArticleCommentDtoC from(ArticleComment articleComment) {
+        return new ArticleCommentDtoC(articleComment.getId(), articleComment.getArticle().getArticleId()
+                ,articleComment.getContent(), articleComment.getCreatedAt(), UserAccountDto.from(articleComment.getUserAccount()));
     }
 }
