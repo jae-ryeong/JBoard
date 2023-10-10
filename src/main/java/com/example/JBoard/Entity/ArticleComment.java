@@ -31,6 +31,6 @@ public class ArticleComment extends AuditingFields{
     }
 
     public void update( String content) {
-        this.content = content;
+        this.content = content.replace("\r\n","<br>");
     }
 }
