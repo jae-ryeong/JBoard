@@ -21,8 +21,8 @@ public abstract class AuditingFields {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    private LocalDateTime modifiedAt;
+    /*@LastModifiedDate
+    private LocalDateTime modifiedAt;*/
 
     @CreatedBy
     @Column(updatable = false)
