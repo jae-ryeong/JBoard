@@ -33,4 +33,12 @@ public class CommentController {
         commentService.deleteArticleComment(commentId);
         return "redirect:/detail/" + articleId;
     }
+
+    @PostMapping("/update/{commentId}")
+    public String updateComment(@PathVariable("commentId") Long commentId, ArticleCommentRequest articleCommentRequest) {
+        Long articleId = commentService.getArticleId(commentId);
+        commentService.updateArticleComment(commentId, articleCommentRequest);
+
+        return "redirect:/detail/" + articleId;
+    }
 }

@@ -9,6 +9,8 @@
           rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <title>Document</title>
 </head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <body>
     <header th:replace="~{header::header}">
         <hr>
@@ -75,12 +77,13 @@
                         <button class="btn btn-primary" id="comment-submit" type="submit">쓰기</button>
                     </div>
                 </form>
+        </div>
 
                 <ul id="article-comments" class="" style="margin-top:10px;">
                     <li th:each="comment : ${comments}">
                         <form class="comment-form" th:action="@{/comments/delete/{commentId}(commentId=${comment.getId()})}" method="post">
                             <input type="hidden" class="article-id">
-                            <div class="row" >
+                            <div class="row" th:id="comment">
                                 <div class="col-md-10 col-lg-9">
                                     <strong th:text="${comment.getUserAccountDto().nickname()}">Uno</strong>
                                     <small><time th:text="${#temporals.format(comment.getCreatedAt(), 'yyyy-MM-dd hh:mm')}">2022-01-01</time></small>
@@ -90,29 +93,30 @@
                                     </p>
                                 </div>
                                 <div class="col-2 mb-3 align-self-center">
-                                    <button onclick="update()" id="update-comment" type="button" class="btn btn-primary btn-sm" th:if="${boardPrincipal.nickname() == comment.getUserAccountDto().nickname()}">수정</button>
+                                    <button onclick="update(this.id)" th:id="comment- + ${comment.getId()}" type="button" class="btn btn-primary btn-sm" th:if="${boardPrincipal.nickname() == comment.getUserAccountDto().nickname()}">수정</button>
                                     <button type="submit" class="btn btn-danger btn-sm" th:if="${boardPrincipal.nickname() == comment.getUserAccountDto().nickname()}">삭제</button>
                                     <button type="submit" class="btn btn-secondary btn-sm">댓글</button>
                                 </div>
                             </div>
                         </form>
 
-                        <div id="update-comment-div" style="display:none">
-                            <form class="d-flex" id="update-comment-form" th:action="@{/comments/update}" method="post">
+                        <div class="collapse"  style="display:none" th:id="update-comment- + ${comment.getId()}">
+                            <form class="d-flex" th:id="update-comment-form" th:action="@{/comments/update/{commentId}(commentId=${comment.getId()})}" method="post">
                                 <div class="col-md-9 col-lg-8">
+                                    <input type="hidden" class="article-id" name="articleId" th:value="${article.get().getArticleId()}">
                                     <label for="comment-textbox" hidden>댓글</label>
-                                    <textarea class="form-control" id="update-comment-textbox" th:name="content" placeholder="댓글 쓰기.." rows="3" required></textarea>
+                                    <textarea class="form-control" th:id="update-comment-textbox" th:name="content" placeholder="댓글 쓰기.." rows="3" th:utext="${comment.getContent()}" required></textarea>
                                 </div>
                                 <div class="ms-4 pt-3 pb-3">
                                     <label for="comment-submit" hidden>댓글 쓰기</label>
-                                    <button class="btn btn-primary" id="update-comment-submit" type="submit">쓰기</button>
-                                    <button onclick="update_cancel()" class="btn btn-primary" id="update-comment-cancel" type="button">취소</button>
+                                    <button class="btn btn-primary" th:id="update-comment-submit" type="submit">쓰기</button>
+                                    <button onclick="update_cancel(this.id)" class="btn btn-primary" th:id="comment- + ${comment.getId()}" type="button">취소</button>
                                 </div>
                             </form>
                         </div>
                     </li>
                 </ul>
-        </div>
+
     </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
@@ -120,13 +124,13 @@
 </script>
 <script>
 
-    function update() {
-        var updateCommentDiv = document.getElementById("update-comment-div");
+    function update(clicked_id) {
+        var updateCommentDiv = document.getElementById("update-" + clicked_id);
         updateCommentDiv.style.display = "block";
     }
 
-    function update_cancel() {
-        var updateCommentDiv = document.getElementById("update-comment-div");
+    function update_cancel(clicked_class) {
+        var updateCommentDiv = document.getElementById("update-" + clicked_class);
         updateCommentDiv.style.display = "none";
     }
 
