@@ -105,7 +105,7 @@
                                 <div class="col-md-9 col-lg-8">
                                     <input type="hidden" class="article-id" name="articleId" th:value="${article.get().getArticleId()}">
                                     <label for="comment-textbox" hidden>댓글</label>
-                                    <textarea class="form-control" th:id="update-comment-textbox" th:name="content" placeholder="댓글 쓰기.." rows="3" th:utext="${comment.getContent()}" required></textarea>
+                                    <textarea class="form-control" th:id="update-comment-textbox" th:name="content" placeholder="댓글 쓰기.." rows="3" th:text="${comment.getContent()}" required></textarea>
                                 </div>
                                 <div class="ms-4 pt-3 pb-3">
                                     <label for="comment-submit" hidden>댓글 쓰기</label>
@@ -126,13 +126,21 @@
 
     function update(clicked_id) {
         var updateCommentDiv = document.getElementById("update-" + clicked_id);
+        let text = document.getElementById("update-comment-textbox");
         updateCommentDiv.style.display = "block";
+        let s = text.textContent.replaceAll("<br>","\r\n")
+        text.textContent=s;
     }
 
     function update_cancel(clicked_class) {
         var updateCommentDiv = document.getElementById("update-" + clicked_class);
         updateCommentDiv.style.display = "none";
     }
+
+    /*function replace_comment(comment) {
+        return comment.spli
+    }*/
+
 
 </script>
 </body>
