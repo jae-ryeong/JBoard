@@ -36,8 +36,9 @@ public class ArticleService {
     }
 
     public Optional<Article> getArticle(Long articleId) {
+        articleRepository.addCount(articleId);
         Optional<Article> article = articleRepository.findById(articleId);
-        article.get().addView();
+        System.out.println("getArticle에서 addcount가 실행됐습니다.");
         return article;
     }
 

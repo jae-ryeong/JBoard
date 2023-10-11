@@ -59,8 +59,4 @@ public class Article extends AuditingFields {
         this.title = title;
         this.content = content;
     }
-
-    public void addView() {
-        this.view_count++;
-    }
 }
