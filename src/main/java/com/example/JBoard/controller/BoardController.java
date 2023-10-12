@@ -7,6 +7,8 @@ import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.service.ArticleCommentService;
 import com.example.JBoard.service.ArticleService;
 import com.example.JBoard.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -60,10 +62,13 @@ public class BoardController {
     }
 
     @GetMapping("/detail/{articleId}")
-    public String article_detail(@PathVariable("articleId") Long articleId, Model model, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
+    public String article_detail(@PathVariable("articleId") Long articleId, Model model, @AuthenticationPrincipal BoardPrincipal boardPrincipal, HttpServletRequest request, HttpServletResponse response) {
+        articleService.readArticle(articleId, request, response);
         model.addAttribute("article", articleService.getArticle(articleId));    // TODO: Article을 직접 반환해주는데 이를 responseDTO 생성하기
-        System.out.println("article = " + articleService.getArticle(articleId));
         List<ArticleCommentDtoC> articleComments = commentService.getArticleComments(articleId);
+
+        //articleService.readArticle(articleId, request, response);
+
         model.addAttribute("comments", articleComments);
         model.addAttribute("boardPrincipal",boardPrincipal);
         return "articles/detail";

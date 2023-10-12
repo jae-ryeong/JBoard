@@ -7,8 +7,12 @@ import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.Repository.ArticleRepository;
 import com.example.JBoard.Repository.UserAccountRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Request;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,10 +39,54 @@ public class ArticleService {
         Article save = articleRepository.save(articleDtoC.toEntity(userAccount));
     }
 
+    /*
+    쿠키를 이용해서 조회수 중복 방지
+    문제점:
+    1번 글을 읽는다. -> 쿠키 상태 : [1] (age 하루인 상태)
+    하루가 지나기전에 다른 글을 읽는다. -> [1]_[2] (다시 age가 하루로 바뀜)
+     */
+    public void readArticle(Long articleId, HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("readArticle 서비스 코드가 실행되었습니다.");
+        Cookie oldCookie = null;
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                log.info("cookie.getName: " + cookie.getName());
+                log.info("cookie.getValue: " + cookie.getValue());
+
+                if (cookie.getName().equals("articleView")) {
+                    oldCookie = cookie;
+                }
+            }
+        }
+
+        if (oldCookie != null) {
+            if (!oldCookie.getValue().contains("[" + articleId.toString() + "]")) {
+                addCount(articleId);
+                oldCookie.setValue(oldCookie.getValue() + "_[" + articleId + "]");
+                oldCookie.setPath("/"); // 웹어플리케이션의 모든 URL 범위로 전송
+                oldCookie.setMaxAge(60 * 60 * 24);
+                response.addCookie(oldCookie);
+            }
+        } else {
+            addCount(articleId);
+            Cookie newCookie = new Cookie("articleView", "[" + articleId + "]");
+            newCookie.setPath("/");
+            newCookie.setMaxAge(60 * 60 * 24);
+            response.addCookie(newCookie);
+            System.out.println("newCookie = " + newCookie);
+        }
+
+    }
+
+    @Transactional
+    public int addCount(Long articleId) {
+        return articleRepository.addCount(articleId);
+    }
+
     public Optional<Article> getArticle(Long articleId) {
-        articleRepository.addCount(articleId);
         Optional<Article> article = articleRepository.findById(articleId);
-        System.out.println("getArticle에서 addcount가 실행됐습니다.");
         return article;
     }
 
