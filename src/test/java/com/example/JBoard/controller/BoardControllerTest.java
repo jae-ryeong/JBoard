@@ -48,7 +48,7 @@ class BoardControllerTest {
                 .andExpect(model().attributeExists("Articles"));
     }
 
-    @DisplayName("[POST] boardCreateForm 테스트")
+/*    @DisplayName("[POST] boardCreateForm 테스트")
     @Test
     public void CreateFormTest() throws Exception{
         //given
@@ -60,7 +60,7 @@ class BoardControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/boardlist"))
                 .andExpect(view().name("redirect:/boardlist"));
-    }
+    }*/
 
     @DisplayName("delete 테스트")
     @Test

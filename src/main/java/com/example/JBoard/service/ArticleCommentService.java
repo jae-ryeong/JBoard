@@ -2,6 +2,7 @@ package com.example.JBoard.service;
 
 import com.example.JBoard.Dto.ArticleCommentDto;
 import com.example.JBoard.Dto.ArticleCommentDtoC;
+import com.example.JBoard.Dto.Request.ArticleCommentRequest;
 import com.example.JBoard.Entity.Article;
 import com.example.JBoard.Entity.ArticleComment;
 import com.example.JBoard.Entity.UserAccount;
@@ -31,6 +32,7 @@ public class ArticleCommentService {
         articleCommentRepository.save(dto.toEntity(article, userAccount.get()));
     }
 
+    @Transactional(readOnly = true)
     public List<ArticleCommentDtoC> getArticleComments(Long articleId) {
         return articleCommentRepository.findAllByArticleArticleId(articleId)
                 .stream().map(ArticleCommentDtoC::from)
@@ -41,11 +43,17 @@ public class ArticleCommentService {
         articleCommentRepository.deleteById(commentId);
     }
 
+    @Transactional(readOnly = true)
     public Long getArticleId(Long commentId) {
         ArticleComment comment = articleCommentRepository.getReferenceById(commentId);
-        System.out.println("comment = " + comment);
         Long articleId = comment.getArticle().getArticleId();
-        System.out.println("articleId = " + articleId);
         return articleId;
+    }
+
+
+    public void updateArticleComment(Long commentId, ArticleCommentRequest articleCommentRequest) {
+        ArticleComment comment = articleCommentRepository.getReferenceById(commentId);
+
+        comment.update(articleCommentRequest.content());
     }
 }

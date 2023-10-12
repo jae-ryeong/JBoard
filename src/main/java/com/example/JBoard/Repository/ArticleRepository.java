@@ -12,5 +12,5 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     @Modifying
     @Query("update Article a set a.view_count = a.view_count+1 where a.articleId = :articleId")
-    void addCount(Long articleId);
+    int addCount(Long articleId);
 }
