@@ -1,9 +1,11 @@
 package com.example.JBoard.controller;
 
+import com.example.JBoard.Dto.BoardPrincipal;
 import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,13 +19,21 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/login")
-    public String login() {
-        return "/user/login";
+    public String login(@AuthenticationPrincipal BoardPrincipal boardPrincipal) {
+        if (boardPrincipal != null){
+            return "redirect:/boardlist";
+        }else{
+            return "/user/login";
+        }
     }
 
     @GetMapping("/Registration")
-    public String join() {
-        return "/user/userCreateForm";
+    public String join(@AuthenticationPrincipal BoardPrincipal boardPrincipal) {
+        if (boardPrincipal != null){
+            return "redirect:/boardlist";
+        }else{
+            return "/user/userCreateForm";
+        }
     }
 
     @PostMapping("/Registration")
