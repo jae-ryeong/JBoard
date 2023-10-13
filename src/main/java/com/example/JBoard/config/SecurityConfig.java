@@ -21,6 +21,10 @@ public class SecurityConfig {
                                 )  // 목록은 볼 수 있지만, 상세글은 로그인해야 볼 수 있다.
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(
+                                new AntPathRequestMatcher("/admin/**")).hasRole("ADMIN")
+                )
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers(
                                 new AntPathRequestMatcher("/boardCreateForm")).authenticated() // 로그인을 해야 게시글 작성 가능
                                 .anyRequest().permitAll())
                 .formLogin((formLogin) -> formLogin
