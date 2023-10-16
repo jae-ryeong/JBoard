@@ -37,11 +37,6 @@ public class UserSecurityService implements UserDetailsService {
 
         BoardPrincipal principal = BoardPrincipal.from(UserAccountDto.from(user.get()));
 
-        /*return User.builder()
-                .username(user.get().getUid())
-                .password(passwordEncoder.encode(user.get().getPassword()))
-                .build();*/
-
         return principal;   // UserAccount -> UserAccountDTO -> BoardPrincipal(UserDetails)
     }
 }

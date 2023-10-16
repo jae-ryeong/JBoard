@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
+import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,7 +24,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ArticleCommentServiceTest {
@@ -51,9 +52,7 @@ class ArticleCommentServiceTest {
         UserAccountDto userAccountDto = createUserAccountDto();
         ArticleDtoC articleDto = createArticleDto();
 
-//        given(articleRepository.save(any(Article.class))).willReturn(articleDto.toEntity(userAccountDto.toEntity()));
-//        given(userAccountRepository.save(any(UserAccount.class))).willReturn(userAccount);
-        given(userAccountRepository.findByUid(userAccountDto.uid())).willReturn(Optional.of(userAccount));
+        given(userAccountRepository.findByUid(commentDto.getUserAccountDto().uid())).willReturn(Optional.of(userAccount));
         given(articleRepository.save(any(Article.class))).willReturn(article);
         given(commentRepository.save(any(ArticleComment.class))).willReturn(articleComment);
 
@@ -62,10 +61,22 @@ class ArticleCommentServiceTest {
         commentService.saveArticleComment(commentDto);
 
         //then
-        System.out.println(articleRepository.count());
-        //assertThat(articleRepository.findAll().size()).isEqualTo(1);
-        //assertThat(commentRepository.findAll().size()).isEqualTo(1);
+        then(articleRepository).should().save(any(Article.class));
+        then(commentRepository).should().save(any(ArticleComment.class));
+    }
 
+    @DisplayName("댓글 삭제 테스트")
+    @Test
+    public void test() throws Exception{
+        //given
+        Long commentId = 1L;
+        willDoNothing().given(commentRepository).deleteById(commentId);
+
+        //when
+        commentService.deleteArticleComment(commentId);
+
+        //then
+        then(commentRepository).should().deleteById(commentId);
     }
 
     private UserAccountDto createUserAccountDto() {
@@ -85,7 +96,7 @@ class ArticleCommentServiceTest {
     }
 
     private ArticleCommentDtoC createCommentDto() {
-        return ArticleCommentDtoC.of(1L, createUserAccountDto(), "댓글");
+        return ArticleCommentDtoC.of(1L, "댓글", createUserAccountDto());
     }
 
     private ArticleComment createArticleComment() {
