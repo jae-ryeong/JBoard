@@ -27,11 +27,15 @@ public class UserController {
         }
     }
 
+    /*@PostMapping("/login")
+    public */
+
     @GetMapping("/Registration")
     public String join(@AuthenticationPrincipal BoardPrincipal boardPrincipal) {
-        if (boardPrincipal != null){
+
+        if (boardPrincipal != null) {
             return "redirect:/boardlist";
-        }else{
+        } else {
             return "/user/userCreateForm";
         }
     }

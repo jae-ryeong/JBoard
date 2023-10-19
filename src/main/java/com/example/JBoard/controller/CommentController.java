@@ -18,7 +18,7 @@ public class CommentController {
     private final ArticleCommentService commentService;
 
     @PostMapping("/new")
-    public String newComment(ArticleCommentRequest articleCommentRequest, @AuthenticationPrincipal BoardPrincipal boardPrincipal) { // TODO: select 후 update 쿼리가 날라간다 수정해야함
+    public String newComment(ArticleCommentRequest articleCommentRequest, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
         System.out.println("articleCommentRequest = " + articleCommentRequest);
         System.out.println("댓글 생성");
 
@@ -28,14 +28,14 @@ public class CommentController {
     }
 
     @PostMapping("/delete/{commentId}")
-    public String deleteComment(@PathVariable("commentId") Long commentId) {
+    public String deleteComment(@PathVariable("commentId") Long commentId, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
         Long articleId = commentService.getArticleId(commentId);
         commentService.deleteArticleComment(commentId);
         return "redirect:/detail/" + articleId;
     }
 
     @PostMapping("/update/{commentId}")
-    public String updateComment(@PathVariable("commentId") Long commentId, ArticleCommentRequest articleCommentRequest) {
+    public String updateComment(@PathVariable("commentId") Long commentId, ArticleCommentRequest articleCommentRequest, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
         Long articleId = commentService.getArticleId(commentId);
         commentService.updateArticleComment(commentId, articleCommentRequest);
 

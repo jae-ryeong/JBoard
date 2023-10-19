@@ -36,23 +36,23 @@ public class JwtService {
     private String refreshHeader;
 
     /**
-     * JWT의 Subject와 Claim으로 email 사용 -> 클레임의 name을 "nickname"으로 설정
+     * JWT의 Subject와 Claim으로 email 사용 -> 클레임의 name을 "uid"으로 설정
      * JWT의 헤더에 들어오는 값 : 'Authorization(Key) = Bearer {토큰} (Value)' 형식
      */
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
-    private static final String NICKNAME_CLAIM = "nickname";
+    private static final String uid_CLAIM = "uid";
     private static final String BEARER = "Bearer "; // Bearer는 여기서 type에 해당하고, JWT와 OAuth 토큰은 Bearer Type을 사용
 
     private final UserAccountRepository userAccountRepository;
 
     // AccessToken 생성 메소드
-    public String createAccessToken(String nickname) {
+    public String createAccessToken(String uid) {
         Date now = new Date();
         return JWT.create()
                 .withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 이름을 정해준다.
                 .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))   // 토근 만료 시간 설정
-                .withClaim(NICKNAME_CLAIM, nickname)
+                .withClaim(uid_CLAIM, uid)
                 .sign(Algorithm.HMAC512(secretKey));
     }
 
@@ -101,19 +101,19 @@ public class JwtService {
     }
 
     /*
-    AccessToken에서 nickname 추출
+    AccessToken에서 uid 추출
     추출 전에 JWT.require()로 검증기 생성
     verify로 AccessToken 검증 후
-    유효하다면 getClaim()으로 이메일 추출
+    유효하다면 getClaim()으로 uid 추출
     유효하지 않다면 빈 Optional 객체 반환
      */
-    public Optional<String> extractNickname(String accessToken) {
+    public Optional<String> extractUid(String accessToken) {
         try {
             // 토큰 유효성 검사할 때 사용할 알고리즘이 있는 JWT verifier builder 반환
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
                     .build()
                     .verify(accessToken)    // accessToken을 검증하고 유효하지 않다면 예외 발생
-                    .getClaim(NICKNAME_CLAIM)
+                    .getClaim(uid_CLAIM)
                     .asString());   // 값이 string이 아니면 null을 반환
         } catch (Exception e) {
             log.error("액세스 토큰이 유효하지 않습니다.");
@@ -132,8 +132,8 @@ public class JwtService {
     }
 
     // RefreshToken DB 저장 (업데이트)
-    public void updateRefreshToken(String nickname, String refreshToken) {
-        userAccountRepository.findByNickname(nickname)
+    public void updateRefreshToken(String uid, String refreshToken) {
+        userAccountRepository.findByUid(uid)
                 .ifPresentOrElse(
                         userAccount -> userAccount.updateRefreshToken(refreshToken),
                         () -> new Exception("일치하는 회원이 없습니다.")

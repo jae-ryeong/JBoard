@@ -32,7 +32,7 @@ public class UserService {
         return user;
     }
 
-    public UserAccount login(LoginRequest req) {
+    public BoardPrincipal login(LoginRequest req) {
         Optional<UserAccount> optionalUser = userAccountRepository.findByUid(req.uid());
 
         // loginId와 일치하는 User가 없으면 null return
@@ -47,6 +47,7 @@ public class UserService {
             return null;
         }
 
-        return user;
+        // return user;
+        return BoardPrincipal.from(UserAccountDto.from(user));
     }
 }

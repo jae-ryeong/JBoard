@@ -25,7 +25,6 @@ public class UserAccount{
     @Column(length = 50, unique = true)
     private String uid;
 
-    //@NotNull
     private String password;
     private String username;    // 실명
     // @Column(unique = true)
@@ -35,6 +34,14 @@ public class UserAccount{
 
     @Enumerated(EnumType.STRING)
     private MemberRole role;
+
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType; // KAKAO, NAVER, GOOGLE
+
+    @Column(unique = true)
+    private String OAuth2Id; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
+
+    private String refreshToken; // 리프레시 토큰
 
     private UserAccount(String uid, String password, String username, String email, String nickname) {
         this.uid = uid;
@@ -49,6 +56,9 @@ public class UserAccount{
         return new UserAccount(uid, password, username, email, nickname);
     }
 
+    public void updateRefreshToken(String updateRefreshToken) {
+        this.refreshToken = updateRefreshToken;
+    }
 
 
 }

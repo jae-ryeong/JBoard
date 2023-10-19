@@ -1,5 +1,6 @@
 package com.example.JBoard.jwt.util;
 
+import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -9,7 +10,7 @@ import java.util.Date;
 public class JwtTokenUtil {
 
     // JWT Token 발급
-    public static String createToken(String uid, String key, long expireTimeMs) {
+    public static String createAccessToken(String uid, String key, long expireTimeMs) {
         // Claim에 uid 넣어 줌으로써 나중에 uid 꺼낼 수 있음
         Claims claims = Jwts.claims();
         claims.put("uid", uid);
@@ -18,7 +19,15 @@ public class JwtTokenUtil {
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs))
-                .signWith(SignatureAlgorithm.HS256, key)
+                .signWith(SignatureAlgorithm.HS512, key)
+                .compact();
+    }
+
+    public static String createRefreshToken(String uid, String key, long expireTimeMs) {
+        return Jwts.builder()
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs))
+                .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
     }
 
@@ -38,4 +47,7 @@ public class JwtTokenUtil {
     private static Claims extractClaims(String token, String secretKey) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
     }
+
+    // RefreshToken 검증
+    // public String validateRefreshToken(RefreshToken)
 }

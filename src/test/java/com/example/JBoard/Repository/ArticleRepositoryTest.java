@@ -1,5 +1,6 @@
 package com.example.JBoard.Repository;
 
+import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.Article;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,14 @@ class ArticleRepositoryTest {   // 레포지토리 테스트는 서비스와 연
         assertThat(saved.get().getContent()).isEqualTo("내용");
     }
 
-    Article createArticle() {
-        return Article.of("title", "content", 0L);
+    private UserAccountDto createUserAccountDto() {
+        return UserAccountDto.of(
+                "wofud", "password", "김재령", "wofud0321@naver.com", "wofud"
+        );
     }
+
+    private Article createArticle() {
+        return Article.of(createUserAccountDto().toEntity(), "제목", "content", 0L);
+    }
+
 }

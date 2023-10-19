@@ -15,26 +15,6 @@
 </head>
 <body class="text-center">
 
-<!--<form class="form-signin" th:action="'/userAccount/login'" >
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-
-    <label for="UserId" class="sr-only">UserId</label>
-    <input type="text" id="UserId" class="form-control" placeholder="Email address" required="" autofocus="">
-
-    <label for="inputPassword" class="sr-only">Password</label>
-    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
-
-    <div class="checkbox mb-3">
-        <label>
-            <input type="checkbox" value="remember-me"> 아이디 저장
-        </label>
-    </div>
-
-    <button class="btn btn-lg btn-primary btn-block" type="submit">로그인</button>
-    <p class="mt-5 mb-3 text-muted">© 2023-2023</p>
-</form>-->
-<body >
-
     <div class="container row card align-middle" style="float: none; margin:100px auto; width:20rem; border-radius:20px;">
 
         <div class="card-title" style="margin-top:30px;">
@@ -43,7 +23,7 @@
 
         <div class="container card-body">
 
-            <form class="form-signin" th:action="'/user/login'" th:method="post">
+            <form class="form-signin" th:action="'/jwt-login/login'" th:method="post">
 
                 <label for="uid" class="sr-only">Your ID</label>
                 <input type="text" id="uid" class="form-control" name="uid" placeholder="Your ID" required autofocus><BR>

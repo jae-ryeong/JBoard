@@ -1,11 +1,13 @@
 package com.example.JBoard.config;
 
 import com.example.JBoard.jwt.filter.JwtTokenFilter;
+import com.example.JBoard.service.UserSecurityService;
 import com.example.JBoard.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,8 +23,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig{
 
     private final UserService userService;
-    @Value("${jwt.secretKey}")
-    private static String secretKey;
+
+    private static String secretKey = "my-secret-key-123123";
 
 /*    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {    // 세션으로 로그인 처리
@@ -62,28 +64,30 @@ public class SecurityConfig{
                 .build();   // 로그인 페이지는 무조건 접근 가능하게.
     }*/
 
-    @Bean
+    @Bean   // JWT를 사용하여 로그인
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .httpBasic(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable) // 일반적인 루트가 아닌 다른 방식으로 요청시 거절, header에 id, pw가 아닌 token(jwt)을 달고 간다. 그래서 basic이 아닌 bearer를 사용한다.
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement((session) -> session // 상태 비저장이므로 요청이 있을 때마다 사용자를 다시 인증
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(
-                                new AntPathRequestMatcher("/detail/**")).authenticated()
-                )  // 목록은 볼 수 있지만, 상세글은 로그인해야 볼 수 있다.
+                                new AntPathRequestMatcher("/detail/**")).authenticated())  // 목록은 볼 수 있지만, 상세글은 로그인해야 볼 수 있다.
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(
-                                new AntPathRequestMatcher("/admin/**")).hasRole("ADMIN")
-                )
+                                new AntPathRequestMatcher("/admin/**")).hasRole("ADMIN"))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(
-                                        new AntPathRequestMatcher("/boardCreateForm")).authenticated() // 로그인을 해야 게시글 작성 가능
+                                new AntPathRequestMatcher("/jwt-login/info")).authenticated())
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers(
+                                new AntPathRequestMatcher("/boardCreateForm")).authenticated() // 로그인을 해야 게시글 작성 가능
                                 .anyRequest().permitAll())
+                .addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {  // 패스워드 암호화

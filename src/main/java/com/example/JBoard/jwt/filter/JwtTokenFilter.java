@@ -1,5 +1,7 @@
 package com.example.JBoard.jwt.filter;
 
+import com.example.JBoard.Dto.BoardPrincipal;
+import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.jwt.util.JwtTokenUtil;
 import com.example.JBoard.service.UserService;
@@ -18,9 +20,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-// OncePerRequestFilter : 매번 들어갈 때 마다 체크 해주는 필터
 @RequiredArgsConstructor
-public class JwtTokenFilter extends OncePerRequestFilter {
+public class JwtTokenFilter extends OncePerRequestFilter { // OncePerRequestFilter : 매번 들어갈 때 마다 체크 해주는 필터
 
     private final UserService userService;
     private final String secretKey;
@@ -55,10 +56,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         // 추출한 LoginId로 유저 찾아오기
         UserAccount loginUser = userService.getUser(loginId);
+        BoardPrincipal user = BoardPrincipal.from(UserAccountDto.from(loginUser));
 
-        // loginUser 정보로 UsernamePasswordAuthenticationToken 발급
+        // loginUser 정보로 UsernamePasswordAuthenticationToken 발급 // TODO: 여기서 건드려보자.
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginUser.getUid(), null, List.of(new SimpleGrantedAuthority(loginUser.getRole().name())));
+                null, null, List.of(new SimpleGrantedAuthority(user.role())));
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
         // 권한 부여
