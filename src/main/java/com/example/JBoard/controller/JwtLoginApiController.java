@@ -16,7 +16,7 @@ public class JwtLoginApiController {
     private final UserService userService;
 
     @PostMapping("/login")  // TODO: JWT 발급만 됐지 로그인X
-    public String login( LoginRequest loginRequest) {
+    public String login(@RequestBody LoginRequest loginRequest) {
 
         //UserAccount user = userService.login(loginRequest);
         BoardPrincipal user = userService.login(loginRequest);
@@ -28,7 +28,7 @@ public class JwtLoginApiController {
         // 로그인 성공 => Jwt Token 발급
 
         // AccessToken
-        long expireTimeMs = 1000 * 60 * 1;     // Token 만료 기간 1분
+        long expireTimeMs = 1000 * 60 * 10;     // Token 만료 기간 1분
         System.out.println(user);
         String secretKey = "my-secret-key-123123";
         // String encodedString = Base64.getEncoder().encodeToString(secretKey.getBytes());

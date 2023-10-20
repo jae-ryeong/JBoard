@@ -3,7 +3,7 @@ package com.example.JBoard.jwt.filter;
 import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.Repository.UserAccountRepository;
 import com.example.JBoard.jwt.util.PasswordUtil;
-import com.example.JBoard.service.JwtService;
+import com.example.JBoard.jwt.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

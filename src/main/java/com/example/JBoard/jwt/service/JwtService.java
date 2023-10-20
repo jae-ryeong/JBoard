@@ -1,4 +1,4 @@
-package com.example.JBoard.service;
+package com.example.JBoard.jwt.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

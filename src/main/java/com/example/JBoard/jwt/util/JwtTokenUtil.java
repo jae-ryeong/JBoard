@@ -32,8 +32,8 @@ public class JwtTokenUtil {
     }
 
     // Claims에서 loginId 꺼내기
-    public static String getLoginId(String token, String secretKey) {
-        return extractClaims(token, secretKey).get("loginId").toString();
+    public static String getUid(String token, String secretKey) {
+        return extractClaims(token, secretKey).get("uid").toString();
     }
 
     // 발급된 Token의 만료 시간이 지났는지 체크

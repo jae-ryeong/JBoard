@@ -26,7 +26,7 @@ public class CustomJsonUsernamePasswordAuthenticationFilter extends AbstractAuth
     private static final AntPathRequestMatcher DEFAULT_LOGIN_PATH_REQUEST_MATCHER =
             new AntPathRequestMatcher(DEFAULT_LOGIN_REQUEST_URL, HTTP_METHOD);
 
-    private final ObjectMapper objectMapper; // 생성 비용이 비싸기 때문에 bean/static으로 처리하는 것이 좋다.
+    private final ObjectMapper objectMapper; // 생성 비용이 비싸기 때문에 bean/static으로 처리하는 것이 좋다고 한다.
 
     public CustomJsonUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper) {
         super(DEFAULT_LOGIN_PATH_REQUEST_MATCHER); // 부모 클래스인 AbstractAuthenticationProcessingFilter()의 생성자 파라미터로 "/user/login" URL을 설정
