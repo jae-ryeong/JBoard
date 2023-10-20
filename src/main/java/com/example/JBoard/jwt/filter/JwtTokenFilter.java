@@ -7,6 +7,7 @@ import com.example.JBoard.jwt.util.JwtTokenUtil;
 import com.example.JBoard.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,12 +30,28 @@ public class JwtTokenFilter extends OncePerRequestFilter { // OncePerRequestFilt
     private final UserService userService;
     private final String secretKey;
 
+    public String getCookie(HttpServletRequest req){
+        Cookie[] cookies=req.getCookies(); // 모든 쿠키 가져오기
+        if(cookies!=null){
+            for (Cookie c : cookies) {
+                String name = c.getName(); // 쿠키 이름 가져오기
+                String value = c.getValue(); // 쿠키 값 가져오기
+                if (name.equals("accessToken")) {
+                    return value;
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        //String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        String authorizationHeader =  "Bearer " + getCookie(request);
 
         // Header의 Authorization 값이 비어있으면 => Jwt Token을 전송하지 않음 => 로그인 하지 않음
-        if (authorizationHeader == null) {
+            if (authorizationHeader == null) {
             log.info("Authorization 값이 비어있습니다.");
             filterChain.doFilter(request, response);
             return;
