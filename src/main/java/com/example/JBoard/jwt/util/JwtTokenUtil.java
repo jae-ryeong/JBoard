@@ -15,7 +15,8 @@ public class JwtTokenUtil {
         Claims claims = Jwts.claims();
         claims.put("uid", uid);
 
-        return Jwts.builder()
+        return "Bearer " + Jwts.builder()
+                .setSubject(uid)
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs))
@@ -26,7 +27,7 @@ public class JwtTokenUtil {
     public static String createRefreshToken(String uid, String key, long expireTimeMs) {
         return Jwts.builder()
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs))
+                .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs*10))
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
     }

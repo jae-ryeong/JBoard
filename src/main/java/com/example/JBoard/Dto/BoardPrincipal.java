@@ -21,7 +21,6 @@ public record BoardPrincipal(
         String nickname,
         String role
 ) implements UserDetails {
-
     public static BoardPrincipal of(String uid, String password, String username, String email, String nickname, String role) {
         return new BoardPrincipal(uid, password, username, email, nickname, role);
     }

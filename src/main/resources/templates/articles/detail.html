@@ -57,9 +57,9 @@
         <form th:action="@{/detail/{articleId}/delete(articleId=${article.get().getArticleId()})}" method="post">
 
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <a class="btn btn-primary" th:href="@{|/update/${article.get().articleId}|}" th:if="${boardPrincipal.getUsername() == article.get().getUserAccount().getUid()}">수정하기</a>
+                <a class="btn btn-primary" th:href="@{|/update/${article.get().articleId}|}">수정하기</a> <!-- th:if="${boardPrincipal.getUsername() == article.get().getUserAccount().getUid()}" -->
                 <a class="btn btn-secondary" th:onclick="|location.href='@{/boardlist}'|" role="button">목록으로</a>
-                <button class="btn btn-danger" type="submit" th:if="${boardPrincipal.getUsername() == article.get().getUserAccount().getUid()}" >삭제</button>
+                <button class="btn btn-danger" type="submit" >삭제</button> <!-- th:if="${boardPrincipal.getUsername() == article.get().getUserAccount().getUid()}" -->
             </div>
         </form>
 

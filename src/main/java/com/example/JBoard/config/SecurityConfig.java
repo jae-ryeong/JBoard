@@ -1,34 +1,19 @@
 package com.example.JBoard.config;
 
-import com.example.JBoard.Repository.UserAccountRepository;
-import com.example.JBoard.jwt.filter.CustomJsonUsernamePasswordAuthenticationFilter;
-import com.example.JBoard.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.example.JBoard.jwt.filter.JwtTokenFilter;
-import com.example.JBoard.jwt.handler.LoginFailureHandler;
-import com.example.JBoard.jwt.handler.LoginSuccessHandler;
-import com.example.JBoard.jwt.service.JwtService;
-import com.example.JBoard.service.UserSecurityService;
 import com.example.JBoard.service.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
@@ -36,6 +21,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @RequiredArgsConstructor
 public class SecurityConfig{
 
+    private final AuthenticationConfiguration authenticationConfiguration;
     private final UserService userService;
 
     private static String secretKey = "my-secret-key-123123";
@@ -104,8 +90,13 @@ public class SecurityConfig{
                         auth.requestMatchers(
                                 new AntPathRequestMatcher("/boardCreateForm")).authenticated() // 로그인을 해야 게시글 작성 가능
                                 .anyRequest().permitAll())
-                .addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenFilter(userService, authentication -> authentication, secretKey), UsernamePasswordAuthenticationFilter.class)
                 .build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager() throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
    @Bean
