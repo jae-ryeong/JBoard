@@ -5,21 +5,22 @@ import com.example.JBoard.Dto.Request.LoginRequest;
 import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.jwt.util.JwtTokenUtil;
 import com.example.JBoard.service.UserService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/jwt-login")
+//@RequestMapping("/jwt-login")
 public class JwtLoginApiController {
     private final UserService userService;
 
-    @PostMapping("/login")  // TODO: JWT 발급만 됐지 로그인X
-    public String login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    @PostMapping("/user/login")  // TODO: JWT 발급만 됐지 로그인X
+    public String login(LoginRequest loginRequest, HttpServletResponse response) {
 
         //UserAccount user = userService.login(loginRequest);
         BoardPrincipal user = userService.login(loginRequest);
@@ -38,6 +39,9 @@ public class JwtLoginApiController {
         String AccessToken = JwtTokenUtil.createAccessToken(user.getUsername(), secretKey, expireTimeMs);
 
         response.addHeader("Authorization", AccessToken);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", AccessToken);
+
 
 /*        Cookie cookie = new Cookie("accessToken", AccessToken);
         cookie.setPath("/");

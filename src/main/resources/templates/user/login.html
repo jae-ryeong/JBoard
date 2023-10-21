@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -25,7 +24,7 @@
 
         <div class="container card-body">
 
-            <form class="form-signin" th:action="'/jwt-login/login'" th:method="post">
+            <form class="form-signin" th:action="'/user/login'" th:method="post">
 
                 <label for="uid" class="sr-only">Your ID</label>
                 <input type="text" id="uid" class="form-control" name="uid" placeholder="Your ID" required autofocus><BR>
@@ -57,7 +56,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '/',
+            url: '/user/login',
             contentType:'application/json; charset=utf-8',
             data: JSON.stringify(data),
         }).done(function(data,status,xhr){

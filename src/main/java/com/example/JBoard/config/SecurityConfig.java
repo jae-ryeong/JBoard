@@ -1,5 +1,6 @@
 package com.example.JBoard.config;
 
+import com.example.JBoard.jwt.filter.JwtAuthenticationFilter;
 import com.example.JBoard.jwt.filter.JwtTokenFilter;
 import com.example.JBoard.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -90,7 +91,8 @@ public class SecurityConfig{
                         auth.requestMatchers(
                                 new AntPathRequestMatcher("/boardCreateForm")).authenticated() // 로그인을 해야 게시글 작성 가능
                                 .anyRequest().permitAll())
-                .addFilterBefore(new JwtTokenFilter(userService, authentication -> authentication, secretKey), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
+                //.addFilter(new JwtTokenFilter(userService, secretKey))
                 .build();
     }
 

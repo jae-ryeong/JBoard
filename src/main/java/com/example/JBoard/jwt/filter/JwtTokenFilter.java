@@ -23,6 +23,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.List;
 
 @Slf4j
@@ -30,12 +31,12 @@ import java.util.List;
 public class JwtTokenFilter extends OncePerRequestFilter { // OncePerRequestFilter : 매번 들어갈 때 마다 체크 해주는 필터
 
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
     private final String secretKey;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        log.info(authorizationHeader);
 
         //String authorizationHeader =  "Bearer " + getCookie(request);
 
@@ -76,8 +77,7 @@ public class JwtTokenFilter extends OncePerRequestFilter { // OncePerRequestFilt
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
         // 권한 부여
-        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
-        log.info(String.valueOf(authenticate));
+
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         filterChain.doFilter(request, response);
     }
