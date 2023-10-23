@@ -1,18 +1,13 @@
 package com.example.JBoard.config;
 
-import com.example.JBoard.jwt.filter.JwtTokenFilter;
-import com.example.JBoard.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
@@ -20,11 +15,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @RequiredArgsConstructor
 public class SecurityConfig{
 
-    private final UserService userService;
-    @Value("${jwt.secretKey}")
-    private static String secretKey;
-
-/*    @Bean
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {    // 세션으로 로그인 처리
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
@@ -60,9 +51,9 @@ public class SecurityConfig{
                                 .logoutSuccessUrl("/boardlist")
                 )
                 .build();   // 로그인 페이지는 무조건 접근 가능하게.
-    }*/
+    }
 
-    @Bean
+/*    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -83,7 +74,7 @@ public class SecurityConfig{
                                         new AntPathRequestMatcher("/boardCreateForm")).authenticated() // 로그인을 해야 게시글 작성 가능
                                 .anyRequest().permitAll())
                 .build();
-    }
+    }*/
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {  // 패스워드 암호화
