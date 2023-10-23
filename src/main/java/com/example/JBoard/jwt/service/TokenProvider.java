@@ -1,5 +1,6 @@
 package com.example.JBoard.jwt.service;
 
+import com.example.JBoard.Dto.BoardPrincipal;
 import com.example.JBoard.Entity.UserAccount;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
@@ -10,15 +11,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Arrays;
+import java.util.*;
 import java.util.Base64.Decoder;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -35,7 +32,8 @@ public class TokenProvider {
     public TokenProvider(
             @Value("${jwt.secretKey}") String secret,
             @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds){
-        this.secret =secret;
+        //this.secret = secret;
+        this.secret = Base64.getEncoder().encodeToString(secret.getBytes());
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
     }
 
@@ -50,7 +48,7 @@ public class TokenProvider {
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .signWith(SignatureAlgorithm.HS256, secret.getBytes())
                 .setExpiration(validity)
                 .compact();
     }
@@ -58,7 +56,7 @@ public class TokenProvider {
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts
                 .parser()
-                .setSigningKey(secret)
+                .setSigningKey(secret.getBytes())
                 .parseClaimsJws(token)
                 .getBody();
 
@@ -67,14 +65,20 @@ public class TokenProvider {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        User principal = new User(claims.getSubject(), "", authorities);
+        BoardPrincipal principal = new BoardPrincipal(claims.getSubject(), "", null, null, null, authorities.toString());
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
     public boolean validateToken(String token) {
+        token = token.split(" ")[1];
         try {
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secret.getBytes())
+                    .parseClaimsJws(token)
+                    .getBody();
+            log.info("try로 들어옴");
+            log.info("여기까지 완료");
             return true;
         } catch (io.jsonwebtoken.MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
@@ -86,5 +90,14 @@ public class TokenProvider {
             log.info("JWT 토큰이 잘못되었습니다.");
         }
         return false;
+    }
+
+    public Claims parseJwt(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secret.getBytes())
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims;
     }
 }

@@ -1,8 +1,10 @@
 package com.example.JBoard.controller;
 
-import com.example.JBoard.Dto.*;
+import com.example.JBoard.Dto.ArticleCommentDtoC;
+import com.example.JBoard.Dto.ArticleDtoC;
+import com.example.JBoard.Dto.BoardPrincipal;
+import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.Article;
-import com.example.JBoard.Entity.ArticleComment;
 import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.service.ArticleCommentService;
 import com.example.JBoard.service.ArticleService;
@@ -10,10 +12,7 @@ import com.example.JBoard.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor

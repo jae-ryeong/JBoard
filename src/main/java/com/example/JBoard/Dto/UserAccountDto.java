@@ -2,6 +2,7 @@ package com.example.JBoard.Dto;
 
 import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.Entity.constant.MemberRole;
+import lombok.Builder;
 
 public record UserAccountDto(
         String uid,
