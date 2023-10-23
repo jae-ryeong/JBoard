@@ -13,6 +13,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Request;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +35,12 @@ public class ArticleService {
     @Transactional(readOnly = true)
     public List<Article> getArticles() {    // 모든 게시물들을 끌어온다.
         return articleRepository.findAll();
+    }
+
+    public Page<Article> getPage(int page) {    // page는 조회할 페이지 번호
+        Pageable pageable = PageRequest.of(page, 10);
+        Page<Article> all = articleRepository.findAll(pageable);
+        return all;
     }
 
     public void createArticle(ArticleDtoC articleDtoC, UserAccount userAccount) {

@@ -10,6 +10,7 @@ import com.example.JBoard.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Objects;
@@ -37,10 +39,18 @@ public class BoardController {
         return "forward:/boardlist";
     }
 
-    @GetMapping("/boardlist")
+/*    @GetMapping("/boardlist")
     public String boardlist(Model model) {
         List<Article> articles = articleService.getArticles();
         model.addAttribute("Articles", articles);
+
+        return "articles/boardList";
+    }*/
+
+    @GetMapping("/boardlist")
+    public String boardlist2(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
+        Page<Article> pagaing = articleService.getPage(page);
+        model.addAttribute("Articles",pagaing);
 
         return "articles/boardList";
     }
