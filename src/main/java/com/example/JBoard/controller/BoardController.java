@@ -6,6 +6,7 @@ import com.example.JBoard.Entity.ArticleComment;
 import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.service.ArticleCommentService;
 import com.example.JBoard.service.ArticleService;
+import com.example.JBoard.service.PaginationService;
 import com.example.JBoard.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,6 +34,7 @@ public class BoardController {
     private final ArticleService articleService;
     private final UserService userService;
     private final ArticleCommentService commentService;
+    private final PaginationService paginationService;
 
     @GetMapping("/")
     public String index(Model model) {
@@ -50,7 +52,15 @@ public class BoardController {
     @GetMapping("/boardlist")
     public String boardlist2(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
         Page<Article> articles = articleService.getPage(page);
+        int number = articles.getNumber();
+        int totalPages = articles.getTotalPages();
+
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(articles.getPageable().getPageNumber(), totalPages);
+
         model.addAttribute("Articles", articles);
+        model.addAttribute("number", number);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("paginationBarNumbers", barNumbers);
 
         return "articles/boardList";
     }
