@@ -49,8 +49,8 @@ public class BoardController {
 
     @GetMapping("/boardlist")
     public String boardlist2(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
-        Page<Article> pagaing = articleService.getPage(page);
-        model.addAttribute("Articles",pagaing);
+        Page<Article> articles = articleService.getPage(page);
+        model.addAttribute("Articles", articles);
 
         return "articles/boardList";
     }

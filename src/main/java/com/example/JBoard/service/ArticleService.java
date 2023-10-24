@@ -16,6 +16,7 @@ import org.apache.coyote.Request;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +39,7 @@ public class ArticleService {
     }
 
     public Page<Article> getPage(int page) {    // page는 조회할 페이지 번호
-        Pageable pageable = PageRequest.of(page, 10);
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "articleId"));
         Page<Article> all = articleRepository.findAll(pageable);
         return all;
     }
