@@ -14,4 +14,8 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     int addCount(Long articleId);
 
     Page<Article> findAll(Pageable pageable);
+
+    Page<Article> findByTitleContaining(String title, Pageable pageable);
+    Page<Article> findByContentContaining(String content, Pageable pageable);
+    Page<Article> findByUserAccount_NicknameContaining(String nickname, Pageable pageable);
 }

@@ -12,6 +12,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,20 +44,12 @@ public class BoardController {
         return "forward:/boardlist";
     }
 
-/*    @GetMapping("/boardlist")
-    public String boardlist(Model model) {
-        List<Article> articles = articleService.getArticles();
-        model.addAttribute("Articles", articles);
-
-        return "articles/boardList";
-    }*/
-
     @GetMapping("/boardlist")
-    public String boardlist2(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
+    public String boardlist(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
         Page<Article> articles = articleService.getPage(page);
+
         int number = articles.getNumber();
         int totalPages = articles.getTotalPages();
-
         List<Integer> barNumbers = paginationService.getPaginationBarNumbers(articles.getPageable().getPageNumber(), totalPages);
 
         model.addAttribute("Articles", articles);
@@ -117,5 +112,20 @@ public class BoardController {
 
         System.out.println("수정완료");
         return "redirect:/detail/" + articleId;
+    }
+
+    @GetMapping("/search")  // TODO: search 타입으로 안 나눠도 괜찮다. 한번에 합치자
+    public String searchArticle(Model model, @PageableDefault(page = 0, size = 10, sort = "articleId", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(value = "title") String title) {
+        Page<Article> articles = articleService.searchArticle(title, pageable);
+
+        int number = articles.getNumber();
+        int totalPages = articles.getTotalPages();
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(articles.getPageable().getPageNumber(), totalPages);
+
+        model.addAttribute("Articles", articles);
+        model.addAttribute("number", number);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("paginationBarNumbers", barNumbers);
+        return "articles/boardList";
     }
 }
