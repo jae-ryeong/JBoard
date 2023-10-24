@@ -6,10 +6,12 @@ import com.example.JBoard.Entity.ArticleComment;
 import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.service.ArticleCommentService;
 import com.example.JBoard.service.ArticleService;
+import com.example.JBoard.service.PaginationService;
 import com.example.JBoard.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Objects;
@@ -31,16 +34,33 @@ public class BoardController {
     private final ArticleService articleService;
     private final UserService userService;
     private final ArticleCommentService commentService;
+    private final PaginationService paginationService;
 
     @GetMapping("/")
     public String index(Model model) {
         return "forward:/boardlist";
     }
 
-    @GetMapping("/boardlist")
+/*    @GetMapping("/boardlist")
     public String boardlist(Model model) {
         List<Article> articles = articleService.getArticles();
         model.addAttribute("Articles", articles);
+
+        return "articles/boardList";
+    }*/
+
+    @GetMapping("/boardlist")
+    public String boardlist2(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
+        Page<Article> articles = articleService.getPage(page);
+        int number = articles.getNumber();
+        int totalPages = articles.getTotalPages();
+
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(articles.getPageable().getPageNumber(), totalPages);
+
+        model.addAttribute("Articles", articles);
+        model.addAttribute("number", number);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("paginationBarNumbers", barNumbers);
 
         return "articles/boardList";
     }
