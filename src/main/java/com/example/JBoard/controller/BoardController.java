@@ -45,8 +45,10 @@ public class BoardController {
     }
 
     @GetMapping("/boardlist")
-    public String boardlist(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
-        Page<Article> articles = articleService.getPage(page);
+    public String boardlist(Model model, @RequestParam(value = "keyword", required = false) String keyword, @PageableDefault(page = 0, size = 10, sort = "articleId", direction = Sort.Direction.DESC) Pageable pageable)
+    {
+        // , @RequestParam(value = "page", defaultValue = "0") int page, page,
+        Page<Article> articles = articleService.getPage(keyword, pageable);
 
         int number = articles.getNumber();
         int totalPages = articles.getTotalPages();
@@ -57,6 +59,21 @@ public class BoardController {
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("paginationBarNumbers", barNumbers);
 
+        return "articles/boardList";
+    }
+
+    @GetMapping("/search")  // TODO: search 타입으로 안 나눠도 괜찮다. 한번에 합치자
+    public String searchArticle(Model model, @PageableDefault(page = 0, size = 10, sort = "articleId", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(value = "title") String title) {
+        Page<Article> articles = articleService.searchArticle(title, pageable);
+
+        int number = articles.getNumber();
+        int totalPages = articles.getTotalPages();
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(articles.getPageable().getPageNumber(), totalPages);
+
+        model.addAttribute("Articles", articles);
+        model.addAttribute("number", number);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("paginationBarNumbers", barNumbers);
         return "articles/boardList";
     }
 
@@ -112,20 +129,5 @@ public class BoardController {
 
         System.out.println("수정완료");
         return "redirect:/detail/" + articleId;
-    }
-
-    @GetMapping("/search")  // TODO: search 타입으로 안 나눠도 괜찮다. 한번에 합치자
-    public String searchArticle(Model model, @PageableDefault(page = 0, size = 10, sort = "articleId", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(value = "title") String title) {
-        Page<Article> articles = articleService.searchArticle(title, pageable);
-
-        int number = articles.getNumber();
-        int totalPages = articles.getTotalPages();
-        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(articles.getPageable().getPageNumber(), totalPages);
-
-        model.addAttribute("Articles", articles);
-        model.addAttribute("number", number);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("paginationBarNumbers", barNumbers);
-        return "articles/boardList";
     }
 }
