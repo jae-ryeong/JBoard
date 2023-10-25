@@ -45,10 +45,12 @@ public class BoardController {
     }
 
     @GetMapping("/boardlist")
-    public String boardlist(Model model, @RequestParam(value = "keyword", required = false) String keyword, @PageableDefault(page = 0, size = 10, sort = "articleId", direction = Sort.Direction.DESC) Pageable pageable)
+    public String boardlist(Model model,
+                            @RequestParam(value = "keyword", required = false) String keyword,
+                            @RequestParam(value = "searchType", required = false) String searchType,
+                            @PageableDefault(page = 0, size = 10, sort = "articleId", direction = Sort.Direction.DESC) Pageable pageable)
     {
-        // , @RequestParam(value = "page", defaultValue = "0") int page, page,
-        Page<Article> articles = articleService.getPage(keyword, pageable);
+        Page<Article> articles = articleService.getPage(keyword, searchType, pageable);
 
         int number = articles.getNumber();
         int totalPages = articles.getTotalPages();

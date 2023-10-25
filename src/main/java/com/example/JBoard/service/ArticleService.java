@@ -37,15 +37,19 @@ public class ArticleService {
         return articleRepository.findAll();
     }
 
-    public Page<Article> getPage(String keyword, Pageable pageable) {    // page는 조회할 페이지 번호
-// int page,
-        if (keyword == null){
-            //Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "articleId"));
-            Page<Article> all = articleRepository.findAll(pageable);
-            return all;
+    public Page<Article> getPage(String keyword, String searchType, Pageable pageable) {    // page는 조회할 페이지 번호
+
+        if (keyword == null && searchType == null){
+            return articleRepository.findAll(pageable);
         } else{
-            return articleRepository.findByContentOrTitleOrNicknameContaining(keyword, pageable);
+            switch (searchType) {
+                case "all": return articleRepository.findByContentOrTitleOrNicknameContaining(keyword, pageable);
+                case "title": return articleRepository.findByTitleContaining(keyword, pageable);
+                case "content": return articleRepository.findByContentContaining(keyword, pageable);
+                case "nickname": return articleRepository.findByUserAccount_NicknameContaining(keyword, pageable);
+            };
         }
+        return articleRepository.findAll(pageable);
     }
 
     public Page<Article> searchArticle(String title, Pageable pageable) {
