@@ -58,6 +58,7 @@ public class BoardController {
         model.addAttribute("number", number);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("paginationBarNumbers", barNumbers);
+        model.addAttribute("keyword", keyword);
 
         return "articles/boardList";
     }
