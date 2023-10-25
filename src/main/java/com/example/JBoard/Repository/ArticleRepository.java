@@ -14,4 +14,11 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     int addCount(Long articleId);
 
     Page<Article> findAll(Pageable pageable);
+
+    Page<Article> findByTitleContaining(String title, Pageable pageable);
+    Page<Article> findByContentContaining(String content, Pageable pageable);
+    Page<Article> findByUserAccount_NicknameContaining(String nickname, Pageable pageable);
+
+    @Query("SELECT a FROM Article a WHERE a.title LIKE %:keyword% OR a.content LIKE %:keyword% OR a.userAccount.nickname LIKE %:keyword% ")
+    Page<Article> findByContentOrTitleOrNicknameContaining(String keyword, Pageable pageable);
 }

@@ -12,6 +12,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,26 +44,24 @@ public class BoardController {
         return "forward:/boardlist";
     }
 
-/*    @GetMapping("/boardlist")
-    public String boardlist(Model model) {
-        List<Article> articles = articleService.getArticles();
-        model.addAttribute("Articles", articles);
-
-        return "articles/boardList";
-    }*/
-
     @GetMapping("/boardlist")
-    public String boardlist2(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
-        Page<Article> articles = articleService.getPage(page);
+    public String boardlist(Model model,
+                            @RequestParam(value = "keyword", required = false) String keyword,
+                            @RequestParam(value = "searchType", required = false) String searchType,
+                            @PageableDefault(page = 0, size = 10, sort = "articleId", direction = Sort.Direction.DESC) Pageable pageable)
+    {
+        Page<Article> articles = articleService.getPage(keyword, searchType, pageable);
+
         int number = articles.getNumber();
         int totalPages = articles.getTotalPages();
-
         List<Integer> barNumbers = paginationService.getPaginationBarNumbers(articles.getPageable().getPageNumber(), totalPages);
 
         model.addAttribute("Articles", articles);
         model.addAttribute("number", number);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("paginationBarNumbers", barNumbers);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("searchType", searchType);
 
         return "articles/boardList";
     }
