@@ -18,4 +18,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     Page<Article> findByTitleContaining(String title, Pageable pageable);
     Page<Article> findByContentContaining(String content, Pageable pageable);
     Page<Article> findByUserAccount_NicknameContaining(String nickname, Pageable pageable);
+
+    @Query("SELECT a FROM Article a WHERE a.title LIKE %:keyword% OR a.content LIKE %:keyword%")
+    Page<Article> findByContentOrTitleContaining(String keyword, Pageable pageable);
 }
