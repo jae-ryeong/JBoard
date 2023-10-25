@@ -44,7 +44,7 @@ public class ArticleService {
             Page<Article> all = articleRepository.findAll(pageable);
             return all;
         } else{
-            return articleRepository.findByContentOrTitleContaining(keyword, pageable);
+            return articleRepository.findByContentOrTitleOrNicknameContaining(keyword, pageable);
         }
     }
 
