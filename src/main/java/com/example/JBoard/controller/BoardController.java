@@ -66,21 +66,6 @@ public class BoardController {
         return "articles/boardList";
     }
 
-    @GetMapping("/search")  // TODO: search 타입으로 안 나눠도 괜찮다. 한번에 합치자
-    public String searchArticle(Model model, @PageableDefault(page = 0, size = 10, sort = "articleId", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(value = "title") String title) {
-        Page<Article> articles = articleService.searchArticle(title, pageable);
-
-        int number = articles.getNumber();
-        int totalPages = articles.getTotalPages();
-        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(articles.getPageable().getPageNumber(), totalPages);
-
-        model.addAttribute("Articles", articles);
-        model.addAttribute("number", number);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("paginationBarNumbers", barNumbers);
-        return "articles/boardList";
-    }
-
     @GetMapping("/boardCreateForm")
     public String boardCreateForm(Model model) {
         return "articles/boardCreateForm";
