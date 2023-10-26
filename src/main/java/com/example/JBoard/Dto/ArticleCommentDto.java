@@ -5,7 +5,7 @@ import com.example.JBoard.Entity.ArticleComment;
 import java.time.LocalDateTime;
 
 public record ArticleCommentDto(
-        Long id,
+        Long commentId,
         Long articleId,
         String content,
         LocalDateTime createdAt,
@@ -16,7 +16,7 @@ public record ArticleCommentDto(
     }
 
     public static ArticleCommentDto from(ArticleComment articleComment) {
-        return new ArticleCommentDto(articleComment.getId(), articleComment.getArticle().getArticleId(),
+        return new ArticleCommentDto(articleComment.getCommentId(), articleComment.getArticle().getArticleId(),
                 articleComment.getContent(), articleComment.getCreatedAt(), articleComment.getUserAccount().getNickname());
     }
 }

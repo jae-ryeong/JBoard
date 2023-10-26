@@ -38,7 +38,7 @@ public class ArticleCommentDtoC {
     }
 
     public static ArticleCommentDtoC from(ArticleComment articleComment) {
-        return new ArticleCommentDtoC(articleComment.getId(), articleComment.getArticle().getArticleId()
+        return new ArticleCommentDtoC(articleComment.getCommentId(), articleComment.getArticle().getArticleId()
                 ,articleComment.getContent(), articleComment.getCreatedAt(), UserAccountDto.from(articleComment.getUserAccount()));
     }
 }
