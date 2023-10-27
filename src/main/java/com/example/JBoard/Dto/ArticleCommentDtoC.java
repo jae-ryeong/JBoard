@@ -11,10 +11,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ArticleCommentDtoC {
-
     private Long id;
     private Long articleId;
-    //private String nickname;
     private String content;
     private LocalDateTime createdAt;
     private UserAccountDto userAccountDto;
@@ -31,10 +29,9 @@ public class ArticleCommentDtoC {
         return new ArticleCommentDtoC(null, articleId, content, null, userAccountDto);
     }
 
-    public ArticleComment toEntity(Article article, UserAccount userAccount) {
+    public ArticleComment toEntity(Article article, UserAccount userAccount, Long parentOrder) {
         return ArticleComment.of(
-                userAccount, article, content
-        );
+                userAccount, article, content, parentOrder);
     }
 
     public static ArticleCommentDtoC from(ArticleComment articleComment) {

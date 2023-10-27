@@ -29,7 +29,10 @@ public class ArticleCommentService {
     public void saveArticleComment(ArticleCommentDtoC dto) {
         Article article = articleRepository.getReferenceById(dto.getArticleId());
         Optional<UserAccount> userAccount = userAccountRepository.findByUid(dto.getUserAccountDto().uid());
-        articleCommentRepository.save(dto.toEntity(article, userAccount.get()));
+
+        Long parentOrder = article.getArticleComment().stream().count();
+
+        articleCommentRepository.save(dto.toEntity(article, userAccount.get(), parentOrder));
     }
 
     @Transactional(readOnly = true)
