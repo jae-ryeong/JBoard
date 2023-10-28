@@ -118,7 +118,8 @@
 
                         <!-- 답글 생성 폼 -->
                         <div class="collapse" style="display:none" th:id="create-reply- + ${comment.getId()}">
-                            <form class="d-flex" th:id="reply-comment-form" th:action="@{/comments/update/{commentId}(commentId=${comment.getId()})}" method="post">
+                            <form class="d-flex" th:id="reply-comment-form" th:action="@{/comments/newReply}" method="post">
+                                <input type="hidden" class="comment-id" th:name="commentId" th:value="${comment.getId()}">
                                 <div class="col-md-9 col-lg-8">
                                     <input type="hidden" class="article-id" name="articleId" th:value="${article.get().getArticleId()}">
                                     <label for="comment-textbox" hidden>답글</label>
