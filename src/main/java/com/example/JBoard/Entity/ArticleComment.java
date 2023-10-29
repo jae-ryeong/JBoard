@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -22,28 +26,32 @@ public class ArticleComment extends AuditingFields{
     @Column(length = 300, nullable = false)
     private String content;
 
-    @Setter // TODO: 구현이 완료되면 리팩토링으로 setter를 지울것이다.
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="parent", referencedColumnName = "commentId")
-    private ArticleComment parent;     // 대댓글이 어떤 댓글에 답글을 단 건지 적는 필드이다. 게시물에 바로 다는 댓글은 부모댓글이 없기 때문에 -1로 적어 넣는다.
+    @JoinColumn(name="parent_id", referencedColumnName = "commentId")
+    private ArticleComment parent;  // 대댓글이 가질 부모 댓글
+
+    @OneToMany(mappedBy = "parent")
+    @ToString.Exclude
+    private Set<ArticleComment> children = new LinkedHashSet<>();   // 댓글이 가질 속성
 
     private Long parentOrder;   // 댓글의 그룹
 
 
-    private ArticleComment(UserAccount userAccount, Article article, String content, Long parentOrder, ArticleComment parent) {
+    private ArticleComment(UserAccount userAccount, Article article, String content, Long parentOrder, ArticleComment parent, LinkedHashSet<ArticleComment> children) {
         this.userAccount = userAccount;
         this.article = article;
         this.content = content;
         this.parentOrder = parentOrder;
         this.parent = parent;
+        this.children = children;
     }
 
     public static ArticleComment of(UserAccount userAccount, Article article, String content, Long parentOrder) {   // 댓글 전용
-        return new ArticleComment(userAccount, article, content, parentOrder, null);
+        return new ArticleComment(userAccount, article, content, parentOrder, null, null);
     }
 
     public static ArticleComment of(UserAccount userAccount, Article article, String content, Long parentOrder, ArticleComment parent) {    // 답글 전용
-        return new ArticleComment(userAccount, article, content, parentOrder, parent);
+        return new ArticleComment(userAccount, article, content, parentOrder, parent, null);
     }
 
     // TODO: jpa로 리팩토링 해보기

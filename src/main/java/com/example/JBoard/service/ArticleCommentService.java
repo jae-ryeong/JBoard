@@ -43,7 +43,9 @@ public class ArticleCommentService {
 
         Optional<ArticleComment> parent = articleCommentRepository.findById(replyDto.commentId());
 
-        articleCommentRepository.save(replyDto.toEntity(article, userAccount.get(), parent.get()));
+        ArticleComment saveReply = articleCommentRepository.save(replyDto.toEntity(article, userAccount.get(), parent.get()));
+        parent.get().getChildren().add(saveReply);
+
     }
 
     @Transactional(readOnly = true)
@@ -52,6 +54,13 @@ public class ArticleCommentService {
                 .stream().map(ArticleCommentDtoC::from)
                 .toList();
     }
+
+/*    @Transactional(readOnly = true)
+    public List<ReplyDto> getCommentReply(Long commentId) { // TODO: Children을 추가해주면 repository가 따로 필요없지 않나??
+        return articleCommentRepository.findAllByParentEquals(commentId)
+                .stream().map(ReplyDto::from)
+                .toList();
+    }*/
 
     public void deleteArticleComment(Long commentId) {
         articleCommentRepository.deleteById(commentId);
