@@ -31,7 +31,7 @@ public class ArticleComment extends AuditingFields{
     private ArticleComment parent;  // 대댓글이 가질 부모 댓글
 
     @OneToMany(mappedBy = "parent")
-    @ToString.Exclude
+    @OrderBy("commentId asc")
     private Set<ArticleComment> children = new LinkedHashSet<>();   // 댓글이 가질 속성
 
 
