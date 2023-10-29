@@ -87,7 +87,6 @@ public class BoardController {
         articleService.readArticle(articleId, request, response);
         model.addAttribute("article", articleService.getArticle(articleId));    // TODO: Article을 직접 반환해주는데 이를 responseDTO 생성하기
         List<ArticleCommentDtoC> articleComments = commentService.getArticleComments(articleId);
-
         //articleService.readArticle(articleId, request, response);
 
         model.addAttribute("comments", articleComments);

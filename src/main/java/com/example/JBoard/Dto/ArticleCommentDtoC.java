@@ -34,9 +34,9 @@ public class ArticleCommentDtoC {
         return new ArticleCommentDtoC(null, articleId, content, null, userAccountDto, null);
     }
 
-    public ArticleComment toEntity(Article article, UserAccount userAccount, Long parentOrder) {
+    public ArticleComment toEntity(Article article, UserAccount userAccount) {
         return ArticleComment.of(
-                userAccount, article, content, parentOrder);
+                userAccount, article, content);
     }
 
     public static ArticleCommentDtoC from(ArticleComment articleComment) {

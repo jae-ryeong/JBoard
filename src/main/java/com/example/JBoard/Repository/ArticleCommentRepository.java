@@ -13,10 +13,4 @@ public interface ArticleCommentRepository extends JpaRepository<ArticleComment, 
     List<ArticleComment> findAllByArticleArticleId(Long articleId);
 
     List<ArticleComment> findAllByArticleArticleIdAndParentIsNull(Long articleId);
-
-    UserAccount findByUserAccountId(Long userId);
-
-    List<ArticleComment> findByArticleOrderByParentOrderAsc(Article article);
-
-    List<ArticleComment> findByParentOrderIs
 }

@@ -21,7 +21,7 @@ public record ReplyDto(
 
     public ArticleComment toEntity(Article article, UserAccount userAccount, ArticleComment parent) {
         return ArticleComment.of(
-                userAccount, article, content, parent.getParentOrder(), parent
+                userAccount, article, content, parent
         );
     }
 

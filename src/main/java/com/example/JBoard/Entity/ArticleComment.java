@@ -34,24 +34,21 @@ public class ArticleComment extends AuditingFields{
     @ToString.Exclude
     private Set<ArticleComment> children = new LinkedHashSet<>();   // 댓글이 가질 속성
 
-    private Long parentOrder;   // 댓글의 그룹
 
-
-    private ArticleComment(UserAccount userAccount, Article article, String content, Long parentOrder, ArticleComment parent, LinkedHashSet<ArticleComment> children) {
+    private ArticleComment(UserAccount userAccount, Article article, String content, ArticleComment parent, LinkedHashSet<ArticleComment> children) {
         this.userAccount = userAccount;
         this.article = article;
         this.content = content;
-        this.parentOrder = parentOrder;
         this.parent = parent;
         this.children = children;
     }
 
-    public static ArticleComment of(UserAccount userAccount, Article article, String content, Long parentOrder) {   // 댓글 전용
-        return new ArticleComment(userAccount, article, content, parentOrder, null, null);
+    public static ArticleComment of(UserAccount userAccount, Article article, String content) {   // 댓글 전용
+        return new ArticleComment(userAccount, article, content, null, null);
     }
 
-    public static ArticleComment of(UserAccount userAccount, Article article, String content, Long parentOrder, ArticleComment parent) {    // 답글 전용
-        return new ArticleComment(userAccount, article, content, parentOrder, parent, null);
+    public static ArticleComment of(UserAccount userAccount, Article article, String content, ArticleComment parent) {    // 답글 전용
+        return new ArticleComment(userAccount, article, content, parent, null);
     }
 
     // TODO: jpa로 리팩토링 해보기
