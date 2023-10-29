@@ -132,6 +132,30 @@
                                 </div>
                             </form>
                         </div>
+
+                        <div th:each="reply : ${comment.getChildren()}">
+                            <div class="children" th:if="${reply.deleted != 'Y' }">
+                                &nbsp;
+                                <time class="comment4" th:datetime="${reply.createdAt}"
+                                      th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"
+                                      style="display:inline"><small>2022-10-01</small></time>
+                                <!--<img src="/img/reply-ico.png" alt="답글" style="display:inline" class="replyicon">-->
+                                <strong class="writer" th:text="${reply.getUserAccount().getNickname()}">brince</strong>
+                                &nbsp;
+
+                                <p th:text="${reply.content}">
+                                <p>
+                                <hr>
+                            </div>
+                            <div class="children" th:if="${reply.deleted == 'Y'}">
+                                <p >
+                                    <!--<img src="/img/reply-ico.png" alt="답글" style="display:inline" class="replyicon">-->
+                                    <span class="comment3">삭제된 답글입니다.</span>
+                                </p>
+                                <hr>
+                            </div>
+                        </div>
+
                     </li>
                 </ul>
 
