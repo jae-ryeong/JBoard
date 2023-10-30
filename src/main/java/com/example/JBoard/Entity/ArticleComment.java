@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Cascade;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -30,7 +31,7 @@ public class ArticleComment extends AuditingFields{
     @JoinColumn(name="parent_id", referencedColumnName = "commentId")
     private ArticleComment parent;  // 대댓글이 가질 부모 댓글
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     @OrderBy("commentId asc")
     private Set<ArticleComment> children = new LinkedHashSet<>();   // 댓글이 가질 속성
 

@@ -101,7 +101,7 @@
                         </form>
 
                         <!-- 댓글 수정 폼 -->
-                        <div class="collapse"  style="display:none" th:id="update-comment- + ${comment.getId()}">
+                        <div class="collapse"  style="display:none;" th:id="update-comment- + ${comment.getId()}">
                             <form class="d-flex" th:id="update-comment-form" th:action="@{/comments/update/{commentId}(commentId=${comment.getId()})}" method="post">
                                 <div class="col-md-9 col-lg-8">
                                     <input type="hidden" class="article-id" name="articleId" th:value="${article.get().getArticleId()}">
@@ -146,8 +146,10 @@
                                 </div>
 
                                 <div class="col-2 mb-3 align-self-center" style="width: 150px; margin:0 auto; ">
+                                    <form class="comment-form" th:action="@{/comments/delete/{commentId}(commentId=${reply.getId()})}" method="post">
                                     <button onclick="update_reply(this.id)" th:id="reply- + ${reply.getId()}" type="button" class="btn btn-primary btn-sm" th:if="${boardPrincipal.nickname() == reply.getUserAccountDto().nickname()}">수정</button>
                                     <button type="submit" class="btn btn-danger btn-sm" th:if="${boardPrincipal.nickname() == reply.getUserAccountDto().nickname()}">삭제</button>
+                                    </form>
                                 </div>
 
                                 <!--답글 수정 폼-->
