@@ -16,6 +16,6 @@ public record ReplyRequest(
     }
 
     public ReplyDto toDto(UserAccountDto userAccountDto) {
-        return ReplyDto.of(articleId, commentId, content, userAccountDto);
+        return ReplyDto.of(articleId, commentId, content.replace("\r\n","<br>"), userAccountDto);
     }
 }
