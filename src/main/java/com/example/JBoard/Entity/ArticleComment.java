@@ -3,13 +3,20 @@ package com.example.JBoard.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.Cascade;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Getter
 @NoArgsConstructor
 public class ArticleComment extends AuditingFields{
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long commentId;
 
     @ManyToOne
     private UserAccount userAccount;
@@ -20,17 +27,33 @@ public class ArticleComment extends AuditingFields{
     @Column(length = 300, nullable = false)
     private String content;
 
-    private ArticleComment(UserAccount userAccount, Article article, String content) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="parent_id", referencedColumnName = "commentId")
+    private ArticleComment parent;  // 대댓글이 가질 부모 댓글
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)  // 부모 댓글 삭제시 자식 모두 삭제
+    @OrderBy("commentId asc")
+    private Set<ArticleComment> children = new LinkedHashSet<>();   // 댓글이 가질 자식 댓글
+
+
+    private ArticleComment(UserAccount userAccount, Article article, String content, ArticleComment parent, LinkedHashSet<ArticleComment> children) {
         this.userAccount = userAccount;
         this.article = article;
         this.content = content;
+        this.parent = parent;
+        this.children = children;
     }
 
-    public static ArticleComment of(UserAccount userAccount, Article article, String content) {
-        return new ArticleComment(userAccount, article, content);
+    public static ArticleComment of(UserAccount userAccount, Article article, String content) {   // 댓글 전용
+        return new ArticleComment(userAccount, article, content, null, null);
     }
 
-    public void update( String content) {
+    public static ArticleComment of(UserAccount userAccount, Article article, String content, ArticleComment parent) {    // 답글 전용
+        return new ArticleComment(userAccount, article, content, parent, null);
+    }
+
+    // TODO: jpa로 리팩토링 해보기
+    public void update(String content) {
         this.content = content.replace("\r\n","<br>");
     }
 }

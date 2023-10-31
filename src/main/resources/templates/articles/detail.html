@@ -95,12 +95,13 @@
                                 <div class="col-2 mb-3 align-self-center">
                                     <button onclick="update(this.id)" th:id="comment- + ${comment.getId()}" type="button" class="btn btn-primary btn-sm" th:if="${boardPrincipal.nickname() == comment.getUserAccountDto().nickname()}">수정</button>
                                     <button type="submit" class="btn btn-danger btn-sm" th:if="${boardPrincipal.nickname() == comment.getUserAccountDto().nickname()}">삭제</button>
-                                    <button type="submit" class="btn btn-secondary btn-sm">댓글</button>
+                                    <button onclick="reply(this.id)" th:id="reply- + ${comment.getId()}" type="button" class="btn btn-secondary btn-sm">답글</button>
                                 </div>
                             </div>
                         </form>
 
-                        <div class="collapse"  style="display:none" th:id="update-comment- + ${comment.getId()}">
+                        <!-- 댓글 수정 폼 -->
+                        <div class="collapse"  style="display:none;" th:id="update-comment- + ${comment.getId()}">
                             <form class="d-flex" th:id="update-comment-form" th:action="@{/comments/update/{commentId}(commentId=${comment.getId()})}" method="post">
                                 <div class="col-md-9 col-lg-8">
                                     <input type="hidden" class="article-id" name="articleId" th:value="${article.get().getArticleId()}">
@@ -109,10 +110,65 @@
                                 </div>
                                 <div class="ms-4 pt-3 pb-3">
                                     <label for="comment-submit" hidden>댓글 쓰기</label>
-                                    <button class="btn btn-primary" th:id="update-comment-submit" type="submit">쓰기</button>
-                                    <button onclick="update_cancel(this.id)" class="btn btn-primary" th:id="comment- + ${comment.getId()}" type="button">취소</button>
+                                    <button class="btn btn-primary" th:id="update-comment-submit" type="submit">수정</button>
+                                    <button onclick="update_cancel(this.id)" class="btn btn-danger" th:id="comment- + ${comment.getId()}" type="button">취소</button>
                                 </div>
                             </form>
+                        </div>
+
+                        <!-- 답글 생성 폼 -->
+                        <div class="collapse" style="display:none" th:id="create-reply- + ${comment.getId()}">
+                            <form class="d-flex" th:id="reply-comment-form" th:action="@{/comments/newReply}" method="post">
+                                <input type="hidden" class="comment-id" th:name="commentId" th:value="${comment.getId()}">
+                                <div class="col-md-9 col-lg-8">
+                                    <input type="hidden" class="article-id" name="articleId" th:value="${article.get().getArticleId()}">
+                                    <label for="comment-textbox" hidden>답글</label>
+                                    <textarea class="form-control" th:id="reply-comment-textbox" th:name="content" placeholder="답글 쓰기.." rows="3" required></textarea>
+                                </div>
+                                <div class="ms-4 pt-3 pb-3">
+                                    <label for="comment-submit" hidden>답글 쓰기</label>
+                                    <button class="btn btn-primary" th:id="reply-comment-submit" type="submit">쓰기</button>
+                                    <button onclick="reply_cancel(this.id)" class="btn btn-danger" th:id="reply- + ${comment.getId()}" type="button">취소</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- 답글 폼 -->
+                        <div th:each="reply : ${comment.getChildren()}" style="margin-left: 60px;">
+                            <div class="row" th:id="children" style="width: 1100px;">
+                                &nbsp;
+                                <div class="col-md-10 col-lg-9" style="width:900px;">
+                                    <strong class="writer" th:text="${reply.getUserAccountDto().nickname()}">brince</strong>
+                                    <time class="comment4" th:datetime="${reply.createdAt}"
+                                          th:text="${#temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm')}"
+                                          style="display:inline"><small>2022-10-01</small></time>
+                                    <p th:id="reply-textbox" th:utext="${reply.content}">das</p>
+                                </div>
+
+                                <div class="col-2 mb-3 align-self-center" style="width: 150px; margin:0 auto; ">
+                                    <form class="comment-form" th:action="@{/comments/delete/{commentId}(commentId=${reply.getId()})}" method="post">
+                                    <button onclick="update_reply(this.id)" th:id="reply- + ${reply.getId()}" type="button" class="btn btn-primary btn-sm" th:if="${boardPrincipal.nickname() == reply.getUserAccountDto().nickname()}">수정</button>
+                                    <button type="submit" class="btn btn-danger btn-sm" th:if="${boardPrincipal.nickname() == reply.getUserAccountDto().nickname()}">삭제</button>
+                                    </form>
+                                </div>
+
+                                <!--답글 수정 폼-->
+                                <div class="collapse"  style="display:none" th:id="update-reply- + ${reply.getId()}">
+                                    <form class="d-flex" th:id="update-reply-form" th:action="@{/comments/update/{commentId}(commentId=${reply.getId()})}" method="post">
+                                        <div class="col-md-9 col-lg-8">
+                                            <input type="hidden" class="article-id" name="articleId" th:value="${article.get().getArticleId()}">
+                                            <label for="comment-textbox" hidden>댓글</label>
+                                            <textarea class="form-control" th:id="update-reply-textbox" th:name="content" placeholder="댓글 쓰기.." rows="3" th:text="${reply.getContent()}" required></textarea>
+                                        </div>
+                                        <div class="ms-4 pt-3 pb-3">
+                                            <label for="comment-submit" hidden>댓글 쓰기</label>
+                                            <button class="btn btn-primary" th:id="update-reply-submit" type="submit">수정</button>
+                                            <button onclick="update_reply_cancel(this.id)" class="btn btn-danger" th:id="reply- + ${reply.getId()}" type="button">취소</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <hr>
+                            </div>
                         </div>
                     </li>
                 </ul>
@@ -123,18 +179,51 @@
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous">
 </script>
 <script>
-
     function update(clicked_id) {
         var updateCommentDiv = document.getElementById("update-" + clicked_id);
+
+        var createReplyDiv = 'create-reply-' + clicked_id.replace('comment-','');
+        var createReplyDiv2 = document.getElementById(createReplyDiv);
+        createReplyDiv2.style.display = "none";
+
         let text = document.getElementById("update-comment-textbox");
         updateCommentDiv.style.display = "block";
         let s = text.textContent.replaceAll("<br>","\r\n")
         text.textContent=s;
     }
 
-    function update_cancel(clicked_class) {
-        var updateCommentDiv = document.getElementById("update-" + clicked_class);
+    function update_cancel(clicked_id) {
+        var updateCommentDiv = document.getElementById("update-" + clicked_id);
         updateCommentDiv.style.display = "none";
+    }
+
+    function reply(clicked_id) {
+        var createReplyDiv = document.getElementById("create-" + clicked_id);
+
+        var updateCommentDiv = 'update-comment-' + clicked_id.replace('reply-','');
+        var updateCommentDiv2 = document.getElementById(updateCommentDiv);
+        updateCommentDiv2.style.display = "none";
+
+        createReplyDiv.style.display = "block";
+    }
+
+    function reply_cancel(clicked_id) {
+        var createReplyDiv = document.getElementById("create-" + clicked_id);
+        createReplyDiv.style.display = "none";
+    }
+
+    function update_reply(clicked_id) {
+        var updateReplyDiv = document.getElementById("update-" + clicked_id);
+
+        let text = document.getElementById("update-reply-textbox");
+        updateReplyDiv.style.display = "block";
+        let s = text.textContent.replaceAll("<br>","\r\n")
+        text.textContent=s;
+    }
+
+    function update_reply_cancel(clicked_id) {
+        var updateReplyDiv = document.getElementById("update-" + clicked_id);
+        updateReplyDiv.style.display = "none";
     }
 </script>
 </body>

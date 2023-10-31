@@ -1,7 +1,7 @@
 package com.example.JBoard.service;
 
-import com.example.JBoard.Dto.ArticleCommentDto;
 import com.example.JBoard.Dto.ArticleCommentDtoC;
+import com.example.JBoard.Dto.ReplyDto;
 import com.example.JBoard.Dto.Request.ArticleCommentRequest;
 import com.example.JBoard.Entity.Article;
 import com.example.JBoard.Entity.ArticleComment;
@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -29,12 +28,24 @@ public class ArticleCommentService {
     public void saveArticleComment(ArticleCommentDtoC dto) {
         Article article = articleRepository.getReferenceById(dto.getArticleId());
         Optional<UserAccount> userAccount = userAccountRepository.findByUid(dto.getUserAccountDto().uid());
+
         articleCommentRepository.save(dto.toEntity(article, userAccount.get()));
+    }
+
+    public void saveReply(ReplyDto replyDto) {
+        System.out.println("replyDto = " + replyDto);
+        Article article = articleRepository.getReferenceById(replyDto.articleId());
+        Optional<UserAccount> userAccount = userAccountRepository.findByUid(replyDto.userAccountDto().uid());
+
+        Optional<ArticleComment> parent = articleCommentRepository.findById(replyDto.commentId());
+
+        ArticleComment saveReply = articleCommentRepository.save(replyDto.toEntity(article, userAccount.get(), parent.get()));
+        parent.get().getChildren().add(saveReply);
     }
 
     @Transactional(readOnly = true)
     public List<ArticleCommentDtoC> getArticleComments(Long articleId) {
-        return articleCommentRepository.findAllByArticleArticleId(articleId)
+        return articleCommentRepository.findAllByArticleArticleIdAndParentIsNull(articleId)
                 .stream().map(ArticleCommentDtoC::from)
                 .toList();
     }
