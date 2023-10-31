@@ -135,7 +135,7 @@
 
                         <!-- 답글 폼 -->
                         <div th:each="reply : ${comment.getChildren()}" style="margin-left: 60px;">
-                            <div class="row" th:id="children" style="width: 1100px;"> <!-- th:if="${reply.deleted != 'Y' }" -->
+                            <div class="row" th:id="children" style="width: 1100px;">
                                 &nbsp;
                                 <div class="col-md-10 col-lg-9" style="width:900px;">
                                     <strong class="writer" th:text="${reply.getUserAccountDto().nickname()}">brince</strong>
@@ -169,13 +169,6 @@
                                 </div>
                                 <hr>
                             </div>
-                            <!--<div class="children" th:if="${reply.deleted == 'Y'}">
-                                <p >
-                                    &lt;!&ndash;<img src="/img/reply-ico.png" alt="답글" style="display:inline" class="replyicon">&ndash;&gt;
-                                    <span class="comment3">삭제된 답글입니다.</span>
-                                </p>
-                                <hr>
-                            </div>-->
                         </div>
                     </li>
                 </ul>

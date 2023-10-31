@@ -1,7 +1,6 @@
 package com.example.JBoard.controller;
 
 import com.example.JBoard.Dto.BoardPrincipal;
-import com.example.JBoard.Dto.ReplyDto;
 import com.example.JBoard.Dto.Request.ArticleCommentRequest;
 import com.example.JBoard.Dto.Request.ReplyRequest;
 import com.example.JBoard.service.ArticleCommentService;

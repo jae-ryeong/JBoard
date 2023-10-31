@@ -56,12 +56,4 @@ public class ArticleComment extends AuditingFields{
     public void update(String content) {
         this.content = content.replace("\r\n","<br>");
     }
-
-    public String parentName() {
-        return this.parent == null ? "" : this.parent.getUserAccount().getNickname();
-    }
-
-    public Long parentSeq() {
-        return this.parent == null ? -1 : this.parent.getCommentId();
-    }
 }
