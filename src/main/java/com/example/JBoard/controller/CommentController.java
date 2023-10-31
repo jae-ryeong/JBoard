@@ -19,10 +19,7 @@ public class CommentController {
     private final ArticleCommentService commentService;
 
     @PostMapping("/new")
-    public String newComment(ArticleCommentRequest articleCommentRequest, @AuthenticationPrincipal BoardPrincipal boardPrincipal) { // TODO: select 후 update 쿼리가 날라간다 수정해야함
-        System.out.println("articleCommentRequest = " + articleCommentRequest);
-        System.out.println("댓글 생성");
-
+    public String newComment(ArticleCommentRequest articleCommentRequest, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
         commentService.saveArticleComment(articleCommentRequest.toDto(boardPrincipal.toDto()));
 
         return "redirect:/detail/" + articleCommentRequest.articleId();

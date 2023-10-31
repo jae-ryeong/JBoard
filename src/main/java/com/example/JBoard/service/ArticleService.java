@@ -68,7 +68,6 @@ public class ArticleService {
     하루가 지나기전에 다른 글을 읽는다. -> [1]_[2] (다시 age가 하루로 바뀜)
      */
     public void readArticle(Long articleId, HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("readArticle 서비스 코드가 실행되었습니다.");
         Cookie oldCookie = null;
         Cookie[] cookies = request.getCookies();
 
