@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +31,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final UserAccountRepository userAccountRepository;
 
-    // 반환값을 나중에 DTO로 바꿔주기
+    //TODO: 반환값을 나중에 DTO로 바꿔주기
 
     @Transactional(readOnly = true)
     public List<Article> getArticles() {    // 모든 게시물들을 끌어온다.
@@ -52,13 +53,13 @@ public class ArticleService {
         return articleRepository.findAll(pageable);
     }
 
-    public Page<Article> searchArticle(String title, Pageable pageable) {
-        return articleRepository.findByUserAccount_NicknameContaining(title, pageable);
-    }
-
     public void createArticle(ArticleDtoC articleDtoC, UserAccount userAccount) {
-        System.out.println("createArticle 확인: userAccount = " + userAccount);
-        Article save = articleRepository.save(articleDtoC.toEntity(userAccount));
+        try {
+            articleRepository.save(articleDtoC.toEntity(userAccount));
+        } catch (UsernameNotFoundException e) { // 계정 없음
+            log.warn("게시글 생성을 위한 계정이 로그인 되어 있지 않습니다.");
+        }
+
     }
 
     /*

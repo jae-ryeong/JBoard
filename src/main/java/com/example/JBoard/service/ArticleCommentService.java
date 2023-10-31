@@ -3,13 +3,16 @@ package com.example.JBoard.service;
 import com.example.JBoard.Dto.ArticleCommentDtoC;
 import com.example.JBoard.Dto.ReplyDto;
 import com.example.JBoard.Dto.Request.ArticleCommentRequest;
+import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.Article;
 import com.example.JBoard.Entity.ArticleComment;
 import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.Repository.ArticleCommentRepository;
 import com.example.JBoard.Repository.ArticleRepository;
 import com.example.JBoard.Repository.UserAccountRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +22,7 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class ArticleCommentService {
 
     private final ArticleRepository articleRepository;
@@ -50,10 +54,6 @@ public class ArticleCommentService {
                 .toList();
     }
 
-    public void deleteArticleComment(Long commentId) {
-        articleCommentRepository.deleteById(commentId);
-    }
-
     @Transactional(readOnly = true)
     public Long getArticleId(Long commentId) {
         ArticleComment comment = articleCommentRepository.getReferenceById(commentId);
@@ -62,7 +62,34 @@ public class ArticleCommentService {
     }
 
     //TODO: 에러 처리 해주기
-    public void updateArticleComment(Long commentId, ArticleCommentRequest articleCommentRequest) {
-        articleCommentRepository.updateComment(articleCommentRequest.content(), commentId);
+
+    public void updateArticleComment(Long commentId, ArticleCommentRequest articleCommentRequest, UserAccountDto userAccountDto) {
+        try{
+            ArticleComment comment = articleCommentRepository.getReferenceById(commentId);
+            UserAccount userAccount = userAccountRepository.findByUid(userAccountDto.uid()).get();
+
+            if (userAccount == comment.getUserAccount()){
+                articleCommentRepository.updateComment(articleCommentRequest.content(), commentId);
+            } else {
+                log.warn("다른 사용자가 댓글 수정을 시도했습니다.");
+            }
+        } catch (EntityNotFoundException e) {
+            log.warn("댓글 업데이트 실패. 댓글을 수정하는데 필요한 정보를 찾을 수 없습니다 - {}", e.getLocalizedMessage());
+        }
+    }
+    public void deleteArticleComment(Long commentId, UserAccountDto userAccountDto) {
+        try{
+            ArticleComment comment = articleCommentRepository.getReferenceById(commentId);
+            UserAccount userAccount = userAccountRepository.findByUid(userAccountDto.uid()).get();
+
+            if (userAccount == comment.getUserAccount()){
+                articleCommentRepository.deleteById(commentId);
+            } else{
+                log.warn("다른 사용자가 댓글 삭제를 시도했습니다.");
+            }
+        } catch (EntityNotFoundException e) {
+            log.warn("댓글 삭제 실패. 댓글 삭제하는데 필요한 정보를 찾을 수 없습니다 - {}", e.getLocalizedMessage());
+        }
+
     }
 }
