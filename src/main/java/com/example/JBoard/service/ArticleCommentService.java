@@ -61,10 +61,8 @@ public class ArticleCommentService {
         return articleId;
     }
 
-
+    //TODO: 에러 처리 해주기
     public void updateArticleComment(Long commentId, ArticleCommentRequest articleCommentRequest) {
-        ArticleComment comment = articleCommentRepository.getReferenceById(commentId);
-
-        comment.update(articleCommentRequest.content());
+        articleCommentRepository.updateComment(articleCommentRequest.content(), commentId);
     }
 }

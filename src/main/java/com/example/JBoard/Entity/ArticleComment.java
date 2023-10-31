@@ -16,6 +16,7 @@ import java.util.Set;
 public class ArticleComment extends AuditingFields{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comment_Id")
     private Long commentId;
 
     @ManyToOne
@@ -28,7 +29,7 @@ public class ArticleComment extends AuditingFields{
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="parent_id", referencedColumnName = "commentId")
+    @JoinColumn(name="parent_id", referencedColumnName = "comment_Id")
     private ArticleComment parent;  // 대댓글이 가질 부모 댓글
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)  // 부모 댓글 삭제시 자식 모두 삭제
@@ -50,10 +51,5 @@ public class ArticleComment extends AuditingFields{
 
     public static ArticleComment of(UserAccount userAccount, Article article, String content, ArticleComment parent) {    // 답글 전용
         return new ArticleComment(userAccount, article, content, parent, null);
-    }
-
-    // TODO: jpa로 리팩토링 해보기
-    public void update(String content) {
-        this.content = content.replace("\r\n","<br>");
     }
 }
