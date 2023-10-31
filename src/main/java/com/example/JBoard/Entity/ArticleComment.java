@@ -31,9 +31,9 @@ public class ArticleComment extends AuditingFields{
     @JoinColumn(name="parent_id", referencedColumnName = "commentId")
     private ArticleComment parent;  // 대댓글이 가질 부모 댓글
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)  // 부모 댓글 삭제시 자식 모두 삭제
     @OrderBy("commentId asc")
-    private Set<ArticleComment> children = new LinkedHashSet<>();   // 댓글이 가질 속성
+    private Set<ArticleComment> children = new LinkedHashSet<>();   // 댓글이 가질 자식 댓글
 
 
     private ArticleComment(UserAccount userAccount, Article article, String content, ArticleComment parent, LinkedHashSet<ArticleComment> children) {
