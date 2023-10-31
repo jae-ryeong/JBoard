@@ -21,4 +21,8 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     @Query("SELECT a FROM Article a WHERE a.title LIKE %:keyword% OR a.content LIKE %:keyword% OR a.userAccount.nickname LIKE %:keyword% ")
     Page<Article> findByContentOrTitleOrNicknameContaining(String keyword, Pageable pageable);
+
+    @Modifying
+    @Query("update Article a set a.title = :title, a.content = :content where a.articleId = :articleId")
+    void updateArticleByTitleAndContent(Long articleId, String title, String content);
 }

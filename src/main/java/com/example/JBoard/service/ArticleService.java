@@ -135,7 +135,7 @@ public class ArticleService {
             Optional<UserAccount> userAccount = userAccountRepository.findByUid(userAccountDto.uid());
 
             if (article.getUserAccount().getUid().equals(userAccount.get().getUid())) {
-                article.update(dto.getTitle(), dto.getContent());
+                articleRepository.updateArticleByTitleAndContent(articleId, dto.getTitle(), dto.getContent());
             }else{
                 log.warn("다른 사용자가 게시글 수정을 시도했습니다.");
             }

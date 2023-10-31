@@ -50,9 +50,4 @@ public class Article extends AuditingFields {
     public static Article of(UserAccount userAccount, String title, String content, Long view_count) {
         return new Article(userAccount, title, content, view_count);
     }
-
-    public void update(String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
 }
