@@ -38,19 +38,19 @@ public class ArticleService {
         return articleRepository.findAll();
     }
 
-    public Page<Article> getPage(String keyword, String searchType, Pageable pageable) {    // page는 조회할 페이지 번호
+    public Page<ArticleDtoC> getPage(String keyword, String searchType, Pageable pageable) {    // page는 조회할 페이지 번호
 
         if (keyword == null && searchType == null){
-            return articleRepository.findAll(pageable);
+            return articleRepository.findAll(pageable).map(ArticleDtoC::from);
         } else{
             switch (searchType) {
-                case "all": return articleRepository.findByContentOrTitleOrNicknameContaining(keyword, pageable);
-                case "title": return articleRepository.findByTitleContaining(keyword, pageable);
-                case "content": return articleRepository.findByContentContaining(keyword, pageable);
-                case "nickname": return articleRepository.findByUserAccount_NicknameContaining(keyword, pageable);
+                case "all": return articleRepository.findByContentOrTitleOrNicknameContaining(keyword, pageable).map(ArticleDtoC::from);
+                case "title": return articleRepository.findByTitleContaining(keyword, pageable).map(ArticleDtoC::from);
+                case "content": return articleRepository.findByContentContaining(keyword, pageable).map(ArticleDtoC::from);
+                case "nickname": return articleRepository.findByUserAccount_NicknameContaining(keyword, pageable).map(ArticleDtoC::from);
             };
         }
-        return articleRepository.findAll(pageable);
+        return articleRepository.findAll(pageable).map(ArticleDtoC::from);
     }
 
     public void createArticle(ArticleDtoC articleDtoC, UserAccount userAccount) {

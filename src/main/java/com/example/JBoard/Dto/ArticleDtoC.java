@@ -9,16 +9,20 @@ import java.time.LocalDateTime;
 
 @Getter
 public class ArticleDtoC {
+    private Long articleId;
     private String title;
     private String content;
     private LocalDateTime createAt;
     private UserAccountDto userAccountDto;
+    private Long viewCount;
 
-    public ArticleDtoC(UserAccountDto userAccountDto, String title, String content, LocalDateTime createAt){
+    public ArticleDtoC(Long articleId, UserAccountDto userAccountDto, String title, String content, LocalDateTime createAt, Long viewCount){
+        this.articleId = articleId;
         this.userAccountDto = userAccountDto;
         this.title = title;
         this.content = content;
         this.createAt = createAt;
+        this.viewCount = viewCount;
     }
 
     @Override
@@ -36,18 +40,20 @@ public class ArticleDtoC {
 
     public static ArticleDtoC from(Article entity) {
         return new ArticleDtoC(
+                entity.getArticleId(),
                 UserAccountDto.from(entity.getUserAccount()),
                 entity.getTitle(),
                 entity.getContent(),
-                entity.getCreatedAt()
+                entity.getCreatedAt(),
+                entity.getView_count()
         );
     }
 
     public static ArticleDtoC of(UserAccountDto userAccountDto, String title, String content, LocalDateTime createAt){
-        return new ArticleDtoC(userAccountDto, title, content, createAt);
+        return new ArticleDtoC(null, userAccountDto, title, content, createAt, null);
     }
 
     public static ArticleDtoC of(UserAccountDto userAccountDto, String title, String content){
-        return new ArticleDtoC(userAccountDto, title, content, null);
+        return new ArticleDtoC(null, userAccountDto, title, content, null, null);
     }
 }

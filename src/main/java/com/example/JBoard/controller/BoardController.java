@@ -48,7 +48,7 @@ public class BoardController {
                             @RequestParam(value = "searchType", required = false) String searchType,
                             @PageableDefault(page = 0, size = 10, sort = "articleId", direction = Sort.Direction.DESC) Pageable pageable)
     {
-        Page<Article> articles = articleService.getPage(keyword, searchType, pageable);
+        Page<ArticleDtoC> articles = articleService.getPage(keyword, searchType, pageable);
 
         int number = articles.getNumber();
         int totalPages = articles.getTotalPages();

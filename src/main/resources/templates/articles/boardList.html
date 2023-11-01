@@ -52,8 +52,8 @@
                     <tr th:each="Article : ${Articles}">
                         <td th:text="${Article.getArticleId()}">게시글 번호</td>
                         <td><a th:href="@{/detail/{articleId}(articleId=${Article.getArticleId()})}" th:text="${Article.getTitle()}">제목</a></td>
-                        <td th:text="${Article.getUserAccount().getNickname()}">작성자</td>
-                        <td th:text="${Article.getView_count()}">조회수</td>
+                        <td th:text="${Article.getUserAccountDto().nickname()}">작성자</td>
+                        <td th:text="${Article.getViewCount()}">조회수</td>
                     </tr>
                 </tbody>
 
@@ -69,14 +69,14 @@
         <nav id="pagination" aria-label="Page navigation">
             <ul class="pagination justify-content-center">
                 <li class="page-item"><a th:text="'previous'"
-                                         th:href="@{/(page=${number - 1}, keyword=${keyword})}"
+                                         th:href="@{/(page=${number - 1}, searchType=${searchType}, keyword=${keyword})}"
                                          th:class="'page-link' + (${number} <= 0 ? ' disabled' : '')">Previous</a></li>
                 <li class="page-item" th:each="pageNumber : ${paginationBarNumbers}">
                     <a th:text="${pageNumber+1}"
-                       th:href="@{/(page=${pageNumber}, keyword=${keyword})}"
+                       th:href="@{/(page=${pageNumber}, searchType=${searchType}, keyword=${keyword})}"
                        th:class="'page-link' + (${number} == ${pageNumber} ? ' disabled' : '')">1</a></li>
                 <li class="page-item"><a th:text="'next'"
-                                         th:href="@{/(page=${number + 1}, keyword=${keyword})}"
+                                         th:href="@{/(page=${number + 1}, searchType=${searchType}, keyword=${keyword})}"
                                          th:class="'page-link' + (${number} >= ${totalPages}-1 ? ' disabled' : '')">Next</a></li>
             </ul>
         </nav>
