@@ -38,17 +38,23 @@ public class ArticleService {
         return articleRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Page<ArticleDtoC> getPage(String keyword, String searchType, Pageable pageable) {    // page는 조회할 페이지 번호
 
-        if (keyword == null && searchType == null){
+        if (keyword == null && searchType == null) {
             return articleRepository.findAll(pageable).map(ArticleDtoC::from);
-        } else{
+        } else {
             switch (searchType) {
-                case "all": return articleRepository.findByContentOrTitleOrNicknameContaining(keyword, pageable).map(ArticleDtoC::from);
-                case "title": return articleRepository.findByTitleContaining(keyword, pageable).map(ArticleDtoC::from);
-                case "content": return articleRepository.findByContentContaining(keyword, pageable).map(ArticleDtoC::from);
-                case "nickname": return articleRepository.findByUserAccount_NicknameContaining(keyword, pageable).map(ArticleDtoC::from);
-            };
+                case "all":
+                    return articleRepository.findByContentOrTitleOrNicknameContaining(keyword, pageable).map(ArticleDtoC::from);
+                case "title":
+                    return articleRepository.findByTitleContaining(keyword, pageable).map(ArticleDtoC::from);
+                case "content":
+                    return articleRepository.findByContentContaining(keyword, pageable).map(ArticleDtoC::from);
+                case "nickname":
+                    return articleRepository.findByUserAccount_NicknameContaining(keyword, pageable).map(ArticleDtoC::from);
+            }
+            ;
         }
         return articleRepository.findAll(pageable).map(ArticleDtoC::from);
     }
@@ -107,9 +113,10 @@ public class ArticleService {
         return articleRepository.addCount(articleId);
     }
 
-    public Optional<Article> getArticle(Long articleId) {
+    public ArticleDtoC getArticle(Long articleId) {
         Optional<Article> article = articleRepository.findById(articleId);
-        return article;
+        return article.map(ArticleDtoC::from).
+                orElseThrow(() -> new EntityNotFoundException("게시글이 존재하지 않습니다."));
     }
 
     public void deleteArticle(Long articleId, UserAccountDto userAccountDto) {
@@ -119,11 +126,11 @@ public class ArticleService {
 
             if (article.getUserAccount().getUid().equals(userAccount.get().getUid())) {
                 articleRepository.deleteById(articleId);
-            }else{
+            } else {
                 log.warn("다른 사용자가 게시글 삭제를 시도했습니다.");
             }
 
-        }catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             log.warn("게시글 삭제 실패. 게시글을 삭제하는데 필요한 정보를 찾을 수 없습니다 - {}", e.getLocalizedMessage());
         }
 
@@ -136,7 +143,7 @@ public class ArticleService {
 
             if (article.getUserAccount().getUid().equals(userAccount.get().getUid())) {
                 articleRepository.updateArticleByTitleAndContent(articleId, dto.getTitle(), dto.getContent());
-            }else{
+            } else {
                 log.warn("다른 사용자가 게시글 수정을 시도했습니다.");
             }
         } catch (EntityNotFoundException e) {

@@ -30,15 +30,15 @@
             <tbody>
             <tr>
                 <th>제목</th>
-                <td th:text="${article.get().getTitle()}">제목</td>
+                <td th:text="${article.title()}">제목</td>
                 <th>조회수</th>
-                <td th:text="${article.get().getView_count()}">조회수</td>
+                <td th:text="${article.view_count()}">조회수</td>
             </tr>
             <tr>
                 <th>작성자</th>
-                <td th:text="${article.get().getUserAccount().getNickname()}">유저</td>
+                <td th:text="${article.userAccountDto().nickname()}">유저</td>
                 <th>작성시간</th>
-                <td th:text="${#temporals.format(article.get().getCreatedAt(), 'yyyy-MM-dd hh:mm')}">작성시간</td>
+                <td th:text="${#temporals.format(article.createdAt(), 'yyyy-MM-dd hh:mm')}">작성시간</td>
                 <!--
                 String Date형식을 원하는 Date 형식으로 표현( String > Date Format)
                 temporals.format(날짜, 형식);
@@ -46,7 +46,7 @@
             </tr>
             <tr>
                 <th>내용</th>
-                <td colspan="3" th:text="${article.get().getContent()}">
+                <td colspan="3" th:text="${article.content()}">
                     내용
                 </td>
             </tr>
@@ -54,12 +54,12 @@
         </table>
 
         <!-- 버튼 -->
-        <form th:action="@{/detail/{articleId}/delete(articleId=${article.get().getArticleId()})}" method="post">
+        <form th:action="@{/detail/{articleId}/delete(articleId=${article.articleId()})}" method="post">
 
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <a class="btn btn-primary" th:href="@{|/update/${article.get().articleId}|}" th:if="${boardPrincipal.getUsername() == article.get().getUserAccount().getUid()}">수정하기</a>
+                <a class="btn btn-primary" th:href="@{|/update/${article.articleId()}|}" th:if="${boardPrincipal.getUsername() == article.userAccountDto().uid()}">수정하기</a>
                 <a class="btn btn-secondary" th:onclick="|location.href='@{/boardlist}'|" role="button">목록으로</a>
-                <button class="btn btn-danger" type="submit" th:if="${boardPrincipal.getUsername() == article.get().getUserAccount().getUid()}" >삭제</button>
+                <button class="btn btn-danger" type="submit" th:if="${boardPrincipal.getUsername() == article.userAccountDto().uid()}" >삭제</button>
             </div>
         </form>
 
@@ -67,7 +67,7 @@
 
         <div class="m-4">
                 <form class="d-flex justify-content-center" id="comment-form" th:action="@{/comments/new}" method="post">
-                    <input type="hidden" class="article-id" th:name="articleId" th:value="${article.get().getArticleId()}">
+                    <input type="hidden" class="article-id" th:name="articleId" th:value="${article.articleId()}">
                     <div class="col-md-9 col-lg-8">
                         <label for="comment-textbox" hidden>댓글</label>
                         <textarea class="form-control" id="comment-textbox" th:name="content" placeholder="댓글 쓰기.." rows="3" required></textarea>
@@ -104,7 +104,7 @@
                         <div class="collapse"  style="display:none;" th:id="update-comment- + ${comment.getId()}">
                             <form class="d-flex" th:id="update-comment-form" th:action="@{/comments/update/{commentId}(commentId=${comment.getId()})}" method="post">
                                 <div class="col-md-9 col-lg-8">
-                                    <input type="hidden" class="article-id" name="articleId" th:value="${article.get().getArticleId()}">
+                                    <input type="hidden" class="article-id" name="articleId" th:value="${article.getArticleId()}">
                                     <label for="comment-textbox" hidden>댓글</label>
                                     <textarea class="form-control" th:id="update-comment-textbox" th:name="content" placeholder="댓글 쓰기.." rows="3" th:text="${comment.getContent()}" required></textarea>
                                 </div>
@@ -121,7 +121,7 @@
                             <form class="d-flex" th:id="reply-comment-form" th:action="@{/comments/newReply}" method="post">
                                 <input type="hidden" class="comment-id" th:name="commentId" th:value="${comment.getId()}">
                                 <div class="col-md-9 col-lg-8">
-                                    <input type="hidden" class="article-id" name="articleId" th:value="${article.get().getArticleId()}">
+                                    <input type="hidden" class="article-id" name="articleId" th:value="${article.articleId()}">
                                     <label for="comment-textbox" hidden>답글</label>
                                     <textarea class="form-control" th:id="reply-comment-textbox" th:name="content" placeholder="답글 쓰기.." rows="3" required></textarea>
                                 </div>
@@ -156,7 +156,7 @@
                                 <div class="collapse"  style="display:none" th:id="update-reply- + ${reply.getId()}">
                                     <form class="d-flex" th:id="update-reply-form" th:action="@{/comments/update/{commentId}(commentId=${reply.getId()})}" method="post">
                                         <div class="col-md-9 col-lg-8">
-                                            <input type="hidden" class="article-id" name="articleId" th:value="${article.get().getArticleId()}">
+                                            <input type="hidden" class="article-id" name="articleId" th:value="${article.articleId()}">
                                             <label for="comment-textbox" hidden>댓글</label>
                                             <textarea class="form-control" th:id="update-reply-textbox" th:name="content" placeholder="댓글 쓰기.." rows="3" th:text="${reply.getContent()}" required></textarea>
                                         </div>
