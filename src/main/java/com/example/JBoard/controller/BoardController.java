@@ -66,6 +66,7 @@ public class BoardController {
 
     @GetMapping("/boardCreateForm")
     public String boardCreateForm(Model model) {
+        // 스프링 시큐리티에서 필터로 걸러주기 때문에 따로 처리 X
         return "articles/boardCreateForm";
     }
 
@@ -101,11 +102,14 @@ public class BoardController {
     }
 
     @GetMapping("/update/{articleId}")
-    public String updateArticleForm(@PathVariable("articleId") Long articleId, Model model) {
+    public String updateArticleForm(@PathVariable("articleId") Long articleId, Model model, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
         Optional<Article> article = articleService.getArticle(articleId);
 
-        model.addAttribute("article", article);
-        return "articles/boardUpdateForm";
+        if (!article.get().getUserAccount().getUid().equals(boardPrincipal.uid())) {  // URI 직접 입력 방지
+            return "redirect:/boardlist";
+        }
+            model.addAttribute("article", article);
+            return "articles/boardUpdateForm";
     }
 
     @PostMapping("/update/{articleId}")

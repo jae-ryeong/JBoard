@@ -68,7 +68,7 @@ public class ArticleCommentService {
             ArticleComment comment = articleCommentRepository.getReferenceById(commentId);
             UserAccount userAccount = userAccountRepository.findByUid(userAccountDto.uid()).get();
 
-            if (userAccount == comment.getUserAccount()){
+            if (userAccount.equals(comment.getUserAccount())){
                 articleCommentRepository.updateComment(articleCommentRequest.content(), commentId);
             } else {
                 log.warn("다른 사용자가 댓글 수정을 시도했습니다.");
@@ -82,7 +82,7 @@ public class ArticleCommentService {
             ArticleComment comment = articleCommentRepository.getReferenceById(commentId);
             UserAccount userAccount = userAccountRepository.findByUid(userAccountDto.uid()).get();
 
-            if (userAccount == comment.getUserAccount()){
+            if (userAccount.equals(comment.getUserAccount())){
                 articleCommentRepository.deleteById(commentId);
             } else{
                 log.warn("다른 사용자가 댓글 삭제를 시도했습니다.");
