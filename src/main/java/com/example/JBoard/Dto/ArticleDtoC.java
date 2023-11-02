@@ -35,7 +35,7 @@ public class ArticleDtoC {
 
     // DTO -> Entity
     public Article toEntity(UserAccount userAccount) {
-        return Article.of(userAccount, title, content, 0L);
+        return Article.of(userAccount, title, content.replace("\r\n","<br>"), 0L);
     }
 
     public static ArticleDtoC from(Article entity) {
