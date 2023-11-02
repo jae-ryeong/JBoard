@@ -1,8 +1,0 @@
-#jwt:
-  #secretKey: eyJhbGciOiJIUzUxMiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY5NzI0Mjk4NiwiaWF0IjoxNjk3MjQyOTg2fQ.J4i-1iVJ8etLu0Ti5foDvqs3OQhWIAdiu8hyxTWnkxTEpWSUIwBmo6tKRsYy5J-5UD89u2QW65XaZHpUyoiWqg
-  #access:
-    #expiration: 360000 # 1시간(60분)
-    #header: Authorization
-  #refresh:
-    #expiration: 3600000 # 10시간
-    #header: Authorization-refresh

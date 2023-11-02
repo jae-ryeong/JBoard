@@ -16,8 +16,4 @@ public class PaginationService {
 
         return IntStream.range(startNumber, endNumber).boxed().toList();    // IntStream 원시 타입을 박싱하여 stream -> List<Integer>로 변환해주었다.
     }
-
-    public int currentBarLength() { // 페이징네이션 바 길이
-        return BAR_LENGTH;
-    }
 }

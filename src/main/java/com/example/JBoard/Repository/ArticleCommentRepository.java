@@ -11,7 +11,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ArticleCommentRepository extends JpaRepository<ArticleComment, Long> {
-    List<ArticleComment> findAllByArticleArticleId(Long articleId);
     List<ArticleComment> findAllByArticleArticleIdAndParentIsNull(Long articleId);
 
     @Modifying

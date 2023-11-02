@@ -113,7 +113,7 @@ public class ArticleService {
         return articleRepository.addCount(articleId);
     }
 
-    public ArticleDtoC getArticle(Long articleId) {
+    public ArticleDtoC getArticle(Long articleId) { // 단건 조회
         Optional<Article> article = articleRepository.findById(articleId);
         return article.map(ArticleDtoC::from).
                 orElseThrow(() -> new EntityNotFoundException("게시글이 존재하지 않습니다."));
@@ -140,7 +140,6 @@ public class ArticleService {
         try {
             Article article = articleRepository.getReferenceById(articleId);
             Optional<UserAccount> userAccount = userAccountRepository.findByUid(userAccountDto.uid());
-
             if (article.getUserAccount().getUid().equals(userAccount.get().getUid())) {
                 articleRepository.updateArticleByTitleAndContent(articleId, dto.getTitle(), dto.getContent());
             } else {
