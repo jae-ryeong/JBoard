@@ -3,6 +3,7 @@ package com.example.JBoard.controller;
 import com.example.JBoard.Dto.ArticleCommentDtoC;
 import com.example.JBoard.Dto.ArticleDtoC;
 import com.example.JBoard.Dto.BoardPrincipal;
+import com.example.JBoard.Dto.Response.ArticleResponse;
 import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.Article;
 import com.example.JBoard.Entity.UserAccount;
@@ -48,7 +49,7 @@ public class BoardController {
                             @RequestParam(value = "searchType", required = false) String searchType,
                             @PageableDefault(page = 0, size = 10, sort = "articleId", direction = Sort.Direction.DESC) Pageable pageable)
     {
-        Page<Article> articles = articleService.getPage(keyword, searchType, pageable);
+        Page<ArticleDtoC> articles = articleService.getPage(keyword, searchType, pageable);
 
         int number = articles.getNumber();
         int totalPages = articles.getTotalPages();
@@ -66,6 +67,7 @@ public class BoardController {
 
     @GetMapping("/boardCreateForm")
     public String boardCreateForm(Model model) {
+        // 스프링 시큐리티에서 필터로 걸러주기 때문에 따로 처리 X
         return "articles/boardCreateForm";
     }
 
@@ -83,9 +85,9 @@ public class BoardController {
     @GetMapping("/detail/{articleId}")
     public String article_detail(@PathVariable("articleId") Long articleId, Model model, @AuthenticationPrincipal BoardPrincipal boardPrincipal, HttpServletRequest request, HttpServletResponse response) {
         articleService.readArticle(articleId, request, response);
-        model.addAttribute("article", articleService.getArticle(articleId));    // TODO: Article을 직접 반환해주는데 이를 responseDTO 생성하기
+        model.addAttribute("article", ArticleResponse.from(articleService.getArticle(articleId)));
+
         List<ArticleCommentDtoC> articleComments = commentService.getArticleComments(articleId);
-        //articleService.readArticle(articleId, request, response);
 
         model.addAttribute("comments", articleComments);
         model.addAttribute("boardPrincipal",boardPrincipal);
@@ -101,11 +103,14 @@ public class BoardController {
     }
 
     @GetMapping("/update/{articleId}")
-    public String updateArticleForm(@PathVariable("articleId") Long articleId, Model model) {
-        Optional<Article> article = articleService.getArticle(articleId);
+    public String updateArticleForm(@PathVariable("articleId") Long articleId, Model model, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
+        ArticleDtoC article = articleService.getArticle(articleId);
 
-        model.addAttribute("article", article);
-        return "articles/boardUpdateForm";
+        if (!article.getUserAccountDto().uid().equals(boardPrincipal.uid())) {  // URI 직접 입력 방지
+            return "redirect:/boardlist";
+        }
+            model.addAttribute("article", article);
+            return "articles/boardUpdateForm";
     }
 
     @PostMapping("/update/{articleId}")

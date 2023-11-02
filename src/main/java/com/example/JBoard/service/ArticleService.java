@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,35 +31,41 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final UserAccountRepository userAccountRepository;
 
-    // 반환값을 나중에 DTO로 바꿔주기
+    //TODO: 반환값을 나중에 DTO로 바꿔주기
 
     @Transactional(readOnly = true)
     public List<Article> getArticles() {    // 모든 게시물들을 끌어온다.
         return articleRepository.findAll();
     }
 
-    public Page<Article> getPage(String keyword, String searchType, Pageable pageable) {    // page는 조회할 페이지 번호
+    @Transactional(readOnly = true)
+    public Page<ArticleDtoC> getPage(String keyword, String searchType, Pageable pageable) {    // page는 조회할 페이지 번호
 
-        if (keyword == null && searchType == null){
-            return articleRepository.findAll(pageable);
-        } else{
+        if (keyword == null && searchType == null) {
+            return articleRepository.findAll(pageable).map(ArticleDtoC::from);
+        } else {
             switch (searchType) {
-                case "all": return articleRepository.findByContentOrTitleOrNicknameContaining(keyword, pageable);
-                case "title": return articleRepository.findByTitleContaining(keyword, pageable);
-                case "content": return articleRepository.findByContentContaining(keyword, pageable);
-                case "nickname": return articleRepository.findByUserAccount_NicknameContaining(keyword, pageable);
-            };
+                case "all":
+                    return articleRepository.findByContentOrTitleOrNicknameContaining(keyword, pageable).map(ArticleDtoC::from);
+                case "title":
+                    return articleRepository.findByTitleContaining(keyword, pageable).map(ArticleDtoC::from);
+                case "content":
+                    return articleRepository.findByContentContaining(keyword, pageable).map(ArticleDtoC::from);
+                case "nickname":
+                    return articleRepository.findByUserAccount_NicknameContaining(keyword, pageable).map(ArticleDtoC::from);
+            }
+            ;
         }
-        return articleRepository.findAll(pageable);
-    }
-
-    public Page<Article> searchArticle(String title, Pageable pageable) {
-        return articleRepository.findByUserAccount_NicknameContaining(title, pageable);
+        return articleRepository.findAll(pageable).map(ArticleDtoC::from);
     }
 
     public void createArticle(ArticleDtoC articleDtoC, UserAccount userAccount) {
-        System.out.println("createArticle 확인: userAccount = " + userAccount);
-        Article save = articleRepository.save(articleDtoC.toEntity(userAccount));
+        try {
+            articleRepository.save(articleDtoC.toEntity(userAccount));
+        } catch (UsernameNotFoundException e) { // 계정 없음
+            log.warn("게시글 생성을 위한 계정이 로그인 되어 있지 않습니다.");
+        }
+
     }
 
     /*
@@ -106,9 +113,10 @@ public class ArticleService {
         return articleRepository.addCount(articleId);
     }
 
-    public Optional<Article> getArticle(Long articleId) {
+    public ArticleDtoC getArticle(Long articleId) { // 단건 조회
         Optional<Article> article = articleRepository.findById(articleId);
-        return article;
+        return article.map(ArticleDtoC::from).
+                orElseThrow(() -> new EntityNotFoundException("게시글이 존재하지 않습니다."));
     }
 
     public void deleteArticle(Long articleId, UserAccountDto userAccountDto) {
@@ -118,11 +126,11 @@ public class ArticleService {
 
             if (article.getUserAccount().getUid().equals(userAccount.get().getUid())) {
                 articleRepository.deleteById(articleId);
-            }else{
+            } else {
                 log.warn("다른 사용자가 게시글 삭제를 시도했습니다.");
             }
 
-        }catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             log.warn("게시글 삭제 실패. 게시글을 삭제하는데 필요한 정보를 찾을 수 없습니다 - {}", e.getLocalizedMessage());
         }
 
@@ -132,10 +140,9 @@ public class ArticleService {
         try {
             Article article = articleRepository.getReferenceById(articleId);
             Optional<UserAccount> userAccount = userAccountRepository.findByUid(userAccountDto.uid());
-
             if (article.getUserAccount().getUid().equals(userAccount.get().getUid())) {
-                articleRepository.updateArticleByTitleAndContent(articleId, dto.getTitle(), dto.getContent());
-            }else{
+                articleRepository.updateArticleByTitleAndContent(articleId, dto.getTitle(), dto.getContent().replace("\r\n","<br>"));
+            } else {
                 log.warn("다른 사용자가 게시글 수정을 시도했습니다.");
             }
         } catch (EntityNotFoundException e) {

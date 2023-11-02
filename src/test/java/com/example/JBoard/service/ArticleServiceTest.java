@@ -4,21 +4,25 @@ import com.example.JBoard.Dto.ArticleDtoC;
 import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.Article;
 import com.example.JBoard.Entity.UserAccount;
+import com.example.JBoard.Entity.constant.MemberRole;
 import com.example.JBoard.Repository.ArticleRepository;
 import com.example.JBoard.Repository.UserAccountRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.stream;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class) // Mockito를 사용할 수 있게 해준다.
@@ -36,7 +40,7 @@ class ArticleServiceTest {
     @Test
     void getArticlesTest() {
         //given
-        List<Article> articles = new ArrayList<>(); // 엔티티에 직접 접근해 보았다
+        List<Article> articles = new ArrayList<>();
         UserAccountDto userAccountDto = createUserAccountDto();
         Article article = Article.of(userAccountDto.toEntity(), "제목", "내용", 0L);
         Article article2 = Article.of(userAccountDto.toEntity(), "제목", "내용", 1L);
@@ -56,11 +60,43 @@ class ArticleServiceTest {
         assertThat(result.size()).isEqualTo(2);
     }
 
+    @DisplayName("게시글 페이지 조회")
+    @Test
+    public void getPageTest() throws Exception{
+        //given
+        Pageable pageable = Pageable.ofSize(10);
+        given(articleRepository.findAll(pageable)).willReturn(Page.empty());
+
+        //when
+        Page<ArticleDtoC> articleDtoC = articleService.getPage(null, null, pageable);
+
+        //then
+        assertThat(articleDtoC).isEmpty();
+    }
+
+    @DisplayName("search 테스트")
+    @Test
+    public void searchTest() throws Exception{
+        //given
+        String searchType = "all";
+        String keyword = "검색";
+        Pageable pageable = Pageable.ofSize(10);
+
+        given(articleRepository.findByContentOrTitleOrNicknameContaining(keyword,pageable)).willReturn(Page.empty());
+
+        //when
+        Page<ArticleDtoC> articleDtoC = articleService.getPage(keyword, searchType, pageable);
+
+        //then
+        assertThat(articleDtoC).isEmpty();
+        then(articleRepository).should().findByContentOrTitleOrNicknameContaining(keyword, pageable);
+    }
+
     @DisplayName("게시글 생성 테스트")
     @Test
     void createArticleTest() {
         //given
-        ArticleDtoC article = createArticleDto();
+        ArticleDtoC article = createArticleDtoC();
         UserAccountDto userAccountDto = createUserAccountDto();
 
         given(articleRepository.save(any(Article.class))).willReturn(article.toEntity(userAccountDto.toEntity()));
@@ -83,12 +119,14 @@ class ArticleServiceTest {
         given(articleRepository.findById(articleId)).willReturn(Optional.of(article));
 
         //when
-        Optional<Article> result = articleService.getArticle(articleId);
+        ArticleDtoC result = articleService.getArticle(articleId);
 
         //then
         then(articleRepository).should().findById(articleId);
-        assertThat(result.get()).isEqualTo(article);
-        System.out.println("result = " + result);
+        assertThat(result)
+                .hasFieldOrPropertyWithValue("title", article.getTitle())
+                .hasFieldOrPropertyWithValue("content", article.getContent())
+                .hasFieldOrPropertyWithValue("articleId", article.getArticleId());
     }
 
     @DisplayName("게시글 삭제 테스트")
@@ -115,26 +153,26 @@ class ArticleServiceTest {
     public void updateArticleTest() throws Exception{
         //given
         Article article = createArticle();
-        UserAccountDto userAccountDto = createUserAccountDto();
-        UserAccount userAccount = createUserAccount();
+        ArticleDtoC articleDtoC = createArticleDtoC();
 
-        given(articleRepository.getReferenceById(1L)).willReturn(article);
-        given(userAccountRepository.findByUid(userAccountDto.uid())).willReturn(Optional.of(userAccount));
+        given(articleRepository.getReferenceById(articleDtoC.getArticleId())).willReturn(article);
+        given(userAccountRepository.findByUid(articleDtoC.getUserAccountDto().uid())).willReturn(Optional.of(articleDtoC.getUserAccountDto().toEntity()));
 
         //when
-        articleService.updateArticle(1L, createArticleDto(), userAccountDto);
+        articleService.updateArticle(articleDtoC.getArticleId(), articleDtoC, articleDtoC.getUserAccountDto());
 
         //then
-        assertThat(article.getContent()).isEqualTo("내용");
+        then(articleRepository).should().getReferenceById(1L);
+        assertThat(article).hasFieldOrPropertyWithValue("title", articleDtoC.getTitle());
     }
 
-    private ArticleDtoC createArticleDto() {
-        return ArticleDtoC.of(createUserAccountDto(),"제목", "내용", LocalDateTime.now());
+    private ArticleDtoC createArticleDtoC() {
+        return ArticleDtoC.of(1L, createUserAccountDto(),"제목", "수정내용", 0L);
     }
 
     private UserAccountDto createUserAccountDto() {
         return UserAccountDto.of(
-                "wofud", "password", "김재령", "wofud0321@naver.com", "wofud"
+                "wofud", "password", "김재령", "wofud0321@naver.com", "wofud", String.valueOf(MemberRole.USER)
         );
     }
 
@@ -143,6 +181,6 @@ class ArticleServiceTest {
     }
 
     private Article createArticle() {
-        return Article.of(createUserAccountDto().toEntity(), "제목", "content", 0L);
+        return Article.of(createUserAccountDto().toEntity(), "제목", "내용", 0L);
     }
 }

@@ -2,6 +2,7 @@ package com.example.JBoard.service;
 
 import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.UserAccount;
+import com.example.JBoard.Entity.constant.MemberRole;
 import com.example.JBoard.Repository.UserAccountRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ class UserServiceTest {
     @Test
     void createUser() {
         //given
-        UserAccountDto userAccountDto = createUserDto();
+        UserAccountDto userAccountDto = createUserAccountDto();
         given(userAccountRepository.save(any(UserAccount.class))).willReturn(userAccountDto.toEntity());
 
         //when
@@ -45,7 +46,7 @@ class UserServiceTest {
     @Test
     public void test() throws Exception{
         //given
-        UserAccountDto user = createUserDto();
+        UserAccountDto user = createUserAccountDto();
         given(userAccountRepository.save(any(UserAccount.class))).willReturn(user.toEntity());
         given(userService.duplicationId(user.uid())).willReturn(true);
 
@@ -60,8 +61,10 @@ class UserServiceTest {
         assertThat(result).isTrue();
         assertThat(result2).isFalse();
     }
-    private UserAccountDto createUserDto() {
-        return UserAccountDto.of("wofud", "1234", null, null, null);
+    private UserAccountDto createUserAccountDto() {
+        return UserAccountDto.of(
+                "wofud", "password", "김재령", "wofud0321@naver.com", "wofud", String.valueOf(MemberRole.USER)
+        );
     }
 
 }

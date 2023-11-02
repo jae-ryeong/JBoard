@@ -32,16 +32,16 @@ public class CommentController {
     }
 
     @PostMapping("/delete/{commentId}")
-    public String deleteComment(@PathVariable("commentId") Long commentId) {
+    public String deleteComment(@PathVariable("commentId") Long commentId, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
         Long articleId = commentService.getArticleId(commentId);
-        commentService.deleteArticleComment(commentId);
+        commentService.deleteArticleComment(commentId, boardPrincipal.toDto());
         return "redirect:/detail/" + articleId;
     }
 
     @PostMapping("/update/{commentId}")
-    public String updateComment(@PathVariable("commentId") Long commentId, ArticleCommentRequest articleCommentRequest) {
+    public String updateComment(@PathVariable("commentId") Long commentId, ArticleCommentRequest articleCommentRequest, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
         Long articleId = commentService.getArticleId(commentId);
-        commentService.updateArticleComment(commentId, articleCommentRequest);
+        commentService.updateArticleComment(commentId, articleCommentRequest, boardPrincipal.toDto());
 
         return "redirect:/detail/" + articleId;
     }

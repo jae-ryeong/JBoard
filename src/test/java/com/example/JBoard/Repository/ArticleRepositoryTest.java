@@ -1,6 +1,8 @@
 package com.example.JBoard.Repository;
 
+import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.Article;
+import com.example.JBoard.Entity.constant.MemberRole;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -63,7 +65,7 @@ class ArticleRepositoryTest {   // 레포지토리 테스트는 서비스와 연
 
         //when
         Optional<Article> saved = articleRepository.findById(article.getArticleId());
-        saved.get().update("제목","내용");
+        //articleRepository.updateArticleByTitleAndContent();
 
         //then
         assertThat(saved.get().getTitle()).isEqualTo("제목");
@@ -71,6 +73,12 @@ class ArticleRepositoryTest {   // 레포지토리 테스트는 서비스와 연
     }
 
     Article createArticle() {
-        return Article.of("title", "content", 0L);
+        return Article.of(createUserAccountDto().toEntity(), "title", "content", 0L);
+    }
+
+    private UserAccountDto createUserAccountDto() {
+        return UserAccountDto.of(
+                "wofud", "password", "김재령", "wofud0321@naver.com", "wofud", String.valueOf(MemberRole.USER)
+        );
     }
 }

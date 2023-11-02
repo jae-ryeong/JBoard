@@ -4,6 +4,7 @@ import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.Entity.constant.MemberRole;
 
 public record UserAccountDto(
+        Long userId,
         String uid,
         String password,
         String username,
@@ -13,7 +14,7 @@ public record UserAccountDto(
 ) {
 
     public static UserAccountDto of(String uid, String password, String username, String email, String nickname, String role) {
-        return new UserAccountDto(uid, password, username, email, nickname, role);
+        return new UserAccountDto(null, uid, password, username, email, nickname, role);
     }
 
     public UserAccount toEntity() {
@@ -22,6 +23,7 @@ public record UserAccountDto(
 
     public static UserAccountDto from(UserAccount entity) {
         return new UserAccountDto(
+                entity.getId(),
                 entity.getUid(),
                 entity.getPassword(),
                 entity.getUsername(),

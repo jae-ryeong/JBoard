@@ -2,18 +2,18 @@ package com.example.JBoard.service;
 
 import com.example.JBoard.Dto.ArticleCommentDtoC;
 import com.example.JBoard.Dto.ArticleDtoC;
+import com.example.JBoard.Dto.Request.ArticleCommentRequest;
 import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.Article;
 import com.example.JBoard.Entity.ArticleComment;
 import com.example.JBoard.Entity.UserAccount;
+import com.example.JBoard.Entity.constant.MemberRole;
 import com.example.JBoard.Repository.ArticleCommentRepository;
 import com.example.JBoard.Repository.ArticleRepository;
 import com.example.JBoard.Repository.UserAccountRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,10 +21,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
 @ExtendWith(MockitoExtension.class)
 class ArticleCommentServiceTest {
@@ -70,18 +69,43 @@ class ArticleCommentServiceTest {
     public void test() throws Exception{
         //given
         Long commentId = 1L;
-        willDoNothing().given(commentRepository).deleteById(commentId);
+        ArticleComment articleComment = createArticleComment();
+        UserAccountDto userAccountDto = createUserAccountDto();
+        UserAccount userAccount = createUserAccount();
+
+        given(commentRepository.getReferenceById(commentId)).willReturn(articleComment);
+        given(userAccountRepository.findByUid(userAccountDto.uid())).willReturn(Optional.of(userAccount));
 
         //when
-        commentService.deleteArticleComment(commentId);
+        commentService.deleteArticleComment(commentId, userAccountDto);
 
         //then
-        then(commentRepository).should().deleteById(commentId);
+        then(commentRepository).should().deleteById(1L);
+    }
+
+    @DisplayName("댓글 수정 테스트")
+    @Test
+    public void updateCommentsTest() throws Exception{
+        //given
+        ArticleComment articleComment = createArticleComment();
+        UserAccountDto userAccountDto = createUserAccountDto();
+        ArticleCommentRequest request = createRequest();
+        ArticleCommentDtoC commentDto = createCommentDto();
+        UserAccount userAccount = createUserAccount();
+
+        given(commentRepository.getReferenceById(commentDto.getId())).willReturn(articleComment);
+        given(userAccountRepository.findByUid(userAccountDto.uid())).willReturn(Optional.of(userAccount));
+
+        //when
+        commentService.updateArticleComment(articleComment.getCommentId(), request, userAccountDto);
+
+        //then
+        then(articleComment.getContent()).equals("바뀐 내용");
     }
 
     private UserAccountDto createUserAccountDto() {
         return UserAccountDto.of(
-                "wofud", "password", "김재령", "wofud0321@naver.com", "wofud"
+                "wofud", "password", "김재령", "wofud0321@naver.com", "wofud", String.valueOf(MemberRole.USER)
         );
     }
     private UserAccount createUserAccount() {
@@ -99,6 +123,9 @@ class ArticleCommentServiceTest {
         return ArticleCommentDtoC.of(1L, "댓글", createUserAccountDto());
     }
 
+    private ArticleCommentRequest createRequest() {
+        return ArticleCommentRequest.of(1L, "바뀐 댓글");
+    }
     private ArticleComment createArticleComment() {
         return ArticleComment.of(createUserAccountDto().toEntity(), createArticle(), "댓글");
     }

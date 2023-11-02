@@ -13,18 +13,18 @@
 
     <div class="container">
 
-        <form th:action="'/update/' + ${article?.get().articleId}" method="post">
+        <form th:action="'/update/' + ${article.getArticleId()}" method="post">
             <fieldset>
                 <legend>글 등록 페이지</legend>
 
                 <div class="mb-3">
                     <label th:for="title" class="form-label" >제목</label> <!--이렇게 해도 for와 똑같다-->
-                    <input type="text" id="title" name="title" class="form-control" placeholder="제목을 입력해주세요." th:value="${article?.get().title} ?: _" required>
+                    <input type="text" id="title" name="title" class="form-control" placeholder="제목을 입력해주세요." th:value="${article.getTitle()} ?: _" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="content" class="form-label">내용</label>
-                    <textarea class="form-control" id="content" name="content" rows="3" placeholder="내용을 입력해주세요." th:text="${article?.get().content} ?: ''" required></textarea>
+                    <textarea class="form-control" id="content" name="content" rows="3" placeholder="내용을 입력해주세요." th:text="${article.getContent()} ?: ''" required></textarea> <!-- article?.get().content -->
                 </div>
             </fieldset>
 
@@ -41,4 +41,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 </body>
+<script>
+    let text = document.getElementById("content");
+    let s = text.textContent.replaceAll("<br>","\r\n")
+    text.textContent=s;
+</script>
 </html>
