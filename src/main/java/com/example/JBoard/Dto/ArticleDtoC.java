@@ -56,4 +56,8 @@ public class ArticleDtoC {
     public static ArticleDtoC of(UserAccountDto userAccountDto, String title, String content){
         return new ArticleDtoC(null, userAccountDto, title, content, null, null);
     }
+
+    public static ArticleDtoC of(Long articleId, UserAccountDto userAccountDto, String title, String content, Long viewCount){
+        return new ArticleDtoC(articleId, userAccountDto, title, content, null, viewCount);
+    }
 }
