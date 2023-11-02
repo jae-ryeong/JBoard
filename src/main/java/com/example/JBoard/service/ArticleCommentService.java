@@ -61,14 +61,12 @@ public class ArticleCommentService {
         return articleId;
     }
 
-    //TODO: 에러 처리 해주기
-
     public void updateArticleComment(Long commentId, ArticleCommentRequest articleCommentRequest, UserAccountDto userAccountDto) {
         try{
             ArticleComment comment = articleCommentRepository.getReferenceById(commentId);
             UserAccount userAccount = userAccountRepository.findByUid(userAccountDto.uid()).get();
 
-            if (userAccount.equals(comment.getUserAccount())){
+            if (userAccount.getUid().equals(comment.getUserAccount().getUid())){
                 articleCommentRepository.updateComment(articleCommentRequest.content(), commentId);
             } else {
                 log.warn("다른 사용자가 댓글 수정을 시도했습니다.");
@@ -80,9 +78,9 @@ public class ArticleCommentService {
     public void deleteArticleComment(Long commentId, UserAccountDto userAccountDto) {
         try{
             ArticleComment comment = articleCommentRepository.getReferenceById(commentId);
-            UserAccount userAccount = userAccountRepository.findByUid(userAccountDto.uid()).get();
+            Optional<UserAccount> userAccount = userAccountRepository.findByUid(userAccountDto.uid());
 
-            if (userAccount.equals(comment.getUserAccount())){
+            if (userAccount.get().getUid().equals(comment.getUserAccount().getUid())){
                 articleCommentRepository.deleteById(commentId);
             } else{
                 log.warn("다른 사용자가 댓글 삭제를 시도했습니다.");

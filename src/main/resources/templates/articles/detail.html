@@ -104,7 +104,7 @@
                         <div class="collapse"  style="display:none;" th:id="update-comment- + ${comment.getId()}">
                             <form class="d-flex" th:id="update-comment-form" th:action="@{/comments/update/{commentId}(commentId=${comment.getId()})}" method="post">
                                 <div class="col-md-9 col-lg-8">
-                                    <input type="hidden" class="article-id" name="articleId" th:value="${article.getArticleId()}">
+                                    <input type="hidden" class="article-id" name="articleId" th:value="${article.articleId()}">
                                     <label for="comment-textbox" hidden>댓글</label>
                                     <textarea class="form-control" th:id="update-comment-textbox" th:name="content" placeholder="댓글 쓰기.." rows="3" th:text="${comment.getContent()}" required></textarea>
                                 </div>

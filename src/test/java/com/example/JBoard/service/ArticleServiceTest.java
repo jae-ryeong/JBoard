@@ -14,14 +14,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.stream;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class) // Mockito를 사용할 수 있게 해준다.
@@ -57,6 +58,38 @@ class ArticleServiceTest {
 
         assertThat(result).isEqualTo(articles);
         assertThat(result.size()).isEqualTo(2);
+    }
+
+    @DisplayName("게시글 페이지 조회")
+    @Test
+    public void getPageTest() throws Exception{
+        //given
+        Pageable pageable = Pageable.ofSize(10);
+        given(articleRepository.findAll(pageable)).willReturn(Page.empty());
+
+        //when
+        Page<ArticleDtoC> articleDtoC = articleService.getPage(null, null, pageable);
+
+        //then
+        assertThat(articleDtoC).isEmpty();
+    }
+
+    @DisplayName("search 테스트")
+    @Test
+    public void searchTest() throws Exception{
+        //given
+        String searchType = "all";
+        String keyword = "검색";
+        Pageable pageable = Pageable.ofSize(10);
+
+        given(articleRepository.findByContentOrTitleOrNicknameContaining(keyword,pageable)).willReturn(Page.empty());
+
+        //when
+        Page<ArticleDtoC> articleDtoC = articleService.getPage(keyword, searchType, pageable);
+
+        //then
+        assertThat(articleDtoC).isEmpty();
+        then(articleRepository).should().findByContentOrTitleOrNicknameContaining(keyword, pageable);
     }
 
     @DisplayName("게시글 생성 테스트")
@@ -115,7 +148,6 @@ class ArticleServiceTest {
 
     }
 
-    @Disabled   // repository로 update쿼리를 생성 후 작동 X
     @DisplayName("게시글 수정 테스트")
     @Test
     public void updateArticleTest() throws Exception{
@@ -127,8 +159,6 @@ class ArticleServiceTest {
         given(userAccountRepository.findByUid(articleDtoC.getUserAccountDto().uid())).willReturn(Optional.of(articleDtoC.getUserAccountDto().toEntity()));
 
         //when
-        System.out.println("article = " + article);
-        System.out.println("articleDtoC = " + articleDtoC.getUserAccountDto());
         articleService.updateArticle(articleDtoC.getArticleId(), articleDtoC, articleDtoC.getUserAccountDto());
 
         //then
