@@ -1,6 +1,5 @@
 package com.example.JBoard.service;
 
-import com.example.JBoard.Dto.BoardPrincipal;
 import com.example.JBoard.Dto.Request.LoginRequest;
 import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.UserAccount;

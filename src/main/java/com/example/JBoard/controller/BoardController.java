@@ -5,7 +5,6 @@ import com.example.JBoard.Dto.ArticleDtoC;
 import com.example.JBoard.Dto.BoardPrincipal;
 import com.example.JBoard.Dto.Response.ArticleResponse;
 import com.example.JBoard.Dto.UserAccountDto;
-import com.example.JBoard.Entity.Article;
 import com.example.JBoard.Entity.UserAccount;
 import com.example.JBoard.service.ArticleCommentService;
 import com.example.JBoard.service.ArticleService;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Controller
