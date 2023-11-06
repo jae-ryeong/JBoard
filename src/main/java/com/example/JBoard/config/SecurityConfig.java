@@ -53,7 +53,7 @@ public class SecurityConfig{
                 .build();   // 로그인 페이지는 무조건 접근 가능하게.
     }
 
-/*    @Bean
+/*    @Bean // JWT 구현 때 사용 예정
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .httpBasic(AbstractHttpConfigurer::disable)

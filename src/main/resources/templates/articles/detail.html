@@ -86,7 +86,7 @@
                             <div class="row" th:id="comment">
                                 <div class="col-md-10 col-lg-9">
                                     <strong th:text="${comment.getUserAccountDto().nickname()}">Uno</strong>
-                                    <small><time th:text="${#temporals.format(comment.getCreatedAt(), 'yyyy-MM-dd hh:mm')}">2022-01-01</time></small>
+                                    <small><time th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">2022-01-01</time></small>
                                     <p th:utext="${comment.getContent()}">
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>
                                         Lorem ipsum dolor sit amet
