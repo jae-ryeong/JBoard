@@ -17,13 +17,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -118,5 +117,12 @@ public class BoardController {
 
         System.out.println("수정완료");
         return "redirect:/detail/" + articleId;
+    }
+
+    @ResponseBody
+    @GetMapping("/myArticles")
+    public ResponseEntity<Page<ArticleDtoC>> myArticles (@AuthenticationPrincipal BoardPrincipal boardPrincipal, @PageableDefault(page = 0, size = 10, sort = "articleId", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<ArticleDtoC> articleDtoCS = articleService.myArticle(boardPrincipal.uid(), pageable);
+        return new ResponseEntity<>(articleDtoCS, HttpStatus.OK);
     }
 }

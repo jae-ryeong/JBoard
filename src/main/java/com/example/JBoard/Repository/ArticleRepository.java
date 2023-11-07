@@ -25,4 +25,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     @Modifying
     @Query("update Article a set a.title = :title, a.content = :content where a.articleId = :articleId")
     void updateArticleByTitleAndContent(Long articleId, String title, String content);
+
+    Page<Article> findByUserAccountUid(String uid, Pageable pageable);
 }

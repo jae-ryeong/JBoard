@@ -57,12 +57,4 @@ public class UserController {
 
         return "redirect:/boardlist";
     }
-
-    @GetMapping("/validation")
-    @ResponseBody
-    public boolean validationUid(@RequestParam("uid") String uid, Model model) {
-        boolean result = userService.duplicationId(uid);
-        model.addAttribute("result", result);
-        return result;
-    }
 }

@@ -58,12 +58,15 @@ public class ArticleService {
     }
 
     public void createArticle(ArticleDtoC articleDtoC, UserAccount userAccount) {
-        try {
-            articleRepository.save(articleDtoC.toEntity(userAccount));
-        } catch (UsernameNotFoundException e) { // 계정 없음
-            log.warn("게시글 생성을 위한 계정이 로그인 되어 있지 않습니다.");
+        if(!articleDtoC.getTitle().isBlank() || !articleDtoC.getContent().isBlank()){
+            try {
+                articleRepository.save(articleDtoC.toEntity(userAccount));
+            } catch (UsernameNotFoundException e) { // 계정 없음
+                log.warn("게시글 생성을 위한 계정이 로그인 되어 있지 않습니다.");
+            }
+        } else{
+            log.warn("제목 혹은 내용의 값이 비어있습니다.");
         }
-
     }
 
     /*
@@ -146,5 +149,10 @@ public class ArticleService {
         } catch (EntityNotFoundException e) {
             log.warn("게시글 업데이트 실패. 게시글을 수정하는데 필요한 정보를 찾을 수 없습니다 - {}", e.getLocalizedMessage());
         }
+    }
+
+    public Page<ArticleDtoC> myArticle(String uid, Pageable pageable) {
+        Page<Article> byUserAccountId = articleRepository.findByUserAccountUid(uid, pageable);
+        return byUserAccountId.map(ArticleDtoC::from);
     }
 }
