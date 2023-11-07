@@ -44,8 +44,7 @@ public class BoardController {
     public String boardlist(Model model,
                             @RequestParam(value = "keyword", required = false) String keyword,
                             @RequestParam(value = "searchType", required = false) String searchType,
-                            @PageableDefault(page = 0, size = 10, sort = "articleId", direction = Sort.Direction.DESC) Pageable pageable)
-    {
+                            @PageableDefault(page = 0, size = 10, sort = "articleId", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<ArticleDtoC> articles = articleService.getPage(keyword, searchType, pageable);
 
         int number = articles.getNumber();
@@ -87,12 +86,12 @@ public class BoardController {
         List<ArticleCommentDtoC> articleComments = commentService.getArticleComments(articleId);
 
         model.addAttribute("comments", articleComments);
-        model.addAttribute("boardPrincipal",boardPrincipal);
+        model.addAttribute("boardPrincipal", boardPrincipal);
         return "articles/detail";
     }
 
     @PostMapping("/detail/{articleId}/delete")
-    public String deleteArticle(@PathVariable("articleId") Long articleId,  @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
+    public String deleteArticle(@PathVariable("articleId") Long articleId, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
         UserAccountDto userAccountDto = boardPrincipal.toDto();
 
         articleService.deleteArticle(articleId, userAccountDto);
@@ -106,8 +105,8 @@ public class BoardController {
         if (!article.getUserAccountDto().uid().equals(boardPrincipal.uid())) {  // URI 직접 입력 방지
             return "redirect:/boardlist";
         }
-            model.addAttribute("article", article);
-            return "articles/boardUpdateForm";
+        model.addAttribute("article", article);
+        return "articles/boardUpdateForm";
     }
 
     @PostMapping("/update/{articleId}")
@@ -121,7 +120,7 @@ public class BoardController {
 
     @ResponseBody
     @GetMapping("/myArticles")
-    public ResponseEntity<Page<ArticleDtoC>> myArticles (@AuthenticationPrincipal BoardPrincipal boardPrincipal, @PageableDefault(page = 0, size = 10, sort = "articleId", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<Page<ArticleDtoC>> myArticles(@AuthenticationPrincipal BoardPrincipal boardPrincipal, @PageableDefault(page = 0, size = 10, sort = "articleId", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<ArticleDtoC> articleDtoCS = articleService.myArticle(boardPrincipal.uid(), pageable);
         return new ResponseEntity<>(articleDtoCS, HttpStatus.OK);
     }
