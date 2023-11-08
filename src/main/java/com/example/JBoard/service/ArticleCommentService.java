@@ -88,6 +88,12 @@ public class ArticleCommentService {
         } catch (EntityNotFoundException e) {
             log.warn("댓글 삭제 실패. 댓글 삭제하는데 필요한 정보를 찾을 수 없습니다 - {}", e.getLocalizedMessage());
         }
+    }
+
+    public List<ArticleCommentDtoC> myComments(String uid) {
+        List<ArticleComment> articleComments = articleCommentRepository.findAllByUserAccountUid(uid);
+        return articleComments.stream().map(ArticleCommentDtoC::from)
+                .toList();
 
     }
 }

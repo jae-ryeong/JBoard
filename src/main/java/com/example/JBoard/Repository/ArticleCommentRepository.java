@@ -13,4 +13,6 @@ public interface ArticleCommentRepository extends JpaRepository<ArticleComment, 
     @Modifying
     @Query(value = "update article_comment set content = replace(?1, '\r\n', '<br>') where comment_Id = ?2", nativeQuery = true)
     void updateComment(String content, Long commentId);
+
+    List<ArticleComment> findAllByUserAccountUid(String uid);
 }

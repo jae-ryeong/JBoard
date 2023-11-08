@@ -117,11 +117,4 @@ public class BoardController {
         System.out.println("수정완료");
         return "redirect:/detail/" + articleId;
     }
-
-    @ResponseBody
-    @GetMapping("/myArticles")
-    public ResponseEntity<Page<ArticleDtoC>> myArticles(@AuthenticationPrincipal BoardPrincipal boardPrincipal, @PageableDefault(page = 0, size = 10, sort = "articleId", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<ArticleDtoC> articleDtoCS = articleService.myArticle(boardPrincipal.uid(), pageable);
-        return new ResponseEntity<>(articleDtoCS, HttpStatus.OK);
-    }
 }
