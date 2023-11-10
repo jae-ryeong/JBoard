@@ -3,6 +3,7 @@ package com.example.JBoard.service;
 import com.example.JBoard.Dto.ArticleCommentDtoC;
 import com.example.JBoard.Dto.ReplyDto;
 import com.example.JBoard.Dto.Request.ArticleCommentRequest;
+import com.example.JBoard.Dto.Response.MyCommentsResponse;
 import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.Article;
 import com.example.JBoard.Entity.ArticleComment;
@@ -90,10 +91,9 @@ public class ArticleCommentService {
         }
     }
 
-    public List<ArticleCommentDtoC> myComments(String uid) {
-        List<ArticleComment> articleComments = articleCommentRepository.findAllByUserAccountUid(uid);
-        return articleComments.stream().map(ArticleCommentDtoC::from)
-                .toList();
+    public List<MyCommentsResponse> myComments(String uid) {
+        List<ArticleComment> articleComments = articleCommentRepository.findByUserAccountUid(uid);
+        return articleComments.stream().map(MyCommentsResponse::from).toList();
 
     }
 }

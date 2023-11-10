@@ -1,12 +1,10 @@
 package com.example.JBoard.controller;
 
-import com.example.JBoard.Dto.ArticleCommentDto;
-import com.example.JBoard.Dto.ArticleCommentDtoC;
 import com.example.JBoard.Dto.ArticleDtoC;
 import com.example.JBoard.Dto.BoardPrincipal;
+import com.example.JBoard.Dto.Response.MyCommentsResponse;
 import com.example.JBoard.service.ArticleCommentService;
 import com.example.JBoard.service.ArticleService;
-import com.example.JBoard.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,8 +31,8 @@ public class ApiController {
     }
 
     @GetMapping("/my-page/myComments")
-    public ResponseEntity<List<ArticleCommentDtoC>> myComments(@AuthenticationPrincipal BoardPrincipal boardPrincipal) {
-        List<ArticleCommentDtoC> articleCommentDtoCS = commentService.myComments(boardPrincipal.uid());
+    public ResponseEntity<List<MyCommentsResponse>> myComments(@AuthenticationPrincipal BoardPrincipal boardPrincipal) {
+        List<MyCommentsResponse> articleCommentDtoCS = commentService.myComments(boardPrincipal.uid());
         return new ResponseEntity<>(articleCommentDtoCS, HttpStatus.OK);
     }
 }

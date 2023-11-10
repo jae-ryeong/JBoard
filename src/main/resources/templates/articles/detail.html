@@ -38,7 +38,7 @@
                 <th>작성자</th>
                 <td th:text="${article.userAccountDto().nickname()}">유저</td>
                 <th>작성시간</th>
-                <td th:text="${#temporals.format(article.createdAt(), 'yyyy-MM-dd hh:mm')}">작성시간</td>
+                <td th:text="${#temporals.format(article.createdAt(), 'yyyy-MM-dd HH:mm')}">작성시간</td>
                 <!--
                 String Date형식을 원하는 Date 형식으로 표현( String > Date Format)
                 temporals.format(날짜, 형식);
