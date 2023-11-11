@@ -29,11 +29,14 @@ public class Article extends AuditingFields {
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL) //  CascadeType.PERSIST + CascadeType.REMOVE
     private Set<ArticleComment> articleComment;
 
-    private Article(UserAccount userAccount, String title, String content, Long view_count){
+    private Long fileId;
+
+    private Article(UserAccount userAccount, String title, String content, Long view_count, Long fileId){
         this.userAccount = userAccount;
         this.title = title;
         this.content = content;
         this.view_count = view_count;
+        this.fileId = fileId;
     }
 
     @Override
@@ -47,7 +50,7 @@ public class Article extends AuditingFields {
                 '}';
     }
 
-    public static Article of(UserAccount userAccount, String title, String content, Long view_count) {
-        return new Article(userAccount, title, content, view_count);
+    public static Article of(UserAccount userAccount, String title, String content, Long view_count, Long fileId) {
+        return new Article(userAccount, title, content, view_count, fileId);
     }
 }
