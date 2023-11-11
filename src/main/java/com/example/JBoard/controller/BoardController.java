@@ -1,15 +1,10 @@
 package com.example.JBoard.controller;
 
-import com.example.JBoard.Dto.ArticleCommentDtoC;
-import com.example.JBoard.Dto.ArticleDtoC;
-import com.example.JBoard.Dto.BoardPrincipal;
+import com.example.JBoard.Dto.*;
 import com.example.JBoard.Dto.Response.ArticleResponse;
-import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.UserAccount;
-import com.example.JBoard.service.ArticleCommentService;
-import com.example.JBoard.service.ArticleService;
-import com.example.JBoard.service.PaginationService;
-import com.example.JBoard.service.UserService;
+import com.example.JBoard.service.*;
+import com.example.JBoard.util.MD5Generator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +18,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -34,6 +34,7 @@ public class BoardController {
     private final UserService userService;
     private final ArticleCommentService commentService;
     private final PaginationService paginationService;
+    private final FileService fileService;
 
     @GetMapping("/")
     public String index(Model model) {
@@ -68,12 +69,40 @@ public class BoardController {
     }
 
     @PostMapping("/boardCreateForm")
-    public String CreateForm(ArticleDtoC articleDtoC, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
+    public String CreateForm(ArticleDtoC articleDtoC, @AuthenticationPrincipal BoardPrincipal boardPrincipal, @RequestParam("file")MultipartFile files) {
         UserAccount user = userService.getUser(boardPrincipal.getUsername());
-        System.out.println("컨트롤러에서 확인");
-        System.out.println(articleDtoC.toString());
 
-        articleService.createArticle(articleDtoC, user);
+        try{
+            String origFilename = files.getOriginalFilename();
+            String filename = new MD5Generator(origFilename).toString();
+
+            // 실행되는 위치의 'files' 폴더에 파일이 저장
+            String savePath = System.getProperty("user.dir") + "\\files";
+
+            //파일이 저장되는 폴더가 없으면 폴더를 생성
+            if (!new File(savePath).exists()) {
+                try {
+                    new File(savePath).mkdir();
+                } catch (Exception e) {
+                    e.getStackTrace();
+                }
+            }
+
+            String filePath = savePath + "\\" + filename;
+            files.transferTo(new File(filePath));
+
+            FileDto fileDto = new FileDto(null, origFilename, filename, filePath);
+
+            Long fileId = fileService.saveFiles(fileDto);
+
+            articleService.createArticle(articleDtoC, user, fileId);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return "redirect:/boardlist";   // @GetMapping("/boardlist") 여기로 이동
     }
@@ -117,4 +146,5 @@ public class BoardController {
         System.out.println("수정완료");
         return "redirect:/detail/" + articleId;
     }
+
 }
