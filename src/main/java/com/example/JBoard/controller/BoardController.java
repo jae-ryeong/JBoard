@@ -25,18 +25,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Controller
@@ -137,16 +133,23 @@ public class BoardController {
         return "redirect:/detail/" + articleId;
     }
 
-    @GetMapping("/download/{fileId}")   // TODO: NoSuchFileException 예외처리 해주기
+    @GetMapping("/download/{fileId}")   
     public ResponseEntity<Resource> fileDownload(@PathVariable("fileId") Long fileId) throws IOException {
-        FileDto fileDto = fileService.getFile(fileId);
-        Path path = Paths.get(fileDto.savedPath());
-        Resource resource = new InputStreamResource(Files.newInputStream(path));
+        try{
+            FileDto fileDto = fileService.getFile(fileId);
+            Path path = Paths.get(fileDto.savedPath());
+            Resource resource = new InputStreamResource(Files.newInputStream(path));
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(fileDto.orgNm(),"UTF-8") + "\"")
-                .body(resource);
-
+            return ResponseEntity.ok()
+                    // "application/octet-stream"은 자바에서 사용하는 파일 다운로드 응답 형식
+                    .contentType(MediaType.parseMediaType("application/octet-stream"))
+                    // "attachment;fileName="을 사용하여 다운로드시 파일 이름을 지정
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(fileDto.orgNm(),"UTF-8") + "\"")
+                    .body(resource);
+        } catch (NoSuchFileException e){ // TODO: 예외처리 바꿔주기
+            e.printStackTrace();
+            return ResponseEntity.badRequest()
+                    .body(null);
+        }
     }
 }
