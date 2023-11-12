@@ -28,9 +28,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -75,42 +79,16 @@ public class BoardController {
         // 스프링 시큐리티에서 필터로 걸러주기 때문에 따로 처리 X
         return "articles/boardCreateForm";
     }
+
     @PostMapping("/boardCreateForm")
-    public String CreateForm(ArticleDtoC articleDtoC, @AuthenticationPrincipal BoardPrincipal boardPrincipal, @RequestParam("file")MultipartFile files) {
-        try{
-            String origFilename = files.getOriginalFilename();
-
-            String uuid = UUID.randomUUID().toString();
-            String extension = origFilename.substring(origFilename.lastIndexOf("."));
-            String savedName = uuid + extension;
-
-            // 실행되는 위치의 'files' 폴더에 파일이 저장
-            String savePath = System.getProperty("user.dir") + "\\files";
-
-            //파일이 저장되는 폴더가 없으면 폴더를 생성
-            if (!new File(savePath).exists()) {
-                try {
-                    new File(savePath).mkdir();
-                } catch (Exception e) {
-                    e.getStackTrace();
-                }
-            }
-
-            //String filePath = savePath + "\\" + filename;
-            String filePath = savePath + "\\" + savedName;
-            System.out.println("filePath = " + filePath);
-            files.transferTo(new File(filePath));
-
-            FileDto fileDto = new FileDto(null, origFilename, savedName, filePath);
-
-            Long fileId = fileService.saveFiles(fileDto);
+    public String CreateForm(ArticleDtoC articleDtoC, @AuthenticationPrincipal BoardPrincipal boardPrincipal, @RequestParam("file") MultipartFile files) {
+        try {
+            Long fileId = fileService.saveFiles(files);
 
             UserAccount user = userService.getUser(boardPrincipal.getUsername());
             articleService.createArticle(articleDtoC, user, fileId);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            e.getStackTrace();
         }
 
         return "redirect:/boardlist";   // @GetMapping("/boardlist") 여기로 이동
@@ -159,7 +137,7 @@ public class BoardController {
         return "redirect:/detail/" + articleId;
     }
 
-    @GetMapping("/download/{fileId}")
+    @GetMapping("/download/{fileId}")   // TODO: NoSuchFileException 예외처리 해주기
     public ResponseEntity<Resource> fileDownload(@PathVariable("fileId") Long fileId) throws IOException {
         FileDto fileDto = fileService.getFile(fileId);
         Path path = Paths.get(fileDto.savedPath());
@@ -167,7 +145,8 @@ public class BoardController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDto.orgNm() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(fileDto.orgNm(),"UTF-8") + "\"")
                 .body(resource);
+
     }
 }

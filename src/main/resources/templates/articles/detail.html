@@ -53,6 +53,16 @@
             </tbody>
         </table>
 
+        <!-- 첨부파일 -->
+        <div th:if="${article.fileId() != null}">
+            <strong>첨부파일 : </strong>
+            <a
+               class="card-text"
+               th:href="@{'/download/' + ${article.fileId}}"
+               th:text="${filename}"
+            ></a>
+        </div>
+
         <!-- 버튼 -->
         <form th:action="@{/detail/{articleId}/delete(articleId=${article.articleId()})}" method="post">
 
@@ -64,7 +74,6 @@
         </form>
 
         <!-- 댓글 -->
-
         <div class="m-4">
                 <form class="d-flex justify-content-center" id="comment-form" th:action="@{/comments/new}" method="post">
                     <input type="hidden" class="article-id" th:name="articleId" th:value="${article.articleId()}">

@@ -29,6 +29,7 @@ public class Article extends AuditingFields {
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL) //  CascadeType.PERSIST + CascadeType.REMOVE
     private Set<ArticleComment> articleComment;
 
+    @Column
     private Long fileId;
 
     private Article(UserAccount userAccount, String title, String content, Long view_count, Long fileId){
