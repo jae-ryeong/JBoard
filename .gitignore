@@ -38,3 +38,6 @@ out/
 
 ### data.sql ###
 data.sql
+
+### file 제외 ###
+**/files/
