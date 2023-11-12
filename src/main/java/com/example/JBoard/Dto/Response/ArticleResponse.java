@@ -12,13 +12,14 @@ public record ArticleResponse(
         String content,
         UserAccountDto userAccountDto,
         LocalDateTime createdAt,
-        Long view_count) {
+        Long view_count,
+        Long fileId) {
 
     public static ArticleResponse of(Long articleId, String title, String content, UserAccountDto userAccountDto) {
-        return new ArticleResponse(articleId, title, content, userAccountDto, null, null);
+        return new ArticleResponse(articleId, title, content, userAccountDto, null, null, null);
     }
 
     public static ArticleResponse from(ArticleDtoC dto) {
-        return new ArticleResponse(dto.getArticleId(), dto.getTitle(), dto.getContent(), dto.getUserAccountDto(), dto.getCreateAt(), dto.getViewCount());
+        return new ArticleResponse(dto.getArticleId(), dto.getTitle(), dto.getContent(), dto.getUserAccountDto(), dto.getCreateAt(), dto.getViewCount(), dto.getFileId());
     }
 }

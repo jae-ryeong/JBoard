@@ -15,14 +15,16 @@ public class ArticleDtoC {
     private LocalDateTime createAt;
     private UserAccountDto userAccountDto;
     private Long viewCount;
+    private Long fileId;
 
-    public ArticleDtoC(Long articleId, UserAccountDto userAccountDto, String title, String content, LocalDateTime createAt, Long viewCount){
+    public ArticleDtoC(Long articleId, UserAccountDto userAccountDto, String title, String content, LocalDateTime createAt, Long viewCount, Long fileId){
         this.articleId = articleId;
         this.userAccountDto = userAccountDto;
         this.title = title;
         this.content = content;
         this.createAt = createAt;
         this.viewCount = viewCount;
+        this.fileId = fileId;
     }
 
     @Override
@@ -34,8 +36,8 @@ public class ArticleDtoC {
     }
 
     // DTO -> Entity
-    public Article toEntity(UserAccount userAccount) {
-        return Article.of(userAccount, title, content.replace("\r\n","<br>"), 0L);
+    public Article toEntity(UserAccount userAccount, Long fileId) {
+        return Article.of(userAccount, title, content.replace("\r\n","<br>"), 0L, fileId);
     }
 
     public static ArticleDtoC from(Article entity) {
@@ -45,19 +47,20 @@ public class ArticleDtoC {
                 entity.getTitle(),
                 entity.getContent(),
                 entity.getCreatedAt(),
-                entity.getView_count()
+                entity.getView_count(),
+                entity.getFileId()
         );
     }
 
-    public static ArticleDtoC of(UserAccountDto userAccountDto, String title, String content, LocalDateTime createAt){
-        return new ArticleDtoC(null, userAccountDto, title, content, createAt, null);
+    public static ArticleDtoC of(UserAccountDto userAccountDto, String title, String content, LocalDateTime createAt, Long fileId){
+        return new ArticleDtoC(null, userAccountDto, title, content, createAt, null, fileId);
     }
 
     public static ArticleDtoC of(UserAccountDto userAccountDto, String title, String content){
-        return new ArticleDtoC(null, userAccountDto, title, content, null, null);
+        return new ArticleDtoC(null, userAccountDto, title, content, null, null, null);
     }
 
     public static ArticleDtoC of(Long articleId, UserAccountDto userAccountDto, String title, String content, Long viewCount){
-        return new ArticleDtoC(articleId, userAccountDto, title, content, null, viewCount);
+        return new ArticleDtoC(articleId, userAccountDto, title, content, null, viewCount, null);
     }
 }

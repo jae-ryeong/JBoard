@@ -19,6 +19,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -103,6 +106,29 @@ class ArticleCommentServiceTest {
         then(articleComment.getContent()).equals("바뀐 내용");
     }
 
+    @Test
+    public void myCommentsTest() throws Exception{
+        //given
+        ArticleComment articleComment = createArticleComment();
+        UserAccountDto userAccountDto = createUserAccountDto();
+        ArticleCommentDtoC commentDto = createCommentDto();
+        UserAccount userAccount = createUserAccount();
+
+        List<ArticleComment> list = new ArrayList<>();
+
+
+        //given(commentRepository.getReferenceById(commentDto.getId())).willReturn(articleComment);
+        //given(userAccountRepository.findByUid(userAccountDto.uid())).willReturn(Optional.of(userAccount));
+
+        given(commentRepository.findByUserAccountUid("wofud")).willReturn(());
+
+        //when
+        List<ArticleCommentDtoC> articleCommentDtoCS = commentService.myComments("wofud");
+        System.out.println("articleCommentDtoCS = " + articleCommentDtoCS);
+
+        //then
+    }
+
     private UserAccountDto createUserAccountDto() {
         return UserAccountDto.of(
                 "wofud", "password", "김재령", "wofud0321@naver.com", "wofud", String.valueOf(MemberRole.USER)
@@ -113,7 +139,7 @@ class ArticleCommentServiceTest {
     }
 
     private ArticleDtoC createArticleDto() {
-        return ArticleDtoC.of(createUserAccountDto(),"제목", "내용", LocalDateTime.now());
+        return ArticleDtoC.of(createUserAccountDto(),"제목", "내용", LocalDateTime.now(), null);
     }
     private Article createArticle() {
         return Article.of(createUserAccountDto().toEntity(), "제목", "content", 0L);

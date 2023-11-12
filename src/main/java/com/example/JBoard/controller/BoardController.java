@@ -1,29 +1,37 @@
 package com.example.JBoard.controller;
 
-import com.example.JBoard.Dto.ArticleCommentDtoC;
-import com.example.JBoard.Dto.ArticleDtoC;
-import com.example.JBoard.Dto.BoardPrincipal;
+import com.example.JBoard.Dto.*;
 import com.example.JBoard.Dto.Response.ArticleResponse;
-import com.example.JBoard.Dto.UserAccountDto;
 import com.example.JBoard.Entity.UserAccount;
-import com.example.JBoard.service.ArticleCommentService;
-import com.example.JBoard.service.ArticleService;
-import com.example.JBoard.service.PaginationService;
-import com.example.JBoard.service.UserService;
+import com.example.JBoard.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -34,6 +42,7 @@ public class BoardController {
     private final UserService userService;
     private final ArticleCommentService commentService;
     private final PaginationService paginationService;
+    private final FileService fileService;
 
     @GetMapping("/")
     public String index(Model model) {
@@ -68,12 +77,15 @@ public class BoardController {
     }
 
     @PostMapping("/boardCreateForm")
-    public String CreateForm(ArticleDtoC articleDtoC, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
-        UserAccount user = userService.getUser(boardPrincipal.getUsername());
-        System.out.println("컨트롤러에서 확인");
-        System.out.println(articleDtoC.toString());
+    public String CreateForm(ArticleDtoC articleDtoC, @AuthenticationPrincipal BoardPrincipal boardPrincipal, @RequestParam("file") MultipartFile files) {
+        try {
+            Long fileId = fileService.saveFiles(files);
 
-        articleService.createArticle(articleDtoC, user);
+            UserAccount user = userService.getUser(boardPrincipal.getUsername());
+            articleService.createArticle(articleDtoC, user, fileId);
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
 
         return "redirect:/boardlist";   // @GetMapping("/boardlist") 여기로 이동
     }
@@ -81,12 +93,15 @@ public class BoardController {
     @GetMapping("/detail/{articleId}")
     public String article_detail(@PathVariable("articleId") Long articleId, Model model, @AuthenticationPrincipal BoardPrincipal boardPrincipal, HttpServletRequest request, HttpServletResponse response) {
         articleService.readArticle(articleId, request, response);
-        model.addAttribute("article", ArticleResponse.from(articleService.getArticle(articleId)));
+        ArticleDtoC article = articleService.getArticle(articleId);
+        model.addAttribute("article", ArticleResponse.from(article));
 
         List<ArticleCommentDtoC> articleComments = commentService.getArticleComments(articleId);
+        String fileName = fileService.getFile(article.getFileId()).orgNm();
 
         model.addAttribute("comments", articleComments);
         model.addAttribute("boardPrincipal", boardPrincipal);
+        model.addAttribute("filename", fileName);
         return "articles/detail";
     }
 
@@ -116,5 +131,25 @@ public class BoardController {
 
         System.out.println("수정완료");
         return "redirect:/detail/" + articleId;
+    }
+
+    @GetMapping("/download/{fileId}")   
+    public ResponseEntity<Resource> fileDownload(@PathVariable("fileId") Long fileId) throws IOException {
+        try{
+            FileDto fileDto = fileService.getFile(fileId);
+            Path path = Paths.get(fileDto.savedPath());
+            Resource resource = new InputStreamResource(Files.newInputStream(path));
+
+            return ResponseEntity.ok()
+                    // "application/octet-stream"은 자바에서 사용하는 파일 다운로드 응답 형식
+                    .contentType(MediaType.parseMediaType("application/octet-stream"))
+                    // "attachment;fileName="을 사용하여 다운로드시 파일 이름을 지정
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(fileDto.orgNm(),"UTF-8") + "\"")
+                    .body(resource);
+        } catch (NoSuchFileException e){ // TODO: 예외처리 바꿔주기
+            e.printStackTrace();
+            return ResponseEntity.badRequest()
+                    .body(null);
+        }
     }
 }

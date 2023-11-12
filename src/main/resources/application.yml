@@ -23,6 +23,11 @@ spring:
     init:
       mode: always # (data.sql을 실행시켜준다.)
 
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 10MB
+
 logging:
   level:
     org:

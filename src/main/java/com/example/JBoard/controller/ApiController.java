@@ -5,6 +5,7 @@ import com.example.JBoard.Dto.BoardPrincipal;
 import com.example.JBoard.Dto.Response.MyCommentsResponse;
 import com.example.JBoard.service.ArticleCommentService;
 import com.example.JBoard.service.ArticleService;
+import com.example.JBoard.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class ApiController {
+
     private final ArticleService articleService;
     private final ArticleCommentService commentService;
 
