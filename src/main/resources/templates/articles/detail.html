@@ -54,12 +54,13 @@
         </table>
 
         <!-- 첨부파일 -->
-        <div th:if="${article.fileId() != null}">
+        <div th:each="file : ${files}">
             <strong>첨부파일 : </strong>
             <a
                class="card-text"
-               th:href="@{'/download/' + ${article.fileId}}"
-               th:text="${filename}"
+               th:href="@{'/download/' + ${file.id()
+               }}"
+               th:text="${file.orgNm()}"
             ></a>
         </div>
 

@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.text.Normalizer;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -20,10 +21,7 @@ public class FileService {
 
     private final UploadedFileRepository fileRepository;
 
-    public Long saveFiles(MultipartFile files) throws IOException {
-        /*for(file : files){
-
-        }*/
+/*    public Long saveFile(MultipartFile files) throws IOException {
         // getOriginalFilename 메서드의 문제점 해결, https://developer-talk.tistory.com/811
         String origFilename = Normalizer.normalize(files.getOriginalFilename(), Normalizer.Form.NFC);
 
@@ -49,19 +47,46 @@ public class FileService {
         }
 
         String filePath = savePath + "\\" + savedName;
-        System.out.println("filePath = " + filePath);
         files.transferTo(new File(filePath));
 
-        FileDto fileDto = new FileDto(null, origFilename, savedName, filePath);
+        FileDto fileDto = new FileDto(null, origFilename, savedName, filePath, );
 
         return fileRepository.save(fileDto.toEntity()).getId();
+    }*/
+
+    public void saveFiles(List<MultipartFile> files, Long articleId) throws IOException{
+        for(MultipartFile file : files){
+            String origFilename = Normalizer.normalize(file.getOriginalFilename(), Normalizer.Form.NFC);
+            String uuid = UUID.randomUUID().toString();
+            String extension = origFilename.substring(origFilename.lastIndexOf("."));
+            String savedName = uuid + extension;
+            String savePath = System.getProperty("user.dir") + "\\files";
+            if (!new File(savePath).exists()) {
+                try {
+                    new File(savePath).mkdir();
+                } catch (Exception e) {
+                    e.getStackTrace();
+                }
+            }
+
+            String filePath = savePath + "\\" + savedName;
+            file.transferTo(new File(filePath));
+
+            FileDto fileDto = new FileDto(null, origFilename, savedName, filePath, articleId);
+
+            fileRepository.save(fileDto.toEntity());
+        }
     }
 
     public FileDto getFile(Long id) {
         UploadedFile file = fileRepository.getReferenceById(id);
         System.out.println("fileOrgNm = " + file.getOrgNm());
 
-        return FileDto.of(id, file.getOrgNm(), file.getSavedNm(), file.getSavedPath());
+        return FileDto.of(id, file.getOrgNm(), file.getSavedNm(), file.getSavedPath(), file.getArticleId());
+    }
+
+    public List<FileDto> getFiles(Long articleId) {
+        return fileRepository.findAllByArticleId(articleId).stream().map(UploadedFile::toDto).toList();
     }
 
 }

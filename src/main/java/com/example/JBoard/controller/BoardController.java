@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -77,12 +76,11 @@ public class BoardController {
     }
 
     @PostMapping("/boardCreateForm")
-    public String CreateForm(ArticleDtoC articleDtoC, @AuthenticationPrincipal BoardPrincipal boardPrincipal, @RequestParam("file") MultipartFile files) {
+    public String CreateForm(ArticleDtoC articleDtoC, @AuthenticationPrincipal BoardPrincipal boardPrincipal, @RequestParam("file") List<MultipartFile> files) {
         try {
-            Long fileId = fileService.saveFiles(files);
-
             UserAccount user = userService.getUser(boardPrincipal.getUsername());
-            articleService.createArticle(articleDtoC, user, fileId);
+            Long articleId = articleService.createArticle(articleDtoC, user);
+            fileService.saveFiles(files, articleId);
         } catch (Exception e) {
             e.getStackTrace();
         }
@@ -90,18 +88,35 @@ public class BoardController {
         return "redirect:/boardlist";   // @GetMapping("/boardlist") 여기로 이동
     }
 
-    @GetMapping("/detail/{articleId}")
+/*    @GetMapping("/detail/{articleId}")
     public String article_detail(@PathVariable("articleId") Long articleId, Model model, @AuthenticationPrincipal BoardPrincipal boardPrincipal, HttpServletRequest request, HttpServletResponse response) {
         articleService.readArticle(articleId, request, response);
         ArticleDtoC article = articleService.getArticle(articleId);
         model.addAttribute("article", ArticleResponse.from(article));
 
         List<ArticleCommentDtoC> articleComments = commentService.getArticleComments(articleId);
+
         String fileName = fileService.getFile(article.getFileId()).orgNm();
 
         model.addAttribute("comments", articleComments);
         model.addAttribute("boardPrincipal", boardPrincipal);
         model.addAttribute("filename", fileName);
+        return "articles/detail";
+    }*/
+
+    @GetMapping("/detail/{articleId}")
+    public String article_detail(@PathVariable("articleId") Long articleId, Model model, @AuthenticationPrincipal BoardPrincipal boardPrincipal, HttpServletRequest request, HttpServletResponse response) {
+        articleService.readArticle(articleId, request, response);
+        ArticleDtoC article = articleService.getArticle(articleId);
+
+        List<ArticleCommentDtoC> articleComments = commentService.getArticleComments(articleId);
+
+        List<FileDto> files = fileService.getFiles(article.getArticleId());
+
+        model.addAttribute("article", ArticleResponse.from(article));
+        model.addAttribute("comments", articleComments);
+        model.addAttribute("boardPrincipal", boardPrincipal);
+        model.addAttribute("files", files);
         return "articles/detail";
     }
 
