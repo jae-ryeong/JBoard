@@ -57,6 +57,18 @@ public class ArticleService {
         return articleRepository.findAll(pageable).map(ArticleDtoC::from);
     }
 
+    public void createArticle(ArticleDtoC articleDtoC, UserAccount userAccount) {
+        if(!articleDtoC.getTitle().isBlank() || !articleDtoC.getContent().isBlank()){
+            try {
+                articleRepository.save(articleDtoC.toEntity(userAccount, null));  // TODO: 후에 이쁘게 바꿔보자
+            } catch (UsernameNotFoundException e) { // 계정 없음
+                log.warn("게시글 생성을 위한 계정이 로그인 되어 있지 않습니다.");
+            }
+        } else{
+            log.warn("제목 혹은 내용의 값이 비어있습니다.");
+        }
+    }
+
     public void createArticle(ArticleDtoC articleDtoC, UserAccount userAccount, Long fileId) {
         if(!articleDtoC.getTitle().isBlank() || !articleDtoC.getContent().isBlank()){
             try {

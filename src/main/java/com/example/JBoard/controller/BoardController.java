@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -77,12 +76,12 @@ public class BoardController {
     }
 
     @PostMapping("/boardCreateForm")
-    public String CreateForm(ArticleDtoC articleDtoC, @AuthenticationPrincipal BoardPrincipal boardPrincipal, @RequestParam("file") MultipartFile files) {
+    public String CreateForm(ArticleDtoC articleDtoC, @AuthenticationPrincipal BoardPrincipal boardPrincipal, @RequestParam("file") List<MultipartFile> files) {
         try {
-            Long fileId = fileService.saveFiles(files);
+            fileService.saveFiles(files);
 
             UserAccount user = userService.getUser(boardPrincipal.getUsername());
-            articleService.createArticle(articleDtoC, user, fileId);
+            articleService.createArticle(articleDtoC, user);
         } catch (Exception e) {
             e.getStackTrace();
         }
@@ -97,6 +96,7 @@ public class BoardController {
         model.addAttribute("article", ArticleResponse.from(article));
 
         List<ArticleCommentDtoC> articleComments = commentService.getArticleComments(articleId);
+
         String fileName = fileService.getFile(article.getFileId()).orgNm();
 
         model.addAttribute("comments", articleComments);

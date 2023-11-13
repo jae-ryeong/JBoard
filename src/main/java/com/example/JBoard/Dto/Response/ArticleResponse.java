@@ -15,8 +15,8 @@ public record ArticleResponse(
         Long view_count,
         Long fileId) {
 
-    public static ArticleResponse of(Long articleId, String title, String content, UserAccountDto userAccountDto) {
-        return new ArticleResponse(articleId, title, content, userAccountDto, null, null, null);
+    public static ArticleResponse of(Long articleId, String title, String content, UserAccountDto userAccountDto, Long fileId) {
+        return new ArticleResponse(articleId, title, content, userAccountDto, null, null, fileId);
     }
 
     public static ArticleResponse from(ArticleDtoC dto) {

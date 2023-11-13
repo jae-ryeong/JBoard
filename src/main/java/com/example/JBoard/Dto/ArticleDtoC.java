@@ -56,11 +56,11 @@ public class ArticleDtoC {
         return new ArticleDtoC(null, userAccountDto, title, content, createAt, null, fileId);
     }
 
-    public static ArticleDtoC of(UserAccountDto userAccountDto, String title, String content){
+    public static ArticleDtoC of(UserAccountDto userAccountDto, String title, String content){  // ArticleRequestDTO용
         return new ArticleDtoC(null, userAccountDto, title, content, null, null, null);
     }
 
-    public static ArticleDtoC of(Long articleId, UserAccountDto userAccountDto, String title, String content, Long viewCount){
+    public static ArticleDtoC of(Long articleId, UserAccountDto userAccountDto, String title, String content, Long viewCount){  // 테스트용
         return new ArticleDtoC(articleId, userAccountDto, title, content, null, viewCount, null);
     }
 }
