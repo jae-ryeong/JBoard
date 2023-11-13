@@ -78,10 +78,9 @@ public class BoardController {
     @PostMapping("/boardCreateForm")
     public String CreateForm(ArticleDtoC articleDtoC, @AuthenticationPrincipal BoardPrincipal boardPrincipal, @RequestParam("file") List<MultipartFile> files) {
         try {
-            fileService.saveFiles(files);
-
             UserAccount user = userService.getUser(boardPrincipal.getUsername());
-            articleService.createArticle(articleDtoC, user);
+            Long articleId = articleService.createArticle(articleDtoC, user);
+            fileService.saveFiles(files, articleId);
         } catch (Exception e) {
             e.getStackTrace();
         }
@@ -89,7 +88,7 @@ public class BoardController {
         return "redirect:/boardlist";   // @GetMapping("/boardlist") 여기로 이동
     }
 
-    @GetMapping("/detail/{articleId}")
+/*    @GetMapping("/detail/{articleId}")
     public String article_detail(@PathVariable("articleId") Long articleId, Model model, @AuthenticationPrincipal BoardPrincipal boardPrincipal, HttpServletRequest request, HttpServletResponse response) {
         articleService.readArticle(articleId, request, response);
         ArticleDtoC article = articleService.getArticle(articleId);
@@ -102,6 +101,22 @@ public class BoardController {
         model.addAttribute("comments", articleComments);
         model.addAttribute("boardPrincipal", boardPrincipal);
         model.addAttribute("filename", fileName);
+        return "articles/detail";
+    }*/
+
+    @GetMapping("/detail/{articleId}")
+    public String article_detail(@PathVariable("articleId") Long articleId, Model model, @AuthenticationPrincipal BoardPrincipal boardPrincipal, HttpServletRequest request, HttpServletResponse response) {
+        articleService.readArticle(articleId, request, response);
+        ArticleDtoC article = articleService.getArticle(articleId);
+
+        List<ArticleCommentDtoC> articleComments = commentService.getArticleComments(articleId);
+
+        List<FileDto> files = fileService.getFiles(article.getArticleId());
+
+        model.addAttribute("article", ArticleResponse.from(article));
+        model.addAttribute("comments", articleComments);
+        model.addAttribute("boardPrincipal", boardPrincipal);
+        model.addAttribute("files", files);
         return "articles/detail";
     }
 

@@ -21,7 +21,7 @@ public class FileService {
 
     private final UploadedFileRepository fileRepository;
 
-    public Long saveFile(MultipartFile files) throws IOException {
+/*    public Long saveFile(MultipartFile files) throws IOException {
         // getOriginalFilename 메서드의 문제점 해결, https://developer-talk.tistory.com/811
         String origFilename = Normalizer.normalize(files.getOriginalFilename(), Normalizer.Form.NFC);
 
@@ -49,12 +49,12 @@ public class FileService {
         String filePath = savePath + "\\" + savedName;
         files.transferTo(new File(filePath));
 
-        FileDto fileDto = new FileDto(null, origFilename, savedName, filePath);
+        FileDto fileDto = new FileDto(null, origFilename, savedName, filePath, );
 
         return fileRepository.save(fileDto.toEntity()).getId();
-    }
+    }*/
 
-    public void saveFiles(List<MultipartFile> files) throws IOException{
+    public void saveFiles(List<MultipartFile> files, Long articleId) throws IOException{
         for(MultipartFile file : files){
             String origFilename = Normalizer.normalize(file.getOriginalFilename(), Normalizer.Form.NFC);
             String uuid = UUID.randomUUID().toString();
@@ -72,7 +72,7 @@ public class FileService {
             String filePath = savePath + "\\" + savedName;
             file.transferTo(new File(filePath));
 
-            FileDto fileDto = new FileDto(null, origFilename, savedName, filePath);
+            FileDto fileDto = new FileDto(null, origFilename, savedName, filePath, articleId);
 
             fileRepository.save(fileDto.toEntity());
         }
@@ -82,7 +82,11 @@ public class FileService {
         UploadedFile file = fileRepository.getReferenceById(id);
         System.out.println("fileOrgNm = " + file.getOrgNm());
 
-        return FileDto.of(id, file.getOrgNm(), file.getSavedNm(), file.getSavedPath());
+        return FileDto.of(id, file.getOrgNm(), file.getSavedNm(), file.getSavedPath(), file.getArticleId());
+    }
+
+    public List<FileDto> getFiles(Long articleId) {
+        return fileRepository.findAllByArticleId(articleId).stream().map(UploadedFile::toDto).toList();
     }
 
 }

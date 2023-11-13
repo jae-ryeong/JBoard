@@ -1,5 +1,6 @@
 package com.example.JBoard.Entity;
 
+import com.example.JBoard.Dto.FileDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,12 +25,19 @@ public class UploadedFile { // File에 대한 정보만 저장
     @Column(name = "SAVED_PATH", nullable = false)
     private String savedPath;
 
+    private Long articleId;
+
     @Builder
-    public UploadedFile(Long id, String orgNm, String savedNm, String savedPath) {
+    public UploadedFile(Long id, String orgNm, String savedNm, String savedPath, Long articleId) {
         this.id = id;
         this.orgNm = orgNm;
         this.savedNm = savedNm;
         this.savedPath = savedPath;
+        this.articleId = articleId;
+    }
+
+    public FileDto toDto() {
+        return FileDto.of(id, orgNm, savedNm, savedPath, articleId);
     }
 
 
