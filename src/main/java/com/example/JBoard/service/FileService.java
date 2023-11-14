@@ -21,46 +21,25 @@ public class FileService {
 
     private final UploadedFileRepository fileRepository;
 
-/*    public Long saveFile(MultipartFile files) throws IOException {
-        // getOriginalFilename 메서드의 문제점 해결, https://developer-talk.tistory.com/811
-        String origFilename = Normalizer.normalize(files.getOriginalFilename(), Normalizer.Form.NFC);
-
-        // 파일 이름으로 쓸 uuid 생성
-        String uuid = UUID.randomUUID().toString();
-
-        // 확장자 추출(ex : .png)
-        String extension = origFilename.substring(origFilename.lastIndexOf("."));
-
-        // uuid와 확장자 결합
-        String savedName = uuid + extension;
-
-        // 실행되는 위치의 'files' 폴더에 파일이 저장
-        String savePath = System.getProperty("user.dir") + "\\files";
-
-        //파일이 저장되는 폴더가 없으면 폴더를 생성
-        if (!new File(savePath).exists()) {
-            try {
-                new File(savePath).mkdir();
-            } catch (Exception e) {
-                e.getStackTrace();
-            }
-        }
-
-        String filePath = savePath + "\\" + savedName;
-        files.transferTo(new File(filePath));
-
-        FileDto fileDto = new FileDto(null, origFilename, savedName, filePath, );
-
-        return fileRepository.save(fileDto.toEntity()).getId();
-    }*/
-
     public void saveFiles(List<MultipartFile> files, Long articleId) throws IOException{
+
         for(MultipartFile file : files){
+            // getOriginalFilename 메서드의 문제점 해결, https://developer-talk.tistory.com/811
             String origFilename = Normalizer.normalize(file.getOriginalFilename(), Normalizer.Form.NFC);
+
+            // 파일 이름으로 쓸 uuid 생성
             String uuid = UUID.randomUUID().toString();
+
+            // 확장자 추출(ex : .png)
             String extension = origFilename.substring(origFilename.lastIndexOf("."));
+
+            // uuid와 확장자 결합
             String savedName = uuid + extension;
+
+            // 실행되는 위치의 'files' 폴더에 파일이 저장
             String savePath = System.getProperty("user.dir") + "\\files";
+
+            //파일이 저장되는 폴더가 없으면 폴더를 생성
             if (!new File(savePath).exists()) {
                 try {
                     new File(savePath).mkdir();
@@ -78,14 +57,14 @@ public class FileService {
         }
     }
 
-    public FileDto getFile(Long id) {
+    public FileDto getFile(Long id) {   // 다운로드 할때 사용
         UploadedFile file = fileRepository.getReferenceById(id);
         System.out.println("fileOrgNm = " + file.getOrgNm());
 
         return FileDto.of(id, file.getOrgNm(), file.getSavedNm(), file.getSavedPath(), file.getArticleId());
     }
 
-    public List<FileDto> getFiles(Long articleId) {
+    public List<FileDto> getFiles(Long articleId) { // detail view에 넘겨줄때 사용
         return fileRepository.findAllByArticleId(articleId).stream().map(UploadedFile::toDto).toList();
     }
 

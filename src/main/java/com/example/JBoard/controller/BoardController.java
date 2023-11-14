@@ -80,6 +80,7 @@ public class BoardController {
         try {
             UserAccount user = userService.getUser(boardPrincipal.getUsername());
             Long articleId = articleService.createArticle(articleDtoC, user);
+
             fileService.saveFiles(files, articleId);
         } catch (Exception e) {
             e.getStackTrace();
@@ -87,22 +88,6 @@ public class BoardController {
 
         return "redirect:/boardlist";   // @GetMapping("/boardlist") 여기로 이동
     }
-
-/*    @GetMapping("/detail/{articleId}")
-    public String article_detail(@PathVariable("articleId") Long articleId, Model model, @AuthenticationPrincipal BoardPrincipal boardPrincipal, HttpServletRequest request, HttpServletResponse response) {
-        articleService.readArticle(articleId, request, response);
-        ArticleDtoC article = articleService.getArticle(articleId);
-        model.addAttribute("article", ArticleResponse.from(article));
-
-        List<ArticleCommentDtoC> articleComments = commentService.getArticleComments(articleId);
-
-        String fileName = fileService.getFile(article.getFileId()).orgNm();
-
-        model.addAttribute("comments", articleComments);
-        model.addAttribute("boardPrincipal", boardPrincipal);
-        model.addAttribute("filename", fileName);
-        return "articles/detail";
-    }*/
 
     @GetMapping("/detail/{articleId}")
     public String article_detail(@PathVariable("articleId") Long articleId, Model model, @AuthenticationPrincipal BoardPrincipal boardPrincipal, HttpServletRequest request, HttpServletResponse response) {
@@ -144,7 +129,6 @@ public class BoardController {
         UserAccountDto userAccountDto = boardPrincipal.toDto();
         articleService.updateArticle(articleId, dto, userAccountDto);
 
-        System.out.println("수정완료");
         return "redirect:/detail/" + articleId;
     }
 
