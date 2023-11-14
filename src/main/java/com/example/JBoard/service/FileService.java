@@ -68,4 +68,8 @@ public class FileService {
         return fileRepository.findAllByArticleId(articleId).stream().map(UploadedFile::toDto).toList();
     }
 
+    public void deleteFiles(Long articleId){    // 게시글이 삭제될 때, 연관된 파일도 삭제
+        fileRepository.deleteAllByArticleId(articleId);
+    }
+
 }

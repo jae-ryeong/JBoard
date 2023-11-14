@@ -110,6 +110,7 @@ public class BoardController {
         UserAccountDto userAccountDto = boardPrincipal.toDto();
 
         articleService.deleteArticle(articleId, userAccountDto);
+        fileService.deleteFiles(articleId);
         return "redirect:/boardlist";
     }
 
