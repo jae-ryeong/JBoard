@@ -14,15 +14,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -80,7 +78,7 @@ public class BoardController {
         try {
             UserAccount user = userService.getUser(boardPrincipal.getUsername());
             Long articleId = articleService.createArticle(articleDtoC, user);
-
+            System.out.println("files = " + files);
             fileService.saveFiles(files, articleId);
         } catch (Exception e) {
             e.getStackTrace();
@@ -121,15 +119,24 @@ public class BoardController {
         if (!article.getUserAccountDto().uid().equals(boardPrincipal.uid())) {  // URI 직접 입력 방지
             return "redirect:/boardlist";
         }
+
+        List<FileDto> files = fileService.getFiles(articleId);
+
+        model.addAttribute("files", files);
         model.addAttribute("article", article);
         return "articles/boardUpdateForm";
     }
 
     @PostMapping("/update/{articleId}")
-    public String updateArticle(@PathVariable("articleId") Long articleId, ArticleDtoC dto, @AuthenticationPrincipal BoardPrincipal boardPrincipal) {
+    public String updateArticle(@PathVariable("articleId") Long articleId, ArticleDtoC dto, @RequestParam(name = "file", required = false) List<MultipartFile> files, @AuthenticationPrincipal BoardPrincipal boardPrincipal) throws IOException {
         UserAccountDto userAccountDto = boardPrincipal.toDto();
         articleService.updateArticle(articleId, dto, userAccountDto);
 
+        System.out.println("files = " + files);
+        if(files != null || !files.isEmpty()) {
+            fileService.deleteFiles(articleId);
+            fileService.saveFiles(files, articleId);
+        }
         return "redirect:/detail/" + articleId;
     }
 

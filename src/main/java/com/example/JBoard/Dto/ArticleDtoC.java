@@ -3,7 +3,6 @@ package com.example.JBoard.Dto;
 import com.example.JBoard.Entity.Article;
 import com.example.JBoard.Entity.UserAccount;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
