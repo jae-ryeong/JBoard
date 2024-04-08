@@ -107,7 +107,7 @@
 
         $.ajax({
             url: '/user/validation', //Controller에서 요청 받을 주소
-            type: 'get', //POST 방식으로 전달
+            type: 'get',
             data: {"uid": uid},
             success: function (result) {
                 if (result || check === 1) {
